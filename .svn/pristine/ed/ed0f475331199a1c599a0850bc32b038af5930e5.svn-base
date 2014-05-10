@@ -1,0 +1,26 @@
+<% if en != nil %>
+<form action="/entorno/<%= en.id%>" method="post">
+	<input type="hidden" name="_method" value="put" />
+
+	<label>Compañía</label>
+		<input type="text" id="compania" name="compania" value="<%= en.compania%>"/>
+	<label>Nombre del Entorno</label>
+		<input type="text" id="nombre" name="nombre" value="<%= en.nombre%>"/>		
+	<label>BD Servidor:Puerto</label>
+		<input type="text" id="bd" name="bd" value="<%= en.bd%>"/>
+	<label>Directorio SVN</label>
+		<input type="text" id="svn" name="svn" value="<%= en.svn%>"/>
+	<label>Url y passwords</label>
+		<input type="text" id="url" name="url" value="<%= en.url%>"/>
+	
+	<input type="submit" value="Editar Entorno"/>
+</form>
+
+<% else %>
+
+<div class="alert alert-error">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	El entorno buscado no existe
+</div>
+
+<% end %>

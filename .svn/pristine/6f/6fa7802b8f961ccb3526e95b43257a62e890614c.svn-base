@@ -1,0 +1,12 @@
+class App < Sinatra::Application
+
+  get '/entornos/json' do
+    en1 = Entorno.new("DT","DTAracs","svnAracs_2_3","http://dt","QA")
+    en2 = Entorno.new("DT","DTAracs","svnAracs_2_3","http://dt","Pre")
+    en3 = Entorno.new("DT","DTAracs","svnAracs_2_3","http://dt","PRO")
+    entornos = {:en1 => en1, :en2 => en2, :en3 => en3}
+     
+    erb "#{JSON.parse(entornos)}"
+  end
+  
+end

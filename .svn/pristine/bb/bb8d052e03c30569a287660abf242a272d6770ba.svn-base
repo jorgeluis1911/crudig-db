@@ -1,0 +1,32 @@
+<% if en != nil %>
+<form action="/entorno/<%= en.id%>" method="post">
+	<input type="hidden" name="_method" value="delete" />
+	<input type="hidden" name="del1" id="del1" value="del1" />
+	
+	<div class="alert alert-info">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<p>¿Seguro que deseas eliminar el entorno?</p>
+		<p>Compañia : <%= en.compania%></p>
+		<p>Entorno : <%= en.nombre%></p>		
+		<p>BD : <%= en.bd%></p>
+		<p>SVN : <%= en.svn%></p>
+		<p>URL : <%= en.url%></p>
+	</div>
+
+	
+	<input type="submit" value="Si, Eliminar"/>
+	
+</form>
+
+<form action="/entornos" method="get">
+	<input type="submit" value="No, Volver"/>
+</form>
+
+<% else %>
+
+<div class="alert alert-error">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	El entorno buscado no existe
+</div>
+
+<% end %>
