@@ -21,5 +21,7 @@ DEPENDENCIES
   json (= 1.7.7)
   mssqlclient (= 0.1.0)
   pg (= 0.17.1)
+  rack (= 1.5.2)
+  rack-protection (= 1.5.3)
   ruby-mysql (= 2.9.12)
   sinatra (= 1.4.4)
