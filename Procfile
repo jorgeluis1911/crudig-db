@@ -1,1 +1,1 @@
-web: bundle exec ruby runApp.rb -p $PORT
+web: bundle exec rackup config__.ru -p $PORT
