@@ -17,9 +17,9 @@ class App < Sinatra::Application
     #set :entornos, []
   end
   
-  @@conexion = ''
+  @@app = ''
   @@filas = Hash.new
-  @@aplicacion = {:config => {:idioma => "es", :bd => "", :host => "", :user => "", :password => ""}, 
+  @@config = {:config => {:idioma => "es", :bd => "", :host => "", :user => "", :password => ""}, 
                   :tablas => {},
                   :enlaces => [] }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
@@ -34,9 +34,9 @@ class App < Sinatra::Application
 
   get '/config' do 
     message = ''
-    erb :config, :locals => {:config => @@aplicacion[:config],
-                             :tablas => @@aplicacion[:tablas],
-                             :enlaces => @@aplicacion[:enlaces],
+    erb :config, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
                              :message => message,}    
   end
   
@@ -46,9 +46,9 @@ class App < Sinatra::Application
   
   get '/caracteristicas' do 
     message = ''
-    erb :features, :locals => {:config => @@aplicacion[:config],
-                             :tablas => @@aplicacion[:tablas],
-                             :enlaces => @@aplicacion[:enlaces],
+    erb :features, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
                              :message => message,}    
   end
   
@@ -58,9 +58,9 @@ class App < Sinatra::Application
   
   get '/graficos' do 
     message = ''
-    erb :graficos, :locals => {:config => @@aplicacion[:config],
-                             :tablas => @@aplicacion[:tablas],
-                             :enlaces => @@aplicacion[:enlaces],
+    erb :graficos, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
                              :message => message,}    
   end
   
@@ -72,21 +72,22 @@ class App < Sinatra::Application
     message = ''
     
     case params[:driver]
-    when 'Mysql'    then
-      message= load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
-    when 'MariaDB'  then 
-      message= load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
-    when 'Postgress' 
+    when 'Mysql', 'MariaDB'  then 
+      @@app = MySQLconex.new @@config
+      message= @@app.load_bd_MySQL( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
+    when 'Postgress' then
+      @@app = PSqlconex.new @@config
+      message= @@app.load_bd_PS( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
     when 'SQLServer' 
     when 'Oracle'  
     else  message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión</p></div>'
     end
-    #load_bd('','','','')
-    erb :config, :locals => {:config => @@aplicacion[:config],
-                             :tablas => @@aplicacion[:tablas],
-                             :enlaces => @@aplicacion[:enlaces],
-                             :message => message,}    
-  end  
+    
+    erb :config, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}
+  end
   
   get '/:controler' do |controler|
     redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
@@ -141,12 +142,12 @@ class App < Sinatra::Application
     message=''
     
     order = {}
-    order[:order] = set_order(params)
-    order[:grid2_order] = set_sub_grid_order(params)
+    order[:order] = @@app.set_order(params)
+    order[:grid2_order] = @@app.set_sub_grid_order(params)
     
     listar(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    filas = select_mysql(' * ', controler, params, start_limit)
+    filas = @@app.select_mysql(' * ', controler, params, start_limit)
     
     listar(controler, filas, message, order, params)
   end
@@ -156,12 +157,12 @@ class App < Sinatra::Application
     puts 'hehe---------'
     
     order = {}
-    order[:order] = set_order(params)
-    order[:grid2_order] = set_sub_grid_order(params)
+    order[:order] = @@app.set_order(params)
+    order[:grid2_order] = @@app.set_sub_grid_order(params)
     
     return listar_json(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    filas = select_mysql(' * ', controler, params, start_limit)
+    filas = @@app.select_mysql(' * ', controler, params, start_limit)
     
     return listar_json(controler, filas, message, order, params)
   end
@@ -169,20 +170,20 @@ class App < Sinatra::Application
   def update_id(controler, id, params)
     message=''
     
-    actualizado = update_mysql(' * ', controler, '')
+    actualizado = @@app.update_mysql(' * ', controler, '')
     if(actualizado) 
       message= 'Elemento insertado con éxito.'
     else  message= 'No se pudo insertar el elemento.'
     end
     
-    filas = select_mysql(' * ', controler, '', '')
+    filas = @@app.select_mysql(' * ', controler, '', '')
     listar(controler, filas, message, order)        
   end
   
   def update_id_json(controler, id, params)
     message=''
     
-    actualizado = update_mysql(' * ', controler, '')
+    actualizado = @@app.update_mysql(' * ', controler, '')
     if(actualizado) 
       message= 'Elemento insertado con éxito.'
     else  message= 'No se pudo insertar el elemento.'
@@ -194,20 +195,20 @@ class App < Sinatra::Application
   def delete_id(controler, id, params)
     message=''
     
-    eliminado = delete_mysql(' * ', controler, '')
+    eliminado = @@app.delete_mysql(' * ', controler, '')
     if(eliminado) 
       message= 'Elemento eliminado con éxito.'
     else  message= 'No se pudo eliminar el elemento.'
     end
     
-    filas = select_mysql(' * ', controler, '', '')    
+    filas = @@app.select_mysql(' * ', controler, '', '')    
     listar(controler, filas, message, order)      
   end
 
   def delete_id_json(controler, id, params)
     message=''
     
-    eliminado = delete_mysql(' * ', controler, '')
+    eliminado = @@app.delete_mysql(' * ', controler, '')
     if(eliminado) 
       message= 'Elemento eliminado con éxito.'
     else  message= 'No se pudo eliminar el elemento.'
@@ -219,13 +220,13 @@ class App < Sinatra::Application
   def create_id(controler, params)
     message=''
     
-    creado = insert_mysql(' * ', controler, '')
+    creado = @@app.insert_mysql(' * ', controler, '')
     if(creado)
       message= 'Elemento insertado con éxito.'
     else  message= 'No se pudo insertar el elemento.'
     end
     
-    filas = select_mysql(' * ', controler, '', '')        
+    filas = @@app.select_mysql(' * ', controler, '', '')        
     listar(controler, filas, message, order)    
   end
   
@@ -233,7 +234,7 @@ class App < Sinatra::Application
     message= 'No se pudo insertar el elemento.'
     result = ''
     
-    creado = insert_mysql(params, controler, '')
+    creado = @@app.insert_mysql(params, controler, '')
     if(creado=='')  
       message= 'Elemento insertado con éxito.'
       result = '{"valido":"1", "mensaje":"'+message+'"}'
@@ -246,6 +247,6 @@ class App < Sinatra::Application
   
 end
 
-require_relative 'libraries/aplicacion'
+require_relative 'libraries/libreria'
 require_relative 'models/init'
 #require_relative 'controllers/init'
