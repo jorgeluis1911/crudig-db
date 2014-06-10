@@ -8,6 +8,8 @@ class PSqlconex < Aplicacion
       
       raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
         
+      @aplicacion[:config]={:idioma=>"es",:bd=>bd_name,:host=>dominio,:user=>usuario,:pass=>pass,:driver=>driver,:port=>port}
+      
       return load_config_PS( bd_name )
     rescue PG::Error => err
       #puts err
@@ -27,7 +29,8 @@ class PSqlconex < Aplicacion
     
     select = 'col.table_name, col.column_name, col.column_default, col.is_nullable, col.data_type, col.CHARACTER_MAXIMUM_LENGTH, 
               col.ORDINAL_POSITION, 
-              col_u.CONSTRAINT_NAME, col_u.table_catalog, col_u.TABLE_NAME, col_u.COLUMN_NAME '
+              col_u.CONSTRAINT_NAME, col_u.table_catalog as ref_table_catalog, 
+              col_u.TABLE_NAME as ref_table_name, col_u.COLUMN_NAME as ref_column_name'
     from = ' FROM INFORMATION_SCHEMA.columns as col left join INFORMATION_SCHEMA.key_column_usage as col_u 
                 on col_u.table_name=col.table_name and col_u.column_name=col.column_name'
     where = ' WHERE col.table_catalog =\''+bd_name+'\' and col.table_schema=\'public\''
@@ -60,25 +63,28 @@ class PSqlconex < Aplicacion
         # => agregar las columnas
         columna= {}
         columna[:position] = row['ORDINAL_POSITION']
-        columna[:default_value] = row['COLUMN_DEFAULT']
+        columna[:default_value] = "" #row['COLUMN_DEFAULT']
         columna[:is_nullable] = row['is_nullable']
         columna[:data_type] = row['DATA_TYPE'].to_s
         columna[:length] = row['CHARACTER_MAXIMUM_LENGTH']
-        columna[:column_key] = row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
-        columna[:comments] = row['COLUMN_COMMENT']
+        columna[:column_key] = "" #row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
+        columna[:comments] = "" #row['COLUMN_COMMENT']
         
         # => datos sobre FK
         columna[:key_name] = row['CONSTRAINT_NAME']
-        columna[:esquema_rel] = row['REFERENCED_TABLE_SCHEMA']
-        columna[:tabla_rel] = row['REFERENCED_TABLE_NAME']
-        columna[:column_rel] = row['REFERENCED_COLUMN_NAME']
+        columna[:esquema_rel] = row['ref_table_catalog']
+        columna[:tabla_rel] = row['ref_table_name']
+        columna[:column_rel] = row['ref_column_name']
         
         # => configuración de vista
         columna[:vista_grid] = true
         columna[:texto_grid] = ''
-              
+        
+        pkey = ''
+        pkey = columna[:key_name][-4, 4]   if(columna[:key_name])
+          
         @aplicacion[:tablas][tablas]['config'][:referidas] = []
-        if columna[:tabla_rel]
+        if ( columna[:tabla_rel] &&  (pkey != 'pkey'))
           @aplicacion[:tablas][tablas]['config'][:referencias][columna[:tabla_rel]] = columna[:column_rel]
           @aplicacion[:tablas][tablas]['config'][:detalle_de] = columna[:tabla_rel]
   
@@ -140,6 +146,7 @@ class PSqlconex < Aplicacion
     filas = Hash.new
     cont = 0
     
+    puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit
     @conexion.exec('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit).each { |row|
       filas["#{cont}"] = row
       cont += 1

@@ -6,6 +6,9 @@ class MySQLconex < Aplicacion
     begin
       @conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
       
+      # raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
+      
+      @aplicacion[:config]={:idioma=>"es",:bd=>bd_name,:host=>dominio,:user=>usuario,:pass=>pass,:driver=>driver,:port=>port}
       return load_config_MySQL( bd_name )
     rescue Mysql::Error
       return '<div class="alert alert-danger"><p>No se puede conectar a la Base de Datos, compruebe su usuario y contraseña</p></div>'

@@ -19,7 +19,7 @@ class App < Sinatra::Application
   
   @@app = ''
   @@filas = Hash.new
-  @@config = {:config => {:idioma => "es", :bd => "", :host => "", :user => "", :password => ""}, 
+  @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>""}, 
                   :tablas => {},
                   :enlaces => [] }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
