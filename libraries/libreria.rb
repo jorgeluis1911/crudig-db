@@ -7,6 +7,10 @@ class App < Sinatra::Application
       FALSE
     end
   end
+  
+  def home_page( message )
+    erb :home, :locals => {}
+  end
 
   def listar( tabla='', filas={}, message='',order={}, params={} )
     erb :listar, :locals => {:tabla => tabla, :filas => filas, :message => message,

@@ -28,9 +28,8 @@ class App < Sinatra::Application
 
   get '/' do
     mensaje='<h1>Bienvenidos a nuestra App de facil mantenimiento de tus Bases de Datos</h1>'
-    listar('', {}, mensaje, '')
+    home_page(mensaje)
   end
-
 
   get '/config' do 
     message = ''
