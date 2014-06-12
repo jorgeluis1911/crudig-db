@@ -71,7 +71,17 @@
             <li class="navbar-right"><a href="/caracteristicas">Características</a></li>
             <li class="navbar-right"><a href="/config">Config</a></li>
             <li class="navbar-right"><a href="/config">Versiones</a></li>
-            <li class="navbar-right"><a href="/graficos">Gráficos</a></li>  
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/chartArea">Area</a></li>
+                <li><a href="/chartCircle">Círculo</a></li>                
+                <li><a href="/chartBar">Barras</a></li>
+                <li><a href="/chartColumn">Columnas</a></li>
+                <li><a href="/chartCombo">Combo</a></li>
+                <li><a href="/chartLine">Líneas</a></li>
+              </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -87,8 +97,48 @@
         </div>-->
         <% end %>
              
-        <div id="chart_div_bar" style="width: 400px; height: 400px; float: left;"></div>
 
+        <div class="row">
+          <div class="col-md-8">
+            <div id="chart_div_bar" style="width: 600px; height: 600px;"></div>
+          </div>
+          
+          <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
+            
+            <form role="form">
+              <div class="form-group">
+                <label for="">Nombre del gráfico</label>
+                <input type="text" class="form-control" placeholder="">
+              </div>
+              
+              <div class="form-group">
+                <label for="">Elementos a representar</label>
+                <select class="form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Cantidades a comparar</label>
+                <select class="form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-info">Probar datos</button>
+              <button type="submit" class="btn btn-primary">Guardar gráfico</button>
+            </form>
+          </div>
+        </div>
+    </div>
     </div>
         
       

@@ -55,17 +55,56 @@ class App < Sinatra::Application
     redirect "/caracteristicas"
   end  
   
-  get '/graficos' do 
+  # =>    rutas para los graficos
+  get '/chartArea' do
     message = ''
-    erb :graficos, :locals => {:config => @@config[:config],
+    erb :'charts/area', :locals => {:config => @@config[:config],
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
-                             :message => message,}    
+                             :message => message,}   
+  end
+    
+  get '/chartBar' do 
+    message = ''
+    erb :'charts/barras', :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}   
   end
   
-  get '/graficos/' do
-    redirect "/graficos"
+  get '/chartCircle' do
+    message = ''
+    erb :'charts/circle', :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}   
   end
+
+  get '/chartColumn' do
+    message = ''
+    erb :'charts/column', :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}   
+  end
+
+  get '/chartCombo' do
+    message = ''
+    erb :'charts/combo', :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}   
+  end
+
+  get '/chartLine' do
+    message = ''
+    erb :'charts/line', :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}   
+  end
+        
+  # =>    final de rutas para los graficos
   
   post '/config/conectar' do
     message = ''
