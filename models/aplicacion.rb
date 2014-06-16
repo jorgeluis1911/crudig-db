@@ -67,8 +67,6 @@ class Aplicacion
   end    
   
   #   funciones comunes
-    
-
   
   def ordenar_create( tabla, params )
     order = ''
@@ -118,4 +116,109 @@ class Aplicacion
     return sub_params
   end  
   
+  
+  
+  def inner_join(tabla1, tabla2)
+    from = tabla1+' inner join '+tabla2+' on '
+    column = @aplicacion[:tablas][tabla2]['config'][:referencias][tabla1]
+    count = 0;
+    @aplicacion[:tablas][tabla2]['columnas'].each { |key_col, value|
+      if value[:tabla_rel].eql?(tabla1)
+        from = from+' and ' if(count>1)
+        from = from+' '+tabla1+'.'+value[:column_rel]+' = '+tabla2+'.'+key_col
+        count+=1
+      end
+    }
+    return from
+  end
+  
+  def make_form(tabla1, tabla2, from)
+    return tabla1 if tabla1.eql?(tabla2)
+    return '' unless @aplicacion[:tablas][tabla1]
+    
+    arr_referidas = @aplicacion[:tablas][tabla1]['config'][:referidas]
+    arr_referencias = @aplicacion[:tablas][tabla1]['config'][:referencias]
+    
+    pos_referidas = arr_referidas.include?(tabla2)
+    pos_referencias = arr_referencias.key?(tabla2)
+    
+    if (pos_referidas.eql?(TRUE))
+      from = inner_join(tabla1, tabla2)
+    elsif (pos_referencias.eql?(TRUE))
+      from = inner_join(tabla2, tabla1)
+    else
+      if(arr_referidas.length > arr_referencias.length)
+        arr_referidas.each{ |tablaAux|
+          from = make_form(tablaAux, tabla2, from)
+        }
+      else
+        arr_referencias.each{ |tablaAux, col |
+          from = make_form(tablaAux, tabla2, from)
+        }
+      end
+    end
+    return from
+  end
+  
+  #       funciones de los CHARTS
+  
+#select salary, first_name from employees as emp inner 
+#    join salaries as sala on emp.emp_no=sala.emp_no
+#group by salary, first_name  
+
+#select count(title) as cantidades, 
+#titles.title as elementos from employees as emp inner 
+#    join titles on emp.emp_no=titles.emp_no
+#group by title
+
+#SELECT departments.dept_name as elementos, count(employees.first_name) as cantidades  
+#FROM departments inner join dept_emp on  departments.dept_no = dept_emp.dept_no  
+#    inner join employees on employees.emp_no=dept_emp.emp_no
+#GROUP BY departments.dept_name ORDER BY departments.dept_name
+
+  def testingCircle( params ) 
+    result = {}
+    cantidad = params[:cantidades].split('.')
+    elemento = params[:elementos].split('.')
+    
+    select = params[:elementos]+' as elementos, count('+params[:cantidades]+') as cantidades '
+    group_by = ' GROUP BY '+params[:elementos]
+    ordenar_sql = ' ORDER BY '+params[:elementos]
+    from = 'FROM '+make_form( elemento[0], cantidad[0], '' )
+    
+    type_col_cantidades = @aplicacion[:tablas][cantidad[0]]['columnas'][cantidad[1]][:data_type]
+    
+    #if ('varchar'.eql?(type_col_cantidades) || 'char'.eql?(type_col_cantidades))
+    if ('int'.eql?(type_col_cantidades)) 
+      select = params[:elementos]+' as elementos, sum('+params[:cantidades]+') as cantidades '
+    end
+      
+    if (from != 'FROM ' &&  @conexion)
+      #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
+      result = @conexion.query('SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql)
+    end
+    return result
+  end
+  
+  def testingArea( params ) 
+
+  end
+  
+  def testingBar( params ) 
+    
+  end
+  
+  def testingColumn( params ) 
+    
+  end  
+  
+  def testingLine( params ) 
+    
+  end
+  
+  def testingCombo( params ) 
+    
+  end
+  
 end
+

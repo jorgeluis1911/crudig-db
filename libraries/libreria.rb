@@ -24,5 +24,11 @@ class App < Sinatra::Application
                   :params => params, :tablas => @@config[:tablas]}
     return global_var.to_json
   end
+  
+  def viewChart( urlchart , message='', params={} , resultChart={})
+    erb :"#{urlchart}", :locals => { :message => message, :enlaces => @@config[:enlaces],
+                                    :params => params, :tablas => @@config[:tablas],
+                                    :resultChart => resultChart }
+  end  
     
 end

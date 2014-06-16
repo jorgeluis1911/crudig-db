@@ -35,11 +35,18 @@
         data.addColumn('number', 'Slices');
         
         data.addRows([
-          ['Mushrooms', 3],
-          ['Onions', 1],
-          ['Olives', 1], 
-          ['Zucchini', 1],
-          ['Pepperoni', 2]
+          
+            <%
+              # => imprimimos con Ruby los datos para el grafico
+              if (!resultChart.nil? && resultChart.size>0)
+                resultChart.each do |col| %>
+                  <%='[\''+col[0]+'\','+col[1]+'],' %>                
+                <% end %>
+              <%else%>
+                ['Departamento 1', 300],
+                ['Departamento 2', 100],
+                ['Departamento 3', 250]
+              <%end%>
         ]);
   
         // Set chart options
@@ -105,41 +112,47 @@
         <div class="row">
           <div class="col-md-8">
             <div id="chart_div_circle" style="width:600px; height:600px;"></div>
+            
+            <% tablas.each do |tabla| %>
+              <%=tabla%><br />
+            <% end %>
           </div>
           
           <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
             
-            <form role="form">
+            <form role="form" action="/chartCircle/testingChart" method="get">
               <div class="form-group">
                 <label for="">Nombre del gráfico</label>
-                <input type="text" class="form-control" placeholder="">
+                <input type="text" id="nameChart" name="nameChart" class="form-control" placeholder="" required="required">
               </div>
               
               <div class="form-group">
                 <label for="">Elementos a representar</label>
-                <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                <select class="form-control" id="elementos" name="elementos" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
                 </select>
               </div>
               
               <div class="form-group">
                 <label for="">Cantidades a comparar</label>
-                <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                <select class="form-control" id="cantidades" name="cantidades" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
                 </select>
               </div>
 
-              <button type="submit" class="btn btn-info">Probar datos</button>
-              <button type="submit" class="btn btn-primary">Guardar gráfico</button>
+              <button type="submit" id="testing" name="testing" class="btn btn-info">Probar datos</button>
+              <button type="submit" id="save" name="save" class="btn btn-primary">Guardar gráfico</button>
+              
             </form>
+            
           </div>
         </div>
              

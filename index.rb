@@ -58,52 +58,50 @@ class App < Sinatra::Application
   # =>    rutas para los graficos
   get '/chartArea' do
     message = ''
-    erb :'charts/area', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    
+    viewChart( 'charts/area', message, {}, {})
   end
     
   get '/chartBar' do 
     message = ''
-    erb :'charts/barras', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    
+    viewChart( 'charts/barras', message, {}, {})
   end
   
   get '/chartCircle' do
-    message = ''
-    erb :'charts/circle', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    viewChart( 'charts/circle', '', {}, {})
   end
 
+  get '/chartCircle/testingChart' do
+    message = ''
+    results = @@app.testingCircle( params ) if params[:testing]
+    viewChart( 'charts/circle', message, {}, results)
+  end
+  
   get '/chartColumn' do
     message = ''
-    erb :'charts/column', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    
+    viewChart( 'charts/column', message, {}, {})    
   end
 
   get '/chartCombo' do
     message = ''
-    erb :'charts/combo', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    
+    viewChart( 'charts/combo', message, {}, {})    
   end
 
   get '/chartLine' do
     message = ''
-    erb :'charts/line', :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}   
+    
+    viewChart( 'charts/line', message, {}, {})
   end
-        
+
+  get '/mycharts' do
+    message = ''
+    
+    viewChart( 'charts/misgraficos', message, {}, {}) 
+  end
+          
   # =>    final de rutas para los graficos
   
   post '/config/conectar' do
