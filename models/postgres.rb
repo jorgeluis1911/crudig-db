@@ -146,7 +146,7 @@ class PSqlconex < Aplicacion
     filas = Hash.new
     cont = 0
     
-    puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit
+    #puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit
     @conexion.exec('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit).each { |row|
       filas["#{cont}"] = row
       cont += 1

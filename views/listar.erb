@@ -27,6 +27,7 @@ end
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
     <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
+    
     <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
     
   </head>  
@@ -100,20 +101,33 @@ end
                       </th>
                     <% end %>
                 <% end %>
-                <th></th>
           		</tr>
 
         		  <form action="/<%= tabla%>/listar" method="get" name="buscar" id="form_buscar1">
           			<tr>
         				  <td>
-          				  <a href="" class="btn btn-default btn-xs" 
+        				    <div class="btn-group">
+                      <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li role="presentation" class="dropdown-header">Refrescar cada :</li>
+                        <li><a href="/refrescar/<%= tabla%>/10">10 seg</a></li>
+                        <li><a href="/refrescar/<%= tabla%>/15">15 seg</a></li>
+                        <li><a href="/refrescar/<%= tabla%>/20">20 seg</a></li>
+                        <li><a href="/refrescar/<%= tabla%>/25">25 seg</a></li>
+                        <li><a href="/refrescar/<%= tabla%>/0">Quitar</a></li>
+                        <li><a href="/refrescar/<%= tabla%>">Quitar todos</a></li>
+                      </ul>
+                    </div>
+          				  <a href="" class="btn btn-default btn-xs btn_a" 
           				    data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
           				      <span class="glyphicon glyphicon-plus"></span>
           				  </a>
-          				  <a href="/<%= tabla%>" class="btn btn-default btn-xs" onclick="javascript:document.forms[0].submit();">
+          				  <a href="/<%= tabla%>" class="btn btn-default btn-xs btn_a" onclick="javascript:document.forms[0].submit();">
           				    <span class="glyphicon glyphicon-search"></span>
           				  </a>
-          				  <input type="submit" class="btn btn-default btn-xs glyphicon glyphicon-search" value=""/>
+          				  <input type="submit" class="btn btn-default btn-xs btn_a glyphicon glyphicon-search" value=""/>
         					<!--<td><input type="submit" value="Add"/>
         					     <input type="submit" value="Search"/> -->
         					</td>
@@ -139,7 +153,6 @@ end
                       <% end %>
                       </td>
                   <% end %>
-                  <td></td>
           			</tr>
           		</form>	
         		</thead>
@@ -147,10 +160,34 @@ end
         			<% filas[tabla].each do |key, en| %>
         			  <tr id="<%= key%>">
         			    <td>
-          				  <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs"
+        			      <div class="btn-group">
+                      <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-toggle="modal" data-target="#editarfila" >
+                            Editar en ventana</a>
+                        </li>
+                        <%  ids = ''
+                          en.each do |col, valor| 
+                            if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_key]=='PRI')
+                              if(ids.eql? '')
+                                ids = ids+col.to_s+'='+valor.to_s
+                              else
+                                ids = ids+'&'+col.to_s+'='+valor.to_s
+                              end
+                            end
+                          end
+                        %>
+                        <li><a href="/jerarquiaUp/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia arriba</a></li>
+                        <li><a href="/jerarquiaDown/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia abajo</a></li>
+                      </ul>
+                    </div>
+                    
+          				  <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
           				    onclick="before_update('<%= key%>'); return false;">
           				    <span class="glyphicon glyphicon-pencil"></span></a>
-          				  <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs"
+          				  <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
           				    onclick="cancel_update('<%= key%>'); return false;">
                       <span class="glyphicon glyphicon-remove"></a>
           					<!--<form action="/<%= tabla%>/<%= key%>" method="post">
@@ -165,8 +202,6 @@ end
         				          <%= valor%></td>
         				        <% end %>
         				  <% end %>
-        				  <td><a href="" data-toggle="modal" data-target="#editarfila" >
-        				    <span class="glyphicon glyphicon-list-alt"></span></a></td>
         			  </tr>
         			<% end %>  			  
         		</tbody>
@@ -249,20 +284,19 @@ end
                           </th>
                         <% end %>
                       <% end %>
-                      <th></th>
                     </tr>
 
                     <form action="/<%= tabla_detalle%>/listar" method="get" name="buscar" id="form_buscar2_<%= tabla_detalle%>">
                       <tr>
-                        <td>
-                          <a href="" class="btn btn-default btn-xs" 
+                        <td>                          
+                          <a href="" class="btn btn-default btn-xs btn_a" 
                             data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
                               <span class="glyphicon glyphicon-plus"></span>
                           </a>
-                          <a href="/<%= tabla_detalle%>" class="btn btn-default btn-xs" onclick="javascript:document.forms[0].submit();">
+                          <a href="/<%= tabla_detalle%>" class="btn btn-default btn-xs btn_a" onclick="javascript:document.forms[0].submit();">
                             <span class="glyphicon glyphicon-search"></span>
                           </a>
-                          <input type="submit" class="btn btn-default btn-xs glyphicon glyphicon-search" value="" 
+                          <input type="submit" class="btn btn-default btn-xs btn_a glyphicon glyphicon-search" value="" 
                               onclick="buscar_tabs('form_buscar2_<%= tabla_detalle%>'); return false;"/>
                         <!--<td><input type="submit" value="Add"/>
                              <input type="submit" value="Search"/> -->
@@ -293,7 +327,6 @@ end
                             <% end %>
                             </td>
                         <%  } %>
-                        <td></td>
                       </tr>
                     </form>
                   </thead>
@@ -309,12 +342,38 @@ end
                     <% filas_detalle.each do |key, en| %>
                       <tr id="<%= key%>">
                         <td>
-                          <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs"
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a href="" data-toggle="modal" data-target="#editarfila" >
+                                  Editar en ventana</a>
+                              </li>
+                              <%  ids = ''
+                                en.each do |col, valor| 
+                                  if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_key]=='PRI')
+                                    if(ids.eql? '')
+                                      ids = ids+col.to_s+'='+valor.to_s
+                                    else
+                                      ids = ids+'&'+col.to_s+'='+valor.to_s
+                                    end
+                                  end
+                                end
+                              %>
+                              <li><a href="/jerarquiaUp/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                                Jerarquía hacia arriba</a></li>
+                              <li><a href="/jerarquiaDown/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                                Jerarquía hacia abajo</a></li>
+                            </ul>
+                          </div>
+                          
+                          <a href="/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
                             onclick="before_update('<%= key%>'); return false;">
                             <span class="glyphicon glyphicon-pencil"></span></a>
-                          <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs"
-                            onclick="cancel_update('<%= key%>'); return false;">
-                            <span class="glyphicon glyphicon-remove"></a>
+                          <a href="/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                            onclick="cancel_update('<%= key %>'); return false;">
+                            <span class="glyphicon glyphicon-trash"></a>
                           <!--<form action="/<%= tabla%>/<%= key%>" method="post">
                             <input type="hidden" name="_method" value="delete" />
                             <input type="submit" value="Delete" class="btn btn-default"/>
@@ -327,8 +386,6 @@ end
                                 <%= valor%></td>
                               <% end %>
                         <% end %>
-                        <td><a href="" data-toggle="modal" data-target="#editarfila" >
-                          <span class="glyphicon glyphicon-list-alt"></span></a></td>
                       </tr>
                     <% end %>   
                   </tbody>
@@ -424,7 +481,19 @@ end
         </div>
       </div>
             
+
       <script>
+      
+        <% if (timers[tabla]) 
+              segundos = timers[tabla][:segundos].to_i
+              segundos = 15 if (segundos.eql? '' || segundos < 50)
+        %>
+          <%= 'setTimeout("location.reload(true);",'+segundos.to_s+'000);' %>
+          <%#= 'timeRefreshPage('+timers[tabla]+');'
+          %>
+        <% end %>      
+      
+      
         $("#agregarform").submit(function( event ) {
           // Stop form from submitting normally
           event.preventDefault();
@@ -504,7 +573,7 @@ end
           event.preventDefault();
           return false;
         }
-        
+
       </script>
       
   </body>

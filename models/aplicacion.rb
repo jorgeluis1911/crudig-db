@@ -70,6 +70,7 @@ class Aplicacion
   
   def ordenar_create( tabla, params )
     order = ''
+    
     if (params[:g_g] && (params[:g_g]==tabla))
       (params[:g_o] && params[:g_o]!='') ? order = params[:g_o]           : order = 'asc'
       (params[:g_f] && params[:g_f]!='') ? order = params[:g_f]+' '+order : order = ''
@@ -115,6 +116,8 @@ class Aplicacion
     sub_params[:g_o] = params[:g_o] if params[:g_o]
     return sub_params
   end  
+  
+
   
   
   
@@ -219,6 +222,77 @@ class Aplicacion
   def testingCombo( params ) 
     
   end
+
+
+
+  def save_config_table(tablas, params)
+    nom_tabla = params[:tabla]
+    return unless(tablas[nom_tabla])
+    
+    tablas[nom_tabla][:config][:aa] = params[:aa]
+    tablas[nom_tabla][:config][:aa] = params[:aa]
+    tablas[nom_tabla][:config][:aa] = params[:aa]
+    tablas[nom_tabla][:config][:aa] = params[:aa]
+    tablas[nom_tabla][:config][:aa] = params[:aa]
+    
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+  end
   
+  def jerarquia(upDown, params, tabla)
+    select = one_select_sin_count('*', 'FROM '+tabla, '', '', '')
+    
+    results = Hash.new
+    results[tabla] = select_down_up(upDown, tabla, params, select)
+    return results
+  end
+    
+  def jerarquia2(upDown, params, tabla, tabla2, fila)
+    from = make_form( tabla, tabla2, '' )
+    
+    where = ''
+    fila.each{ |col, val|
+      if (where.eql?(''))
+        where = where+tabla+'.'+col+'=\''+val+'\' '
+      else
+        where = where+' and '+tabla+'.'+col+'=\''+val+'\' '
+      end
+    }
+    where = ' WHERE ' + where
+    select = one_select_sin_count(tabla2+'.*', 'FROM '+from, where, '', '')
+    
+    return select_down_up(upDown, tabla2, fila, select)
+  end
+  
+  def select_down_up(upDown, tabla, params, select)
+    results = Hash.new
+
+    arr_referidas = @aplicacion[:tablas][tabla]['config'][:referidas]
+    arr_referencias = @aplicacion[:tablas][tabla]['config'][:referencias]
+    
+    count = 0;
+    select.each_hash{ |row|
+      fila = Hash.new{}
+      fila[:fila] = row
+      fila[:hijos] = Hash.new
+      
+      if(upDown.eql?('Down'))
+        arr_referidas.each{ |tabla_ref|
+          fila[:hijos][tabla_ref] = jerarquia2(upDown, params, tabla, tabla_ref, row)
+        }
+      else
+        arr_referencias.each{ |tabla_ref|
+          fila[:hijos][tabla_ref] = jerarquia2(upDown, params, tabla, tabla_ref, row)
+        }
+      end
+      results[count] = fila
+      count +=1;
+    }
+    return results
+  end
+        
 end
 

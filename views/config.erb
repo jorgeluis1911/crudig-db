@@ -71,11 +71,11 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <input type="submit" name="conectar" id="conectar" style="float: right;" 
-                    class="btn btn-primary" value="Descargar" />
+                    class="btn btn-sm btn-primary" value="Descargar" />
                 <input type="submit" name="conectar" id="conectar" style="float: right;" 
-                    class="btn btn-primary" value="Conectar" />
-                <h5><a data-toggle="collapse" data-parent="#accordion" href="#conexionBD">
-                  Conexión con BD</a></h5>
+                    class="btn btn-sm btn-primary" value="Conectar" />
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#conexionBD">
+                  Conexión con BD</a>
               </div>
               <div class="panel-collapse collapse in" id="conexionBD">
                 <table class="table table-condensed table-bordered">
@@ -131,9 +131,9 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <input type="submit" name="conectar" id="conectar" style="float: right;" 
-                  class="btn btn-primary" value="Conectar" />
-              <h5><a data-toggle="collapse" data-parent="#accordion" href="#conexionHD">
-                Conexión con Almacenamiento</a></h5>
+                  class="btn btn-sm btn-primary" value="Conectar" />
+              <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#conexionHD">
+                Conexión con Almacenamiento</a>
             </div>
             <div class="panel-collapse collapse in" id="conexionHD">
               <table class="table table-condensed table-bordered">
@@ -171,14 +171,18 @@
       </div>
         
       <% tablas.each do |tabla, val| %>
-        <form method="post" action="/config/conectar">
+        <form method="post" action="/config/edit_table">
           <div class="panel panel-default">
             <div class="panel-heading">
+              <input type="button" name="conectar" id="conectar" style="float: right;" 
+                  class="btn btn-sm btn-primary" value="Editar" />
               <input type="submit" name="conectar" id="conectar" style="float: right;" 
-                  class="btn btn-primary" value="Editar" />
-              <h5>
-                <a data-toggle="collapse" data-parent="#accordion" href="#form<%= tabla %>"><%= tabla %></a>
-              </h5>
+                  class="btn btn-sm btn-success" value="Guardar" />
+              <input type="button" name="conectar" id="conectar" style="float: right;" 
+                  class="btn btn-sm btn-danger" value="Cancelar" />
+              
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#form<%= tabla %>"><%= tabla %></a>
+              
             </div>
             <div class="panel-collapse collapse in" id="form<%= tabla %>">
               <table class="table table-condensed table-bordered">
@@ -187,29 +191,29 @@
                 </tr>
                 </thead>
                 <tbody>
-                  <tr class="info"><td>inner_join</td><td>nombre_grid</td><td>ver_en_menu</td>
-                    <td>insert_window</td><td>edit_window</td><td>tabla_detalle</td>
-                    <td>paginador</td>
+                  <tr class="info"><td>inner_join</td><td>Nombre de Tabla</td><td>Ver Tabla en el menú</td>
+                    <td>Insertar por ventana</td><td>Editar por ventana</td><td>tabla_detalle</td>
+                    <td>Paginador</td>
                   </tr>
                   <tr>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="enlazar_valores_vacios">
+                      <input type="text" id="enlazar_valores_vacios" name="enlazar_valores_vacios" 
                         value="<%= val['config'][:inner_join]%>" class="form-control"/>
                     </td>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="nombre_tabla">
+                      <input type="text" id="nombre_tabla" name="nombre_tabla" 
                         value="<%= val['config'][:nombre_grid]%>" class="form-control"/>
                     </td>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="ver_tabla_en_menu">
+                      <input type="text" id="ver_tabla_en_menu" name="ver_tabla_en_menu" 
                         value="<%= val['config'][:ver_en_menu]%>" class="form-control"/>
                     </td>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="insertar_por_ventana">
+                      <input type="text" id="insertar_por_ventana" name="insertar_por_ventana" 
                         value="<%= val['config'][:insert_window]%>" class="form-control"/>
                     </td>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="editar_por_ventana">
+                      <input type="text" id="editar_por_ventana" name="editar_por_ventana" 
                         value="<%= val['config'][:edit_window]%>" class="form-control"/>
                     </td>
                     <td><%= val['config'][:detalle_de]%>
@@ -223,53 +227,67 @@
                         </select>
                       <% end %>
                     </td>
-                    <td>
-                      <input type="text" id="usuario" name="usuario" 
+                    <td id="paginador">
+                      <input type="text" id="paginador" name="paginador" 
                         value="<%= val['config'][:paginador]%>" class="form-control"/>
                     </td>
                   </tr>
                   <%= '<div class="alert alert-danger"> No tiene configuración está tabla </div>' if (val.length < 1) %>
                 </tbody>
               </table>
+              <%= val['config'] %> 
               
               <table class="table table-condensed table-bordered">
-              <thead>
-              <tr class="info">
-              </tr>
-              </thead>
-              <tbody>
-                <tr class="info"><td>columnas</td><td>position</td><td>default_value</td><td>is_nullable</td>
-                  <td>data_type</td><td>length</td><td>column_key</td><td>comments</td>
-                  <td>key_name</td><td>esquema_rel</td><td>tabla_rel</td><td>column_rel</td>
-                  <td>vista_grid</td><td>texto_grid</td>
-                </tr>
-                <% val['columnas'].each do |columna, valor| %>
-                  <tr><td class="warning"><%= columna %></td>
-                    <td><%= valor[:position]%></td>
-                    <td><%= valor[:default_value]%></td>
-                    <td><%= valor[:is_nullable]%></td>
-                    <td><%= valor[:data_type]%></td>
-                    <td><%= valor[:length]%></td>
-                    <td><%= valor[:column_key]%></td>      
-                    <td><%= valor[:comments]%></td>
-                    <td><%= valor[:key_name]%></td>
-                    <td><%= valor[:esquema_rel]%></td>
-                    <td><%= valor[:tabla_rel]%></td>
-                    <td><%= valor[:column_rel]%></td>
-                    <td><%= valor[:vista_grid]%></td>
-                    <td><%= valor[:texto_grid]%></td>
+                <thead>
+                  <tr class="info"></tr>
+                </thead>
+                <tbody>
+                  <tr class="info"><td>columnas</td><td>position</td><td>default_value</td><td>is_nullable</td>
+                    <td>data_type</td><td>length</td><td>comments</td><td>vista_grid</td><td>texto_grid</td>
+                    <td>column_key</td><td>key_name</td><td>esquema_rel</td><td>tabla_rel</td><td>column_rel</td>
                   </tr>
-                <% end %>
-                <%= '<div class="alert alert-danger"> No tiene columnas está tabla </div>' if (val.length < 1) %>
-              </tbody>
-            </table>
-            <%= val['config'] %> 
+                  <% val['columnas'].each do |columna, valor| %>
+                    <tr><td class="warning"><%= columna %></td>
+                      <td id="position"><%= valor[:position]%></td>
+                      <td id="value"><%= valor[:default_value]%></td>
+                      <td id="nullable"><%= valor[:is_nullable]%></td>
+                      <td id="datatype"><%= valor[:data_type]%></td>
+                      <td id="length"><%= valor[:length]%></td>
+                      <td id="comments"><%= valor[:comments]%></td>
+                      <td id="ver_engrid"><%= valor[:vista_grid]%></td>
+                      <td id="vertexto_engrid"><%= valor[:texto_grid]%></td>
+                      
+                      <td id="key"><%= valor[:column_key]%></td>
+                      <td id="keyname"><%= valor[:key_name]%></td>
+                      <td id="esquema_relacionada"><%= valor[:esquema_rel]%></td>
+                      <td id="tabla_relacionada"><%= valor[:tabla_rel]%></td>
+                      <td id="columna_relacionada"><%= valor[:column_rel]%></td>
+                      
+                    </tr>
+                  <% end %>
+                  <%= '<div class="alert alert-danger"> No tiene columnas está tabla </div>' if (val.length < 1) %>
+                </tbody>
+              </table>
+              <%= val['columnas'] %>
             </div>
           </div>
         </form>
       <% end %>
     </div>
         
+    <script>
+      function before_update(id_fila, id_body){
+        var cells_1 = document.getElementById(id_fila).getElementsByTagName('td');
+        var filas = document.getElementById(id_body).getElementsByTagName('tr');
+        
+        for(var i=1; i<cells_1.length-1; i+=1){
+          cells_1[i].innerHTML = '<input type="text" id="" name="" class="form-control" value="'+cells_1[i].innerHTML+'"/>';
+        }
+        for(var i=1; i<cells_2.length-1; i+=1){
+          cells_1[i].innerHTML = '<input type="text" id="" name="" class="form-control" value="'+cells_2[i].innerHTML+'"/>';
+        }
+      }
+    </script>        
       
   </body>
 </html>        

@@ -21,7 +21,9 @@ class App < Sinatra::Application
   @@filas = Hash.new
   @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>""}, 
                   :tablas => {},
-                  :enlaces => [] }
+                  :enlaces => [],
+                  :graficos => {},
+                  :timers => {} }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
   
   $id_entorno = 0
@@ -29,18 +31,6 @@ class App < Sinatra::Application
   get '/' do
     mensaje='<h1>Bienvenidos a nuestra App de facil mantenimiento de tus Bases de Datos</h1>'
     home_page(mensaje)
-  end
-
-  get '/config' do 
-    message = ''
-    erb :config, :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}    
-  end
-  
-  get '/config/' do
-    redirect "/config"
   end
   
   get '/caracteristicas' do 
@@ -104,6 +94,59 @@ class App < Sinatra::Application
           
   # =>    final de rutas para los graficos
   
+  get '/jerarquiaUp/:tabla' do |tabla|
+    message = ''
+    results = @@app.jerarquia("Up", params, tabla) if (@@config[:tablas][tabla])
+    verJerarquia( tabla, results, message, {}, params)
+  end
+  
+  get '/jerarquiaDown/:tabla' do |tabla|
+    message = ''
+    results = @@app.jerarquia("Down", params, tabla) if (@@config[:tablas][tabla])
+    verJerarquia( tabla, results, message, {}, params)    
+  end  
+
+
+  get '/refrescar/:tabla' do |tabla|
+    @@config[:timers] = {}
+    
+    redirect '/refrescar/'+tabla+'/0'
+  end
+  
+  get '/refrescar/:tabla/:segundos' do |tabla, segundos|
+    
+    if(!tabla.eql?('config') || !tabla.eql?('favicon.ico'))
+      case segundos
+      when nil, '0', ''  then
+        @@config[:timers].delete(tabla) if (@@config[:timers][tabla])
+      else
+        segundos = segundos.to_i
+        if(segundos > 9 && segundos < 50)
+          timer = Hash.new
+          timer[:segundos] = segundos
+          timer[:inicio] = ''
+          timer[:final] = ''
+          @@config[:timers][tabla] = timer
+        end
+      end
+      
+      redirect '/'+tabla+'/listar'
+    end
+  end
+  
+    
+  get '/config' do 
+    message = ''
+    erb :config, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}    
+  end
+  
+  get '/config/' do
+    redirect '/config'
+  end
+    
   post '/config/conectar' do
     message = ''
     
@@ -123,6 +166,17 @@ class App < Sinatra::Application
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
                              :message => message,}
+  end
+  
+  post '/config/edit_table' do
+    message = ''
+    
+    @@app.save_config_table(@@config[:tablas], params)
+    
+    erb :config, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message,}    
   end
   
   get '/:controler' do |controler|
@@ -277,7 +331,7 @@ class App < Sinatra::Application
     else
       result = '{"valido":"0", "mensaje":"'+message+' - '+creado+'"}'
     end
-    puts result 
+    #puts result 
     erb result
   end  
   

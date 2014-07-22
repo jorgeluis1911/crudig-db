@@ -125,7 +125,7 @@ class MySQLconex < Aplicacion
     }
     
     filas['filas_total'] = simple_select(' COUNT(*) as total ', from, where_sql, '', '')
-    puts filas
+    #puts filas
     return filas
   end
   
@@ -140,6 +140,12 @@ class MySQLconex < Aplicacion
     }
     #puts 'SELECT * '+from+' '+where_sql+' '+ordenar_sql +limit
     return filas        
+  end  
+  
+  def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
+    load_bd unless(@conexion)
+    puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
+    return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
   end  
 
 end
