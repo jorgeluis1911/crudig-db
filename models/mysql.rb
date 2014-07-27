@@ -8,7 +8,12 @@ class MySQLconex < Aplicacion
       
       # raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
       
-      @aplicacion[:config]={:idioma=>"es",:bd=>bd_name,:host=>dominio,:user=>usuario,:pass=>pass,:driver=>driver,:port=>port}
+      @aplicacion[:config][:bd]=bd_name
+      @aplicacion[:config][:host]=dominio
+      @aplicacion[:config][:user]=usuario
+      @aplicacion[:config][:pass]=pass
+      @aplicacion[:config][:driver]=driver
+      @aplicacion[:config][:port]=port
       return load_config_MySQL( bd_name )
     rescue Mysql::Error
       return '<div class="alert alert-danger"><p>No se puede conectar a la Base de Datos, compruebe su usuario y contraseña</p></div>'
@@ -68,6 +73,10 @@ class MySQLconex < Aplicacion
       columna[:tabla_rel] = row['REFERENCED_TABLE_NAME']
       columna[:column_rel] = row['REFERENCED_COLUMN_NAME']
       
+      # => datos sobre FTP
+      columna[:carpeta_ftp] = "/"
+      columna[:es_archivo] = "0"  # 0=no 1=si
+      
       # => configuración de vista
       columna[:vista_grid] = true
       columna[:texto_grid] = ''
@@ -86,7 +95,7 @@ class MySQLconex < Aplicacion
       @aplicacion[:tablas][tabla]['config'][:referidas] = tablas_ref
     }
     
-    return '<div class="alert alert-success"><p>Confuración cargada con éxito</p></div>'
+    return '<div class="alert alert-success"><p>Confuración BD cargada con éxito</p></div>'
   end
 
   def select_mysql(select, tabla, params, start_limit)

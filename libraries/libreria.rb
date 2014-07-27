@@ -11,6 +11,13 @@ class App < Sinatra::Application
   def home_page( message )
     erb :features, :locals => {}
   end
+  
+  def view_config(message)
+    erb :config, :locals => {:config => @@config[:config],
+                             :tablas => @@config[:tablas],
+                             :enlaces => @@config[:enlaces],
+                             :message => message}
+  end
 
   def listar( tabla='', filas={}, message='',order={}, params={} )
     erb :listar, :locals => {:tabla => tabla, :filas => filas, :message => message,

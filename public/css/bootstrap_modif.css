@@ -55,7 +55,8 @@ table {
 }
 
 .btn {
-	padding: 4px 7px;
+	padding: 3px 7px;
+	margin: 0px 3px;
 }
 
 
@@ -79,4 +80,9 @@ table > tbody > tr:hover {
 	font-size: 14px;
 	margin-top: 3px;
 	margin-bottom: 3px;
+}
+
+.alert {
+	padding: 10px 15px;
+	margin-bottom: 15px;
 }

@@ -7,6 +7,25 @@ class Aplicacion
     @aplicacion = args
     @conexion = nil
   end
+
+  #     funciones archivos FTP
+  
+  def conectFTP( host, port, user, pass)
+    Net::FTP.open( host, user, pass) do |ftp|
+      #files = ftp.list
+      #puts "list out files in root directory : "+ftp.pwd
+      #puts files
+      @aplicacion[:config]={:hostFTP=>host,:portFTP=>port,:userFTP=>user,:passFTP=>pass,:rutaFTP=>ftp.pwd}
+      return 0
+    end
+    return 1
+  end
+  
+  def asd
+    
+  end
+  
+  #     funciones SQL
       
   def update_mysql(select, tabla, where)
     load_bd unless(@@conexion)
@@ -225,21 +244,23 @@ class Aplicacion
 
 
 
-  def save_config_table(tablas, params)
-    nom_tabla = params[:tabla]
-    return unless(tablas[nom_tabla])
+  def save_config_table(tablas, nom_tabla, params)
+    return 'La tabla referenciada no se encuentra' unless tablas[nom_tabla]
+    puts params
     
-    tablas[nom_tabla][:config][:aa] = params[:aa]
-    tablas[nom_tabla][:config][:aa] = params[:aa]
-    tablas[nom_tabla][:config][:aa] = params[:aa]
-    tablas[nom_tabla][:config][:aa] = params[:aa]
-    tablas[nom_tabla][:config][:aa] = params[:aa]
+    tablas[nom_tabla][:config][:inner_join]   = params[:inner_join]     if params[:inner_join]
+    tablas[nom_tabla][:config][:nombre_grid]  = params[:nombre_grid]    if params[:nombre_grid]
+    tablas[nom_tabla][:config][:ver_en_menu]  = params[:ver_en_menu]    if params[:ver_en_menu]
+    tablas[nom_tabla][:config][:insert_window] = params[:insert_window] if params[:insert_window]
+    tablas[nom_tabla][:config][:edit_window]  = params[:edit_window]    if params[:edit_window]
+    # =>  :detalle_de 
+    tablas[nom_tabla][:config][:paginador]    = params[:paginador]      if params[:paginador]
     
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
+    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
   end
   
   def jerarquia(upDown, params, tabla)

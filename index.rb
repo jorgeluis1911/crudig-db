@@ -4,6 +4,7 @@ require 'mysql'
 require 'pg'
 require 'json'
 #require 'sqlite'
+require 'net/ftp'
 
 #$db = SQLite3::Database.new( "entornos.db" )
 
@@ -19,11 +20,12 @@ class App < Sinatra::Application
   
   @@app = ''
   @@filas = Hash.new
-  @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>""}, 
-                  :tablas => {},
-                  :enlaces => [],
-                  :graficos => {},
-                  :timers => {} }
+  @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
+                          :hostFTP=>"",:portFTP=>"",:userFTP=>"",:passFTP=>"",:rutaFTP=>""}, 
+              :tablas => {},
+              :enlaces => [],
+              :graficos => {},
+              :timers => {} }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
   
   $id_entorno = 0
@@ -137,17 +139,14 @@ class App < Sinatra::Application
     
   get '/config' do 
     message = ''
-    erb :config, :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}    
+    view_config(message)
   end
   
   get '/config/' do
     redirect '/config'
   end
     
-  post '/config/conectar' do
+  post '/config/conectarBD' do
     message = ''
     
     case params[:driver]
@@ -162,21 +161,30 @@ class App < Sinatra::Application
     else  message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión</p></div>'
     end
     
-    erb :config, :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}
+    view_config(message)
   end
   
-  post '/config/edit_table' do
+  post '/config/conectarFTP' do
     message = ''
     
-    @@app.save_config_table(@@config[:tablas], params)
+    result = @@app.conectFTP(params[:host], params[:port], params[:usuario], params[:pass])
     
-    erb :config, :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}    
+    if(result==1)
+      message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión FTP</p></div>'
+    else
+      message = '<div class="alert alert-success"><p>Confuración FTP cargada con éxito</p></div>'
+    end
+    view_config(message)
+  end  
+  
+  post '/config/edit/:tabla' do |tabla|
+    message = ''
+
+    redirect "/config" if (tabla.eql?('config') || tabla.eql?('favicon.ico'))
+
+    message=@@app.save_config_table(@@config[:tablas], tabla, params)
+    
+    view_config(message)    
   end
   
   get '/:controler' do |controler|
@@ -338,5 +346,6 @@ class App < Sinatra::Application
 end
 
 require_relative 'libraries/libreria'
+require_relative 'libraries/idiomas'
 require_relative 'models/init'
 #require_relative 'controllers/init'

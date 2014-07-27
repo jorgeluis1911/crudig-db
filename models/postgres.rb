@@ -8,7 +8,12 @@ class PSqlconex < Aplicacion
       
       raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
         
-      @aplicacion[:config]={:idioma=>"es",:bd=>bd_name,:host=>dominio,:user=>usuario,:pass=>pass,:driver=>driver,:port=>port}
+      @aplicacion[:config][:bd]=bd_name
+      @aplicacion[:config][:host]=dominio
+      @aplicacion[:config][:user]=usuario
+      @aplicacion[:config][:pass]=pass
+      @aplicacion[:config][:driver]=driver
+      @aplicacion[:config][:port]=port
       
       return load_config_PS( bd_name )
     rescue PG::Error => err
@@ -75,6 +80,10 @@ class PSqlconex < Aplicacion
         columna[:esquema_rel] = row['ref_table_catalog']
         columna[:tabla_rel] = row['ref_table_name']
         columna[:column_rel] = row['ref_column_name']
+              
+        # => datos sobre FTP
+        columna[:carpeta_ftp] = "/"
+        columna[:es_archivo] = "0"  # 0=no 1=si
         
         # => configuración de vista
         columna[:vista_grid] = true
@@ -99,7 +108,7 @@ class PSqlconex < Aplicacion
       @aplicacion[:tablas][tabla]['config'][:referidas] = tablas_ref
     }
     
-    return '<div class="alert alert-success"><p>Confuración cargada con éxito</p></div>'
+    return '<div class="alert alert-success"><p>Confuración BD cargada con éxito</p></div>'
   end  
 
   def select_mysql(select, tabla, params, start_limit)
