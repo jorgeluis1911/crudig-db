@@ -21,47 +21,78 @@ class Aplicacion
     return 1
   end
   
-  def asd
+  def upload_file
     
   end
   
   #     funciones SQL
       
-  def update_mysql(select, tabla, where)
-    load_bd unless(@@conexion)
-    filas = Hash.new
-    cont = 0
+  def update_mysql(select, tabla, where, params)
+    load_bd unless(@conexion)
     
-    select = ''
-    @aplicacion[:tablas].each {|key, value| select << "#{key}," if (value[:column_key] != 'PRI' )}
-    @@conexion.query('SELECT '+select+' FROM '+tabla).each_hash{ |row|
-      filas["#{cont}"] = row
-      cont += 1
+    set = ''
+    where = ''
+    columnas = @aplicacion[:tablas][tabla]['columnas'] 
+    params.each {|key, value|
+      if (columnas[key] && columnas[key][:column_key] != 'PRI')
+        set << ", " if (set != '')
+        set << key+"='"+params[key]+"'"
+      end
+      if (columnas[key] && columnas[key][:column_key] == 'PRI')
+        where << " and " if (where != '')
+        where << key+"='"+params[key]+"'"
+      end
     }
-    return filas    
+    puts 'Update '+tabla+' Set '+set+' Where '+where
+    if (where != '')
+      begin
+        @conexion.query('Update '+tabla+' Set '+set+' Where '+where)
+      rescue Mysql::Error => e
+        #puts e.errno     #puts e.error
+        return e.error
+      ensure
+        #con.close if con
+      end
+    end
+    return ''    
   end
   
-  def delete_mysql(select, tabla, where)
-    load_bd unless(@@conexion)
-    filas = Hash.new
-    cont = 0
-    
-    select = ''
-    @aplicacion[:tablas].each {|key, value| select << "#{key}," if (value[:column_key] != 'PRI' )}
-    @@conexion.query('SELECT '+select+' FROM '+tabla).each_hash{ |row|
-      filas["#{cont}"] = row
-      cont += 1
+  def delete_mysql(select, tabla, where, params)
+    load_bd unless(@conexion)
+
+    where = ''
+    columnas = @aplicacion[:tablas][tabla]['columnas'] 
+    params.each {|key, value|
+      if (columnas[key] && columnas[key][:column_key] == 'PRI')
+        where << " and " if (where != '')
+        where << key+"='"+params[key]+"'"
+      end
     }
-    return filas    
+    puts 'Delete From '+tabla+' '+where
+    if (where != '')
+      begin
+        @conexion.query('Delete From '+tabla+' Where '+where)
+      rescue Mysql::Error => e
+        #puts e.errno     #puts e.error
+        return e.error
+      ensure
+        #con.close if con
+      end
+    end
+    return ''    
   end      
   
   def insert_mysql(params, tabla, where)
-    load_bd unless(@@conexion)
+    load_bd unless(@conexion)
     filas = Hash.new
     cont = 0
     
     columnas = ''
     values=''
+    
+    puts params['foto']
+    puts puts params['foto'][:filename] if params['foto']
+    
     params.each{ |key, value|
       if (@aplicacion[:tablas][tabla]['columnas'][key])
         columnas = columnas + key + ','
@@ -70,11 +101,10 @@ class Aplicacion
     }
     columnas = columnas[0..-2] if (columnas != '')
     values = values[0..-2] if (values != '')
-    puts 'INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')'
     
     error = ''
     begin
-      @@conexion.query('INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')')
+      @conexion.query('INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')')
     rescue Mysql::Error => e
       #puts e.errno
       #puts e.error
@@ -84,6 +114,9 @@ class Aplicacion
     end
     return ''
   end    
+  
+  #     tablas de CRUDig
+  
   
   #   funciones comunes
   
@@ -245,22 +278,29 @@ class Aplicacion
 
 
   def save_config_table(tablas, nom_tabla, params)
-    return 'La tabla referenciada no se encuentra' unless tablas[nom_tabla]
-    puts params
+    return 1 unless tablas[nom_tabla]
+    #puts tablas[nom_tabla]['config']
+    #puts tablas[nom_tabla]['config'][:inner_join]
     
-    tablas[nom_tabla][:config][:inner_join]   = params[:inner_join]     if params[:inner_join]
-    tablas[nom_tabla][:config][:nombre_grid]  = params[:nombre_grid]    if params[:nombre_grid]
-    tablas[nom_tabla][:config][:ver_en_menu]  = params[:ver_en_menu]    if params[:ver_en_menu]
-    tablas[nom_tabla][:config][:insert_window] = params[:insert_window] if params[:insert_window]
-    tablas[nom_tabla][:config][:edit_window]  = params[:edit_window]    if params[:edit_window]
+    tablas[nom_tabla]['config'][:inner_join] = params[:inner_join]     if params[:inner_join]
+    tablas[nom_tabla]['config'][:nombre_grid] = params[:nombre_tabla]    if params[:nombre_tabla]
+    tablas[nom_tabla]['config'][:ver_en_menu] = params[:ver_tabla_en_menu]    if params[:ver_tabla_en_menu]
+    tablas[nom_tabla]['config'][:insert_window] = params[:insertar_por_ventana] if params[:insertar_por_ventana]
+    tablas[nom_tabla]['config'][:edit_window] = params[:editar_por_ventana]    if params[:editar_por_ventana]
     # =>  :detalle_de 
-    tablas[nom_tabla][:config][:paginador]    = params[:paginador]      if params[:paginador]
+    tablas[nom_tabla]['config'][:paginador] = params[:paginador]      if params[:paginador]
     
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
-    tablas[nom_tabla][:columnas][:nom_campo][:aa] = params[:aa] if params[:as]
+    #   configuraciones por columnas 
+    tablas[nom_tabla]['columnas'].each{ |col, val|
+      tablas[nom_tabla]['columnas'][col][:position] = params[col+'_position'] if params[col+'_position']
+      tablas[nom_tabla]['columnas'][col][:default_value] = params[col+'_default_value'] if params[col+'_default_value']
+      tablas[nom_tabla]['columnas'][col][:comments] = params[col+'_comments'] if params[col+'_comments']
+      tablas[nom_tabla]['columnas'][col][:vista_grid] = params[col+'_ver_engrid'] if params[col+'_ver_engrid']
+      tablas[nom_tabla]['columnas'][col][:texto_grid] = params[col+'_vertexto_engrid'] if params[col+'_vertexto_engrid']
+      tablas[nom_tabla]['columnas'][col][:es_archivo] = params[col+'_es_archivo'] if params[col+'_es_archivo']
+      tablas[nom_tabla]['columnas'][col][:carpeta_ftp] = params[col+'_carpeta_ftp'] if params[col+'_carpeta_ftp']
+    }
+    return 0
   end
   
   def jerarquia(upDown, params, tabla)

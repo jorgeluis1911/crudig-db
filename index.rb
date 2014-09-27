@@ -19,8 +19,12 @@ class App < Sinatra::Application
   end
   
   @@app = ''
+  @@appCRUDig = ''
+  @@appDemos = ''
+  
+  @@idiomas = Hash.new
   @@filas = Hash.new
-  @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
+  @@config = {:config => {:idioma=>"ES",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
                           :hostFTP=>"",:portFTP=>"",:userFTP=>"",:passFTP=>"",:rutaFTP=>""}, 
               :tablas => {},
               :enlaces => [],
@@ -28,6 +32,10 @@ class App < Sinatra::Application
               :timers => {} }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
   
+  @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
+                    :tablas => {}, :enlaces => []}
+  @@demosConfig = {:config => {:idioma=>"ES",:bd=>"demosCrudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
+                    :tablas => {}, :enlaces => []}
   $id_entorno = 0
 
   get '/' do
@@ -136,10 +144,92 @@ class App < Sinatra::Application
     end
   end
   
+  
+  get '/ayuda' do
+    message = ''
+    view_ayuda(message)    
+  end
+  get '/ayuda/' do
+    redirect '/ayuda'
+  end
+  
+  get '/demos' do
+    message = ''
+    
+    #if(@@appCRUDig=='')
+      @@appDemos = MySQLconex.new @@demosConfig
+      message= @@appDemos.load_bd_MySQL( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
+                                          @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
+                                          @@demosConfig[:config][:bd], @@demosConfig[:config][:port])
+      # => @@demosConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
+      @@demosConfig[:enlaces] = []
+    #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
+    #end
+    #if(@@appDemos!='')
+      filas = @@appDemos.select_mysql(' * ', 'demos_config', params, 0)
+    #end    
+    view_configuraciones_demos(message, filas)
+  end
+  get '/demos/:controler/:funcion' do |controler, funcion|
+    if(validController(controler))
+      case funcion
+      when 'create'      then create_id(@@appDemos, controler, params)
+      when 'create_json' then create_id_json(@@appDemos, controler, params)
+      when 'update'      then update_id(@@appDemos, controler, params)
+      when 'update_json' then update_id_json(@@appDemos, controler, params)
+      when 'delete'      then delete_id(@@appDemos, controler, params)
+      when 'delete_json' then delete_id_json(@@appDemos, controler, params)        
+      when 'listar'      then listar_tabla(@@appDemos, controler, params, 0)
+      end
+    end
+  end    
+  get '/demos/' do
+    redirect '/demos'
+  end
+  get '/demos/config/view/:id' do |idConfig|
+    message = ''
+    select_demos_config_id(idConfig)
+  end  
+  
+  get '/configuraciones' do
+    message = ''
+    
+    #if(@@appCRUDig=='')
+      @@appCRUDig = MySQLconex.new @@crudigConfig
+      message= @@appCRUDig.load_bd_MySQL( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
+                                          @@crudigConfig[:config][:user], @@crudigConfig[:config][:pass], 
+                                          @@crudigConfig[:config][:bd], @@crudigConfig[:config][:port])
+      # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
+      @@crudigConfig[:enlaces] = []
+    #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
+    #end
+    #if(@@appCRUDig!='')
+      filas = @@appCRUDig.select_mysql(' * ', 'configuraciones', params, 0)
+    #end
+    
+    view_configuraciones(message, filas)
+  end
+  get '/configuraciones/:controler/:funcion' do |controler, funcion|
+    if(validController(controler))
+      case funcion
+      when 'create'      then create_id(@@appCRUDig, controler, params)
+      when 'create_json' then create_id_json(@@appCRUDig, controler, params)
+      when 'update'      then update_id(@@appCRUDig, controler, params)
+      when 'update_json' then update_id_json(@@appCRUDig, controler, params)
+      when 'delete'      then delete_id(@@appCRUDig, controler, params)
+      when 'delete_json' then delete_id_json(@@appCRUDig, controler, params)        
+      when 'listar'      then listar_tabla(@@appCRUDig, controler, params, 0)
+      end
+    end
+  end  
+  get '/configuraciones/' do
+    redirect '/configuraciones'
+  end  
     
   get '/config' do 
     message = ''
-    view_config(message)
+    conexionBDId = {:bd=>"fullcrud",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}
+    view_config(message, conexionBDId)
   end
   
   get '/config/' do
@@ -161,7 +251,7 @@ class App < Sinatra::Application
     else  message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión</p></div>'
     end
     
-    view_config(message)
+    view_config(message, @@config[:config])
   end
   
   post '/config/conectarFTP' do
@@ -174,174 +264,86 @@ class App < Sinatra::Application
     else
       message = '<div class="alert alert-success"><p>Confuración FTP cargada con éxito</p></div>'
     end
-    view_config(message)
+    view_config(message, @@config[:config])
   end  
   
   post '/config/edit/:tabla' do |tabla|
     message = ''
 
-    redirect "/config" if (tabla.eql?('config') || tabla.eql?('favicon.ico'))
+    redirect "/config" if (tabla.eql?('config') || tabla.eql?('favicon.ico') || tabla.eql?('js') || tabla.eql?('css'))
 
-    message=@@app.save_config_table(@@config[:tablas], tabla, params)
-    
-    view_config(message)    
+    result=@@app.save_config_table(@@config[:tablas], tabla, params)
+    if result==1
+      message='<div class="alert alert-danger"><p>La tabla referenciada no se encuentra</p></div>'
+    else
+      message='<div class="alert alert-success"><p>Configuraciones guardadas con éxito para la tabla '+tabla+'</p></div>'
+    end
+    view_config(message)
   end
-  
+
+  get '/config/view/:id' do |idConfig|
+    message = ''
+    select_config_id('idAdmin', idConfig)
+  end
+    
   get '/:controler' do |controler|
-    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
+    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico') || controler.eql?('js') || controler.eql?('css'))
   end
     
   get '/:controler/' do |controler|
-    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
+    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico') || controler.eql?('js') || controler.eql?('css'))
   end
+
+  post '/:controler/:funcion' do |controler, funcion|
+    order = ''
+    search = ''
+
+    if(validController(controler))
+      puts '----JSON POST---------'
+      case funcion
+      when 'create_json' then create_id_json(@@app, controler, params)
+      when 'listar'      then listar_tabla_json(@@app, controler, params, 0)
+      end
+    end
+  end  
   
   get '/:controler/:funcion' do |controler, funcion|
     order = ''
     search = ''
 
-    if(!controler.eql?('config') || !controler.eql?('favicon.ico'))
+    if(validController(controler))
       case funcion
-      when 'create'      then create_id(controler, params)
-      when 'create_json' then create_id_json(controler, params)
-      else listar_tabla(controler, params, 0)
+      when 'create'      then create_id(@@app, controler, params)
+      when 'create_json' then create_id_json(@@app, controler, params)
+      when 'update'      then update_id(@@app, controler, params)
+      when 'update_json' then update_id_json(@@app, controler, params)
+      when 'delete'      then delete_id(@@app, controler, params)
+      when 'delete_json' then delete_id_json(@@app, controler, params)        
+      when 'listar'      then listar_tabla(@@app, controler, params, 0)
       end
     end
   end
   
-  post '/:controler/:funcion' do |controler, funcion|
-    order = ''
-    search = ''
-
-    if(!controler.eql?('config') || !controler.eql?('favicon.ico'))
-      puts '----hehe---------'
-      listar_tabla_json(controler, params, 0)
-    end
-  end  
-  
   get '/:controler/:funcion/:id' do |controler, funcion, id|
+    #redirect "/#{controler}/#{funcion}" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
+    
     if(!controler.eql?('config') || !controler.eql?('favicon.ico'))
       case funcion
-      when 'update'      then update_id(controler, id, params)
-      when 'update_json' then update_id_json(controler, id, params)
-      when 'delete'      then delete_id(controler, id, params)
-      when 'delete_json' then delete_id_json(controler, id, params)
-      else listar_tabla(controler, params, id)
+      #when 'update'      then update_id(controler, id, params)
+      #when 'update_json' then update_id_json(controler, id, params)
+      #when 'delete'      then delete_id(controler, id, params)
+      #when 'delete_json' then delete_id_json(controler, id, params)
+      when 'listar'      then listar_tabla(@@app, controler, params, id)
       end
     end
   end
   
   post '/:controler/:funcion/:id' do |controler, funcion, id|
-    if(!controler.eql?('config') || !controler.eql?('favicon.ico'))
+    if(validController(controler))
       listar_tabla_json(controler, params, id)
     end
   end
-  
-  def listar_tabla(controler, params, start_limit)
-    message=''
-    
-    order = {}
-    order[:order] = @@app.set_order(params)
-    order[:grid2_order] = @@app.set_sub_grid_order(params)
-    
-    listar(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    filas = @@app.select_mysql(' * ', controler, params, start_limit)
-    
-    listar(controler, filas, message, order, params)
-  end
-
-  def listar_tabla_json(controler, params, start_limit)
-    message=''
-    puts 'hehe---------'
-    
-    order = {}
-    order[:order] = @@app.set_order(params)
-    order[:grid2_order] = @@app.set_sub_grid_order(params)
-    
-    return listar_json(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
-
-    filas = @@app.select_mysql(' * ', controler, params, start_limit)
-    
-    return listar_json(controler, filas, message, order, params)
-  end
-    
-  def update_id(controler, id, params)
-    message=''
-    
-    actualizado = @@app.update_mysql(' * ', controler, '')
-    if(actualizado) 
-      message= 'Elemento insertado con éxito.'
-    else  message= 'No se pudo insertar el elemento.'
-    end
-    
-    filas = @@app.select_mysql(' * ', controler, '', '')
-    listar(controler, filas, message, order)        
-  end
-  
-  def update_id_json(controler, id, params)
-    message=''
-    
-    actualizado = @@app.update_mysql(' * ', controler, '')
-    if(actualizado) 
-      message= 'Elemento insertado con éxito.'
-    else  message= 'No se pudo insertar el elemento.'
-    end
-    
-    return {"valido" => "0", "mensaje" => message}
-  end  
-
-  def delete_id(controler, id, params)
-    message=''
-    
-    eliminado = @@app.delete_mysql(' * ', controler, '')
-    if(eliminado) 
-      message= 'Elemento eliminado con éxito.'
-    else  message= 'No se pudo eliminar el elemento.'
-    end
-    
-    filas = @@app.select_mysql(' * ', controler, '', '')    
-    listar(controler, filas, message, order)      
-  end
-
-  def delete_id_json(controler, id, params)
-    message=''
-    
-    eliminado = @@app.delete_mysql(' * ', controler, '')
-    if(eliminado) 
-      message= 'Elemento eliminado con éxito.'
-    else  message= 'No se pudo eliminar el elemento.'
-    end
-    
-    return {"valido" => "0", "mensaje" => message}
-  end
-    
-  def create_id(controler, params)
-    message=''
-    
-    creado = @@app.insert_mysql(' * ', controler, '')
-    if(creado)
-      message= 'Elemento insertado con éxito.'
-    else  message= 'No se pudo insertar el elemento.'
-    end
-    
-    filas = @@app.select_mysql(' * ', controler, '', '')        
-    listar(controler, filas, message, order)    
-  end
-  
-  def create_id_json(controler, params)
-    message= 'No se pudo insertar el elemento.'
-    result = ''
-    
-    creado = @@app.insert_mysql(params, controler, '')
-    if(creado=='')  
-      message= 'Elemento insertado con éxito.'
-      result = '{"valido":"1", "mensaje":"'+message+'"}'
-    else
-      result = '{"valido":"0", "mensaje":"'+message+' - '+creado+'"}'
-    end
-    #puts result 
-    erb result
-  end  
   
 end
 

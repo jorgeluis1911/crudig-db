@@ -26,6 +26,10 @@
 	padding: 10px 10px;
 }
 
+.nav > li > a {
+	padding: 8px 8px;
+}
+
 table {
 	font-size: 12px;
 }

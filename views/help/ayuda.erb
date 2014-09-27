@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>CRUDig</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    
+    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    
+  </head>  
+  <body>
+    
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">CRUDig</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <% enlaces.each do |link| %>
+               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+            <% end %>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            
+            <li class="navbar-right"><a href="/ayuda">Ayuda</a></li>
+            <li class="navbar-right"><a href="/caracteristicas">Características</a></li>
+            
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/configuraciones">Configuraciones</a></li>
+                <li class="divider"></li>
+                <li><a href="/config">Nueva configuración</a></li>
+              </ul>
+            </li>
+            
+            <li class="navbar-right"><a href="/config">Versiones</a></li>
+            
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/chartArea">Area</a></li>
+                <li><a href="/chartCircle">Círculo</a></li>                
+                <li><a href="/chartBar">Barras</a></li>
+                <li><a href="/chartColumn">Columnas</a></li>
+                <li><a href="/chartCombo">Combo</a></li>
+                <li><a href="/chartLine">Líneas</a></li>
+                <li class="divider"></li>
+                <li><a href="/mycharts">Mis gráficos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>    
+    
+        
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          
+          <div>
+            <h2 id="overview" class="page-header">Listados</h2>
+            <p class="lead">probando</p>
+            
+            <h4 id="overview-doctype">HTML5 doctype</h4>
+            <p>texto</p>
+          </div>
+          
+          <div>
+            <h2 id="overview" class="page-header">Gráficos</h2>
+            <p class="lead">probando</p>
+            
+            <h4 id="overview-doctype">Área</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Círculos</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Barras</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Columnas</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Combo</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Líneas</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Mis gráficos</h4>
+            <p>texto</p>            
+          </div>
+          
+          <div>
+            <h2 id="overview" class="page-header">Config</h2>
+            <p class="lead">probando</p>
+            
+            <h4 id="overview-doctype">Configuraciones</h4>
+            <p>texto</p>
+            
+            <h4 id="overview-doctype">Usuarios</h4>
+            <p>texto</p>
+          </div>
+          
+        </div>
+        
+        <div class="col-md-3">
+          <ul class="nav">
+
+              <li class="">
+                <a href="#modals">Listados</a>
+                <ul class="nav">
+                  <li class=""><a href="#modals-examples">Configuraciones</a></li>
+                  <li class=""><a href="#modals-sizes">Usuarios</a></li>
+                </ul>
+              </li>
+              <li class="">
+                <a href="#js-overview">Gráficos</a>
+                <ul class="nav">
+                  <li class=""><a href="#js-individual-compiled">Área</a></li>
+                  <li class=""><a href="#js-individual-compiled">Círculos</a></li>
+                  <li class=""><a href="#js-individual-compiled">Barras</a></li>
+                  <li class=""><a href="#js-individual-compiled">Columnas</a></li>
+                  <li class=""><a href="#js-individual-compiled">Combo</a></li>
+                  <li class=""><a href="#js-individual-compiled">Líneas</a></li>
+                  <li class=""><a href="#js-individual-compiled">Mis gráficos</a></li>
+                </ul>
+              </li>
+              <li class="">
+                <a href="#modals">Config</a>
+                <ul class="nav">
+                  <li class=""><a href="#modals-examples">Configuraciones</a></li>
+                  <li class=""><a href="#modals-sizes">Usuarios</a></li>
+                </ul>
+              </li>
+
+            </ul>
+        </div>
+      </div>
+    </div>
+          
+      
+  </body>
+</html>       

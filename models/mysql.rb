@@ -3,6 +3,7 @@ class MySQLconex < Aplicacion
   def load_bd_MySQL( driver, dominio, usuario, pass, bd_name, port)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
     #real_connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, sock=nil, flag=nil).
+
     begin
       @conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
       
@@ -51,7 +52,7 @@ class MySQLconex < Aplicacion
         config_tabla[:edit_window] = true
         config_tabla[:detalle_de] = ''
         config_tabla[:referencias] = {}
-        config_tabla[:paginador] = 7
+        config_tabla[:paginador] = 10
         @aplicacion[:tablas][row['table_name']]['config'] = config_tabla
         @aplicacion[:tablas][row['table_name']]['columnas'] = {}
       end
@@ -106,7 +107,7 @@ class MySQLconex < Aplicacion
     where_sql = buscar_create(tabla, params)
     limit = ' LIMIT ' + @aplicacion[:tablas][tabla]['config'][:paginador].to_s + ' OFFSET ' + start_limit.to_s
             
-        #@aplicacion[:tablas][tabla]['config'][:paginador] = 7 
+        #@aplicacion[:tablas][tabla]['config'][:paginador] = 10 
     
     select = ''
     from = 'FROM '+tabla
@@ -143,7 +144,7 @@ class MySQLconex < Aplicacion
     filas = Hash.new
     cont = 0
     
-    @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit).each_hash{ |row|
+    @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit).each_hash{ |row|
       filas["#{cont}"] = row
       cont += 1
     }

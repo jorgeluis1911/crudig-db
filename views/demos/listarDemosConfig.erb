@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>CRUDig</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    
+    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
+    
+    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    
+  </head>  
+  <body>
+    
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">CRUDig</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <% enlaces.each do |link| %>
+               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+            <% end %>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/ayuda">Ayuda</a></li>
+                <li><a href="/caracteristicas">Características</a></li>
+                <li><a href="/config">Versiones</a></li>
+                <li class="divider"></li>
+                <li><a href="/demos">Demos</a></li>
+              </ul>
+            </li>
+            
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/chartArea">Area</a></li>
+                <li><a href="/chartCircle">Círculo</a></li>                
+                <li><a href="/chartBar">Barras</a></li>
+                <li><a href="/chartColumn">Columnas</a></li>
+                <li><a href="/chartCombo">Combo</a></li>
+                <li><a href="/chartLine">Líneas</a></li>
+                <li class="divider"></li>
+                <li><a href="/mycharts">Mis gráficos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>    
+    
+          
+    <div class="container">
+      
+      <div id="mensaje">
+        <% if message != '' %>
+          <%= message%>
+        <% end %>
+        <!--<div class="alert alert-success">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>-->
+      </div>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label><b>Configuraciones</b></label>
+        </div>
+        
+        <table class="table table-condensed table-bordered">
+      		<thead>
+        		<tr class="info">
+        		  <th>
+        		    <a href="demos"><span class="glyphicon glyphicon-refresh"></span></a>
+        		    <a href="" class="btn btn-default btn-xs btn_a" 
+                        data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
+                          <span class="glyphicon glyphicon-plus"></span>
+                </a>
+        		  </th>
+        		  <% crudigTablas[configTabla]['columnas'].each do |col, value| %>
+                  <th><%= col%></th>
+                  <% if (value[:column_rel]) %>
+                    <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
+                  <% end %>
+              <% end %>
+        		</tr>
+      		</thead>
+          <tbody>
+      			<% filas[configTabla].each do |key, en| %>
+      			  <tr id="<%= en['id_config']%>">
+      			    <td width="60px">
+                  <a href="/demos/config/view/<%= en['id_config']%>" id="edit_save_<%= en['id_config']%>" class="btn btn-default btn-xs btn_a">
+                    <span class="glyphicon glyphicon-tasks" title="Configurar"></span></a>
+                      <!--onclick="cancel_update('<%= en['id_config']%>'); return false;"-->
+                      
+        					<!--<form action="/<%= configTabla%>/<%= en['id_config']%>" method="post">
+        						<input type="hidden" name="_method" value="delete" />
+        						<input type="submit" value="Delete" class="btn btn-default"/>
+        					</form>-->
+        				</td>
+        				<% en.each do |col, valor| %>
+      				    <% if (crudigTablas[configTabla]['columnas'][col] && crudigTablas[configTabla]['columnas'][col][:column_rel]) %>
+      				      <td>
+      				        <a href="/demos/<%= crudigTablas[configTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+      				          id="enlace_<%= col%>" idlista="<%= valor%>" combo="<%= col%>"><%= valor%></a>
+      				          <!-- falta agregar el campo que visualiza el texto del enlace
+      				            por defecto el la clave ajena
+      				            -->
+      				      </td>
+      				    <% else %>
+      				      <td><%= valor%></td>
+      				    <% end %>
+      				  <% end %>
+      			  </tr>
+      			<% end %>  			  
+      		</tbody>
+      	</table> 
+      	<%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas[configTabla].length < 1) %>
+      </div>
+
+
+      
+      <div class="tab-content">
+        <div class="tab-pane active" id="user_crudig">  
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <label><b>Usuarios</b></label>
+            </div>
+            
+            <table class="table table-condensed table-bordered">
+              <thead>
+                <tr class="info">
+                  <th>
+                    <a href="/demos/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                    <a href="" class="btn btn-default btn-xs btn_a" 
+                        data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
+                          <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                  </th>
+                  <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                    <th><%= col%></th>
+                    <% if (value[:column_rel]) %>
+                      <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
+                    <% end %>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>                    
+                <%#= filas[:filas_detalle] 
+                %>
+                <%  filas_detalle = {}
+                    if (filas[:filas_detalle][usersTabla])
+                    #if (filas[usersTabla])
+                      filas_detalle = filas[:filas_detalle][usersTabla][usersTabla]
+                    end 
+                %>
+                <% filas_detalle.each do |key, en| %>
+                  <tr id="<%= usersTabla+key%>">
+                    <td>
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a href="" data-toggle="modal" data-target="#editarfila" >
+                              Editar en ventana</a>
+                          </li>
+                          <%  ids = ''
+                            en.each do |col, valor| 
+                              if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_key]=='PRI')
+                                if(ids.eql? '')
+                                  ids = ids+col.to_s+'='+valor.to_s
+                                else
+                                  ids = ids+'&'+col.to_s+'='+valor.to_s
+                                end
+                              end
+                            end
+                          %>
+                          <li><a href="/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                            Jerarquía hacia arriba</a></li>
+                          <li><a href="/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                            Jerarquía hacia abajo</a></li>
+                        </ul>
+                      </div>
+                      
+                      <a href="/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                        onclick="before_update('<%= usersTabla+key%>'); return false;">
+                        <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
+                      <a href="/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                        onclick="cancel_update('<%= usersTabla+key %>'); return false;">
+                        <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
+                      <!--<form action="/<%= tabla%>/<%= key%>" method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <input type="submit" value="Delete" class="btn btn-default"/>
+                      </form>-->
+                    </td>
+                    <% en.each do |col, valor| %>
+                      <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
+                        <td>
+                          <a href="/demos/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                            id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
+                      <% else %>
+                        <td><%= valor%></td>
+                      <% end %>
+                    <% end %>
+                  </tr>
+                <% end %>   
+              </tbody>
+            </table>
+            <%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas_detalle.length < 1) %>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div> 
+
+            
+      <!-- Modal Agregar-->
+      
+      <div class="modal fade" id="agregarfila" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= configTabla%></h4>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="/demos/<%= configTabla%>/create_json" id="agregarform" name="agregarform" 
+                  class="form-horizontal" enctype="multipart/form-data">
+                    <% crudigTablas[configTabla]['columnas'].each do |col, value| %>
+                    <div class="form-group">
+                      <label for="<%= col%>" class="col-sm-2 control-label"><%= col%></label>
+                      <div class="col-sm-10">
+                      <% if (value[:column_rel]) %>
+                          <select class="form-control" id="<%= col%>" name="<%= col%>" required>
+                            <% filas[value[:tabla_rel]].each do |id, fila| %>
+                                <option value="<%= fila[value[:column_rel]]%>" 
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
+                                  <%= fila[value[:column_rel]]%></option>
+                            <% end %>
+                          </select>
+                      <% elsif(value[:es_archivo].eql?('1')) %>
+                          <input class="form-control" type="file" id="<%= col%>" name="<%= col%>" />
+                      <% else %>
+                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"
+                            <%= 'required' if value[:column_key]=='PRI' %>/>
+                      <% end %>
+                      </div>
+                    </div>
+                    <% end %>
+                <br />
+      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="agregarbtn" class="btn btn-info" value="Crear Nuevo">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Editar-->
+      
+      <div class="modal fade" id="editarfila" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 600px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= configTabla%></h4>
+            </div>
+            <div class="modal-body">
+              <form method="get" action="/demos/<%= configTabla%>/update_id_json" id="editarform" name="editarform" 
+                  class="form-horizontal" role="form">
+                    <% crudigTablas[configTabla]['columnas'].each do |col, value| %>
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                      <div class="col-sm-10">
+                      <% if (value[:column_rel]) %>
+                          <select class="form-control" id="<%= col%>" name="<%= col%>" >
+                            <% filas[value[:tabla_rel]].each do |id, fila| %>
+                                <option value="<%= fila[value[:column_rel]]%>" 
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
+                                  <%= fila[value[:column_rel]]%></option>
+                            <% end %>
+                          </select>
+                      <% else %>
+                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"/>
+                      <% end %>
+                      </div>
+                    </div>
+                    <% end %>
+                <br />
+      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="editarbtn" class="btn btn-info" value="Guardar Cambios">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desea editar -->
+      <div class="modal fade" id="msgUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 400px;">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>¿Seguro que desea actualizar estos datos?</h4>
+              <button type="submit" class="btn btn-info" data-dismiss="modal" id="update_boton"
+                onclick="final_update('', true); return false;" >Sí, actualizar los datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_boton"
+                onclick="final_update('', false); return false;" >No, cancelar datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">No, cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- desea eliminar -->
+      <div class="modal fade" id="msgDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 400px;">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>¿Seguro que desea eliminar estos datos?</h4>
+              <button type="submit" class="btn btn-info" data-dismiss="modal" id="delete_boton"
+                onclick="eliminar_fila('', true); return false;" >Sí, eliminar los datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" >No, cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>      
+      
+
+      <script>
+      
+        $("#agregarform").submit(function( event ) {
+          // Stop form from submitting normally
+          event.preventDefault();
+         
+          // Get some values from elements on the page:
+          var $form = $( this ),
+            term = $form.serialize(),
+            url = $form.attr( "action" );
+         
+          // Send the data using post
+          $.getJSON( url, term )         
+              .done(function( json ) {
+                //var content = $(data).find("#content");
+                //if (json["valido"] == 1) {
+                if (json.valido == '1') {
+                  $("#mensaje").empty().append('<div class="alert alert-success">'+
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>'+json.mensaje+'</div>');
+                }else{
+                  $("#mensaje").empty().append('<div class="alert alert-danger">'+
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>'+json.mensaje+'</div>');
+                }
+              })
+              .fail(function( jqxhr, textStatus, error ) {
+                $("#mensaje").empty().append('<div class="alert alert-danger">'+
+              '<button type="button" class="close" data-dismiss="alert">&times;</button>'+textStatus+", "+error+'</div>');
+          });
+          $("#agregarfila").modal('hide');
+          return false;
+        });  
+        
+        
+        function before_update(id){
+          var cells = document.getElementById(id).getElementsByTagName('td');
+          var texto = '';
+          var hijos;
+          for(var i=1; i<cells.length; i+=1){
+            texto = '<input type="text" id="" name="" class="form-control" ';
+            texto += 'oldvalue="'+cells[i].innerHTML+'" value="'+cells[i].innerHTML+'"/>';
+            
+            hijos = cells[i].getElementsByTagName('a');
+            if( hijos && hijos.length > 0) {
+              //texto = cells[i].firstChild.innerHTML;
+              var combo_id = hijos[0].getAttribute('combo');
+              var idlista = hijos[0].getAttribute('idlista');
+              texto = document.getElementById(combo_id).cloneNode(true);
+              
+              for(var j = 0; j < texto.length; j++){
+                if(texto.options[j].value == idlista)
+                  texto.selectedIndex = j;
+              }
+              //texto.value = idfila;
+              texto.setAttribute("enlace", hijos[0].href);
+              texto.setAttribute("oldvalue", idlista);
+              //texto.value = idfila;
+              cells[i].innerHTML = "";
+              cells[i].appendChild(texto);
+              
+              texto = texto.outerHTML;
+            } else {
+              cells[i].innerHTML = texto;
+            }
+          }
+          cambiar_span('delete_cancel_'+id, id, 'glyphicon glyphicon-remove', 'Cancelar', 'cancel_update');
+          cambiar_span('edit_save_'+id, id, 'glyphicon glyphicon-save', 'Guardar', 'final_update');
+          return false;
+        }
+        
+        function final_update(id, actualizar){
+          //  seguro que quieres guardar
+          
+          if(actualizar == true){
+            //  si
+            var cells = document.getElementById(id).getElementsByTagName('td');
+            var texto = '';
+            var hijos;
+            for(var i=1; i<cells.length; i+=1){
+              texto = cells[i].firstChild.value;
+              hijos = cells[i].getElementsByTagName('select');
+              if( hijos && hijos.length > 0) {
+                texto = '<a href="'+hijos[0].getAttribute('enlace')+'" id="enlace_'+hijos[0].id+'" ';
+                texto += 'idlista="'+hijos[0].value+'" combo="'+hijos[0].id+'">';
+                texto += hijos[0].options[hijos[0].selectedIndex].text+'</a>';
+              }
+              cells[i].innerHTML = texto;
+            }
+            cambiar_span('delete_cancel_'+id, id, 'glyphicon glyphicon-trash', 'Eliminar', 'eliminar_fila');
+            cambiar_span('edit_save_'+id, id, 'glyphicon glyphicon-pencil', 'Editar', 'before_update');
+            
+            document.getElementById(id).setAttribute("style","background-color: #dff0d8;");
+            setMensaje("Datos modificados con éxito", "success");
+            
+          }else if(actualizar == false){
+            //  no          
+            cancel_update(id);
+          }
+          return false;
+        }
+        
+        
+        
+        function cancel_update(id){
+          var cells = document.getElementById(id).getElementsByTagName('td');
+          var texto = '';
+          var hijos;
+          for(var i=1; i<cells.length; i+=1){
+            texto = cells[i].firstChild.getAttribute("oldvalue");
+            hijos = cells[i].getElementsByTagName('select');
+            if( hijos && hijos.length > 0) {
+              texto = '<a href="/employees/listar?emp_no='+hijos[0].getAttribute("oldvalue")+'" id="enlace_'+hijos[0].id+'" ';
+              texto += 'idlista="'+hijos[0].getAttribute("oldvalue")+'" combo="'+hijos[0].id+'">';
+              
+              for(var j = 0; j < hijos[0].length; j++){
+                if(hijos[0].options[j].value == hijos[0].getAttribute("oldvalue"))
+                  texto += hijos[0].options[j].text;
+              }
+              texto += '</a>';
+            }
+            cells[i].innerHTML = texto;
+          }
+          cambiar_span('delete_cancel_'+id, id, 'glyphicon glyphicon-trash', 'Eliminar', 'eliminar_fila');
+          cambiar_span('edit_save_'+id, id, 'glyphicon glyphicon-pencil', 'Editar', 'before_update');
+          return false;
+        }
+        
+        
+        function eliminar_fila(id, eliminar){
+          //  seguro que quieres elimninar
+          if(eliminar == true) {
+            document.getElementById(id).innerHTML = "";
+            setMensaje("Datos eliminados con éxito", "success");
+          }
+        }
+        
+        
+        function cambiar_span(hrefid, id, icono, title, func){
+          var span = '<span class="'+icono+'" title="'+title+'"></span>';
+          //span += 'onclick="'+func+'('+id+'); return false;"" > </span>';
+          var href = document.getElementById(hrefid);
+          
+          if(func == 'eliminar_fila' || func == 'final_update'){
+            href.onclick = function(){};
+            href.setAttribute("data-toggle","modal");
+            
+            if(func == 'eliminar_fila'){
+              href.onclick = function(){eval("setIdEliminarModal("+id+");")};
+              
+              href.setAttribute("data-target","#msgDelete");
+            
+            }else{
+              var clicModalSi = "final_update('"+id+"', true);";
+              var clicModalNo = "final_update('"+id+"', false);";
+              document.getElementById('update_boton').onclick = function(){ eval( clicModalSi )};
+              document.getElementById('cancel_boton').onclick = function(){ eval( clicModalNo )};
+              
+              href.setAttribute("data-target","#msgUpdate");
+            }
+          }else{
+            href.setAttribute("data-toggle","");
+            href.setAttribute("data-target","");
+            href.onclick = function(){ eval(''+func+'(\''+id+'\')'); return false;};
+          }
+          href.innerHTML = span;
+        }
+        
+        function agregar(){
+          
+        }
+        
+        function setMensaje(sms, type){
+          var msg = '<div class="alert alert-'+type+'">';
+          msg += '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+          msg += sms+'</div>';
+          document.getElementById('mensaje').innerHTML = msg;
+        }
+        
+        function setIdEliminarModal(id){
+          var clicDelete = "eliminar_fila('"+id+"', true);";
+              
+          document.getElementById('delete_boton').onclick = function(){ eval( clicDelete )};
+        }
+        
+        $(function () {
+          tab = '<%= params[:g_g]%>';
+          
+          if (tab == '') $('#detalle_grid a:first').tab('show')
+          else           $('#detalle_grid a[href="#<%= params[:g_g]%>"]').tab('show')
+        })
+        
+        
+        //  funciones grids tabs
+        
+        function buscar_tabs( form_id ){
+          var url = $( "#"+form_id ).attr('action');
+                    
+          var jqxhr = $.post( url, $( "#"+form_id ).serialize())
+            .done(function( hash_json ) {
+              alert( "success - "+ form_id +' - '+ url +'?'+  $( "#"+form_id ).serialize() );
+              alert( hash_json );
+            })
+            .fail(function() {
+              //alert( ".No se puede realizar la busqueda ahroa." );
+              alert( url +'?'+  $( "#"+form_id ).serialize());
+            });
+          event.preventDefault();
+          return false;
+        }
+
+      </script>
+      
+  </body>
+</html>
