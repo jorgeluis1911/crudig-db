@@ -59,7 +59,7 @@ class PSqlconex < Aplicacion
           config_tabla[:edit_window] = true
           config_tabla[:detalle_de] = ''
           config_tabla[:referencias] = {}
-          config_tabla[:paginador] = 10
+          config_tabla[:paginador] = 7
           @aplicacion[:tablas][row['table_name']]['config'] = config_tabla
           @aplicacion[:tablas][row['table_name']]['columnas'] = {}
         end
@@ -67,16 +67,16 @@ class PSqlconex < Aplicacion
         
         # => agregar las columnas
         columna= {}
-        columna[:position] = row['ordinal_position']
+        columna[:position] = row['ORDINAL_POSITION']
         columna[:default_value] = "" #row['COLUMN_DEFAULT']
         columna[:is_nullable] = row['is_nullable']
-        columna[:data_type] = row['data_type'].to_s
-        columna[:length] = row['character_maximum_length']
+        columna[:data_type] = row['DATA_TYPE'].to_s
+        columna[:length] = row['CHARACTER_MAXIMUM_LENGTH']
         columna[:column_key] = "" #row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
         columna[:comments] = "" #row['COLUMN_COMMENT']
         
         # => datos sobre FK
-        columna[:key_name] = row['constraint_name']
+        columna[:key_name] = row['CONSTRAINT_NAME']
         columna[:esquema_rel] = row['ref_table_catalog']
         columna[:tabla_rel] = row['ref_table_name']
         columna[:column_rel] = row['ref_column_name']
@@ -91,7 +91,6 @@ class PSqlconex < Aplicacion
         
         pkey = ''
         pkey = columna[:key_name][-4, 4]   if(columna[:key_name])
-        columna[:column_key] = 'PRI'       if(pkey == 'pkey')
           
         @aplicacion[:tablas][tablas]['config'][:referidas] = []
         if ( columna[:tabla_rel] &&  (pkey != 'pkey'))
@@ -127,9 +126,7 @@ class PSqlconex < Aplicacion
     #@aplicacion[:tablas][tabla].each {|key, value| select << "#{key}," if (value[:column_key] != 'PRI' )}
     @aplicacion[:tablas][tabla]['columnas'].each {|key, value| 
       select << "#{tabla}.#{key},"
-      pkey = ''
-      pkey = value[:key_name][-4, 4]   if(value[:key_name])
-      if (value[:column_rel] && (pkey != 'pkey'))
+      if (value[:column_rel])
         from << ' left join '+value[:tabla_rel]+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'.'+value[:column_rel]
         select << "#{value[:tabla_rel]}.#{value[:column_rel]} as #{value[:tabla_rel]}_#{value[:column_rel]},"
         
@@ -158,7 +155,7 @@ class PSqlconex < Aplicacion
     filas = Hash.new
     cont = 0
     
-    puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit
+    #puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit
     @conexion.exec('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit).each { |row|
       filas["#{cont}"] = row
       cont += 1
@@ -166,11 +163,5 @@ class PSqlconex < Aplicacion
     #puts 'SELECT * '+from+' '+where_sql+' '+ordenar_sql +limit
     return filas        
   end
-  
-  def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
-    load_bd unless(@conexion)
-    puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
-    return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
-  end  
-
+    
 end

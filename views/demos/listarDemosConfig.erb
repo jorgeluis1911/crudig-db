@@ -93,9 +93,6 @@
         		  </th>
         		  <% crudigTablas[configTabla]['columnas'].each do |col, value| %>
                   <th><%= col%></th>
-                  <% if (value[:column_rel]) %>
-                    <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
-                  <% end %>
               <% end %>
         		</tr>
       		</thead>
@@ -153,9 +150,6 @@
                   </th>
                   <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
                     <th><%= col%></th>
-                    <% if (value[:column_rel]) %>
-                      <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
-                    <% end %>
                   <% end %>
                 </tr>
               </thead>

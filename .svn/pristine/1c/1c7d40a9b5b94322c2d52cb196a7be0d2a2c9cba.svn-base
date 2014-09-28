@@ -155,21 +155,14 @@ class App < Sinatra::Application
   
   get '/demos' do
     message = ''
-    url = request.base_url
     
     #if(@@appCRUDig=='')
-    if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
       @@appDemos = MySQLconex.new @@demosConfig
       message= @@appDemos.load_bd_MySQL( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
                                           @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
                                           @@demosConfig[:config][:bd], @@demosConfig[:config][:port])
       # => @@demosConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
-    else
-      @@appDemos = PSqlconex.new @@demosConfig
-      message= @@appDemos.load_bd_PS( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
-                                      'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
-    end  
-    @@demosConfig[:enlaces] = []
+      @@demosConfig[:enlaces] = []
     #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
     #end
     #if(@@appDemos!='')

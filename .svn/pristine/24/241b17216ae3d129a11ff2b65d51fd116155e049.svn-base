@@ -281,7 +281,7 @@ end
       					</td>
       					<% tablas[tabla]['columnas'].each do |col, value| %>
         					  <td>
-        					  <% if (value[:column_rel] && value[:column_key]=='PRI') %>
+        					  <% if (value[:column_rel]) %>
           					    <select class="form-control" id="<%= col%>" name="<%= col%>" >
           					      <option value="">-Todos-</option>
           					      <% filas[value[:tabla_rel]].each do |id, fila| %>
@@ -462,7 +462,7 @@ end
                           <td>
                             <%  #  filas[:filas_detalle][tabla_detalle]
                             %>
-                          <% if (value[:column_rel] && value[:column_key]=='PRI')
+                          <% if (value[:column_rel])
                                 filas_sub_grid = filas[:filas_detalle][tabla_detalle]
                                 if (filas_sub_grid[value[:tabla_rel]]) %>
                                 <select class="form-control" id="<%= col%>" name="<%= col%>" >

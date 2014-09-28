@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>CRUDig</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    
+    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    
+  </head>  
+  <body>
+    
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">CRUDig</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <% enlaces.each do |link| %>
+               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+            <% end %>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <% if (idioma != 'ES' ) %>   <li><a href="/ayuda">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/ticas">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/confi">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/demos">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/demos">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/demos">PR</a></li> <% end %>
+              </ul>
+            </li>
+            
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/ayuda">Ayuda</a></li>
+                <li><a href="/caracteristicas">Características</a></li>
+                <li><a href="/config">Versiones</a></li>
+                <li class="divider"></li>
+                <li><a href="/demos">Demos</a></li>
+              </ul>
+            </li>
+                        
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/configuraciones">Configuraciones</a></li>
+                <li class="divider"></li>
+                <li><a href="/config">Nueva configuración</a></li>
+              </ul>
+            </li>
+            
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/chartArea">Area</a></li>
+                <li><a href="/chartCircle">Círculo</a></li>                
+                <li><a href="/chartBar">Barras</a></li>
+                <li><a href="/chartColumn">Columnas</a></li>
+                <li><a href="/chartCombo">Combo</a></li>
+                <li><a href="/chartLine">Líneas</a></li>
+                <li class="divider"></li>
+                <li><a href="/mycharts">Mis gráficos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>    
+    
+        
+    <div class="container">    
+            
+      <% if message != '' %>
+        <%= message%>
+      <!--<div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>-->
+      <% end %>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <form method="post" action="/config/conectarBD">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <input type="submit" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-primary" value="Descargar" />
+                <input type="submit" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-primary" value="Conectar" />
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#conexionBD">
+                  Conexión con BD</a>
+              </div>
+              <div class="panel-collapse collapse in" id="conexionBD">
+                <table class="table table-condensed table-bordered">
+                <thead>
+                  <tr class="info">
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><label>Driver</label></td>
+                    <td>
+                      <select class="form-control" id="driver" name="driver">
+                        <option value="Mysql"
+                          <%= 'selected' if (conexionBD[:driver]=='MySQL')%>
+                          >MySQL</option>
+                        <option value="MariaDB"
+                          <%= 'selected' if (conexionBD[:driver]=='MariaDB')%>
+                          >MariaDB</option>
+                        <option value="Postgress"
+                          <%= 'selected' if (conexionBD[:driver]=='Postgress')%>
+                          >PostgreSQL</option>
+                        <option value="SQLServer"
+                          <%= 'selected' if (conexionBD[:driver]=='SQLServer')%>
+                          >SQL Server</option>
+                        <option value="Oracle"
+                          <%= 'selected' if (conexionBD[:driver]=='Oracle')%>
+                          >Oracle</option>
+                      </select>
+                  </tr>                      
+                  <tr>
+                    <td><label>Dominio</label></td>
+                    <td><input type="text" id="dominio" name="dominio"
+                      <%if (conexionBD[:host]) %> value="<%= conexionBD[:host] %>"
+                      <% else %>        value="127.0.0.1"
+                      <% end %>
+                      class="form-control" required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Base de Datos</label></td>
+                    <td><input type="text" id="bd" name="bd"
+                      <%if (conexionBD[:bd]) %> value="<%= conexionBD[:bd] %>"
+                      <% else %>        value="fullcrud"
+                      <% end %> 
+                      class="form-control" required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Puerto</label></td>
+                    <td><input type="text" id="port" name="port"
+                      <%if (conexionBD[:port]) %> value="<%= conexionBD[:port] %>"
+                      <% else %>     value="3306"
+                      <% end %> 
+                      class="form-control" required="required"/></td>
+                  </tr>                      
+                  <tr>
+                    <td><label>Usuario</label></td>
+                    <td><input type="text" id="usuario" name="usuario" 
+                      <%if (conexionBD[:user]) %> value="<%= conexionBD[:user] %>"
+                      <% else %>     value="root"
+                      <% end %> 
+                      class="form-control" required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Contraseña</label></td>
+                    <td><input type="password" id="pass" name="pass" 
+                      <%if (conexionBD[:pass]) %> value="<%= conexionBD[:pass] %>"
+                      <% else %>     value="3306"
+                      <% end %> 
+                      class="form-control" /></td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </form> 
+        </div>  
+        <div class="col-md-6">
+          <form method="post" action="/config/conectarFTP">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <input type="submit" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-primary" value="Conectar" />
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#conexionHD">
+                  Conexión con Almacenamiento FTP</a>
+              </div>
+              <div class="panel-collapse collapse in" id="conexionHD">
+                <table class="table table-condensed table-bordered">
+                <thead>
+                  <tr class="info">
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><label>Host/IP</label></td>
+                    <td><input type="text" id="host" name="host" 
+                      value="<%= config[:hostFTP] %>" class="form-control" 
+                      required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Puerto</label></td>
+                    <td><input type="text" id="port" name="port" 
+                      value="<%= config[:portFTP] %>" class="form-control" 
+                      required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Usuario</label></td>
+                    <td><input type="text" id="usuario" name="usuario" 
+                      value="<%= config[:userFTP] %>" class="form-control" 
+                      required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td><label>Contraseña</label></td>
+                    <td><input type="password" id="pass" name="pass" 
+                      value="<%= config[:passFTP] %>" class="form-control" 
+                      required="required"/></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><label><%= "Ruta FTP : "+config[:rutaFTP]%></label></td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </form> 
+        </div>
+      </div>
+        
+      
+      <% tablas.each do |tabla, val| %>
+        <form method="post" action="/config/edit/<%= tabla %>">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <input type="button" name="conectar" id="conectar" style="float: right;" 
+                  class="btn btn-sm btn-primary" value="Editar" />
+              <input type="submit" name="conectar" id="conectar" style="float: right;" 
+                  class="btn btn-sm btn-success" value="Guardar" />
+              <input type="button" name="conectar" id="conectar" style="float: right;" 
+                  class="btn btn-sm btn-danger" value="Cancelar" />
+              
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#form<%= tabla %>"><%= tabla %></a>
+              
+            </div>
+            <div class="panel-collapse collapse in" id="form<%= tabla %>">
+              <table class="table table-condensed table-bordered">
+                <thead>
+                <tr class="info">
+                </tr>
+                </thead>
+                <tbody>
+                  <tr class="info">
+                    <td>inner_join<span class="label label-info">?</span></td>
+                    <td>Nombre de Tabla<span class="label label-info">?</span></td>
+                    <td>Ver Tabla en el menú<span class="label label-info">?</span></td>
+                    <td>Insertar por ventana<span class="label label-info">?</span></td>
+                    <td>Editar por ventana<span class="label label-info">?</span></td>
+                    <td>tabla_detalle<span class="label label-info">?</span></td>
+                    <td>Paginador<span class="label label-info">?</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <select class="form-control" id="inner_join" name="inner_join">
+                        <option value="1">Si</option><option value="0">No</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="text" id="nombre_tabla" name="nombre_tabla" 
+                        value="<%= val['config'][:nombre_grid]%>" class="form-control"/>
+                    </td>
+                    <td>
+                      <select class="form-control" id="ver_tabla_en_menu" name="ver_tabla_en_menu">
+                        <option value="1">Si</option><option value="0">No</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-control" id="insertar_por_ventana" name="insertar_por_ventana">
+                        <option value="1">Si</option><option value="0">No</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-control" id="editar_por_ventana" name="editar_por_ventana">
+                        <option value="1">Si</option><option value="0">No</option>
+                      </select>
+                    </td>
+                    <td><%= val['config'][:detalle_de]%>
+                      <% if (val['config'][:referencias].length > 0) %>
+                        <select class="form-control" id="" name="" >
+                        <% val['config'][:referencias].each do | tabla, col | %>
+                            <option value="<%= tabla%>"
+                              <%= 'selected' if (params['referencia'].eql?(tabla))%> >
+                              <%= tabla%></option>
+                        <% end %>
+                        </select>
+                      <% end %>
+                    </td>
+                    <td>
+                      <input type="text" id="text_paginador" name="paginador" 
+                        value="<%= val['config'][:paginador]%>" class="form-control"/>
+                    </td>
+                  </tr>
+                  <%= '<div class="alert alert-danger"> No tiene configuración está tabla </div>' if (val.length < 1) %>
+                </tbody>
+              </table>
+              <%#= val['config'] 
+              %> 
+                  
+              <table class="table table-condensed table-bordered">
+                <thead>
+                  <tr class="info"></tr>
+                </thead>
+                <tbody>
+                  <tr class="info"><td>columnas</td>
+                    
+                    <td>position
+                      <div><button type="button" class="btn btn-xs btn-info popover-dismiss" 
+                        data-toggle="popover" title="Popover title" 
+                        data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button></div>
+                      <span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
+                    <td>default_value<span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
+                    <td>is_nullable<span class="label label-info">?</span></td>
+                    <td>data_type<span class="label label-info">?</span></td>
+                    <td>length<span class="label label-info">?</span></td>
+                    <td>comments<span class="label label-info">?</span></td>
+                    <td>vista_grid<span class="label label-info">?</span></td>
+                    <td>nombre_col_grid<span class="label label-info">?</span></td>
+                    <td>es_archivo<span class="label label-info">?</span></td>
+                    <td>carpeta_FTP<span class="label label-info">?</span></td>
+                    <td>column_key<span class="label label-info">?</span></td>
+                    <td>key_name<span class="label label-info">?</span></td>
+                    <td>esquema_rel<span class="label label-info">?</span></td>
+                    <td>tabla_rel<span class="label label-info">?</span></td>
+                    <td>column_rel<span class="label label-info">?</span></td>
+                  </tr>
+                  <% val['columnas'].each do |columna, valor| %>
+                    <tr><td class="warning"><%= columna %></td>
+                      <td>
+                        <input type="text" id="<%= columna %>_position" name="<%= columna %>_position" size="3" maxlength="3" 
+                          value="<%= valor[:position]%>" class="form-control"/>
+                      </td>
+                      <td>
+                        <input type="text" id="<%= columna %>_default_value" name="<%= columna %>_default_value" 
+                          value="<%= valor[:default_value]%>" class="form-control"/>
+                      </td>
+                      <td><%= valor[:is_nullable]%></td>
+                      <td><%= valor[:data_type]%></td>
+                      <td><%= valor[:length]%></td>
+                      <td>
+                        <input type="text" id="<%= columna %>_comments" name="<%= columna %>_comments" 
+                          value="<%= valor[:comments]%>" class="form-control"/>
+                      </td>
+                      <td>
+                        <select class="form-control" id="<%= columna %>_ver_engrid" name="<%= columna %>_ver_engrid">
+                          <option value="1">Si</option><option value="0">No</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" id="<%= columna %>_vertexto_engrid" name="<%= columna %>_vertexto_engrid" 
+                        value="<%= valor[:texto_grid]%>" class="form-control"/>
+                      </td>
+                      <td>
+                        <select class="form-control" id="<%= columna %>_es_archivo" name="<%= columna %>_es_archivo">
+                          <option value="1" <%= 'selected' if valor[:es_archivo].eql?('1') %>>Si</option>
+                          <option value="0" <%= 'selected' if valor[:es_archivo].eql?('0') %>>No</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" id="<%= columna %>_carpeta_ftp" name="<%= columna %>_carpeta_ftp" 
+                        value="<%= valor[:carpeta_ftp]%>" class="form-control"/>
+                      </td>
+                      
+                      <td id="key"><%= valor[:column_key]%></td>
+                      <td id="keyname"><%= valor[:key_name]%></td>
+                      <td id="esquema_relacionada"><%= valor[:esquema_rel]%></td>
+                      <td id="tabla_relacionada"><%= valor[:tabla_rel]%></td>
+                      <td id="columna_relacionada"><%= valor[:column_rel]%></td>
+                      
+                    </tr>
+                  <% end %>
+                  <%= '<div class="alert alert-danger"> No tiene columnas está tabla </div>' if (val.length < 1) %>
+                </tbody>
+              </table>
+              <%#= val['columnas'] 
+              %>
+            </div>
+          </div>
+        </form>
+      <% end %>
+      
+      <%= '<div class="alert alert-info">No tiene conectada esta base de datos.</div>' if (tablas.length < 1) %>
+    </div>
+        
+    <script>
+      $('.popover-dismiss').popover({
+        trigger: 'focus'
+      })
+      
+      function before_update(id_fila, id_body){
+        var cells_1 = document.getElementById(id_fila).getElementsByTagName('td');
+        var filas = document.getElementById(id_body).getElementsByTagName('tr');
+        
+        for(var i=1; i<cells_1.length-1; i+=1){
+          cells_1[i].innerHTML = '<input type="text" id="" name="" class="form-control" value="'+cells_1[i].innerHTML+'"/>';
+        }
+        for(var i=1; i<cells_2.length-1; i+=1){
+          cells_1[i].innerHTML = '<input type="text" id="" name="" class="form-control" value="'+cells_2[i].innerHTML+'"/>';
+        }
+      }
+    </script>        
+      
+  </body>
+</html>        
