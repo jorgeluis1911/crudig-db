@@ -307,6 +307,8 @@
                 </tbody>
               </table>
               <%#= val['config'] 
+              %>
+              <%= val['config'][:combo_string_fk]
               %> 
                   
               <table class="table table-condensed table-bordered">
@@ -323,6 +325,7 @@
                         ?</button></div>
                       <span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
                     <td>default_value<span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
+                    <td>combo_ref<span class="label label-info">?</span></td>
                     <td>is_nullable<span class="label label-info">?</span></td>
                     <td>data_type<span class="label label-info">?</span></td>
                     <td>length<span class="label label-info">?</span></td>
@@ -346,6 +349,10 @@
                       <td>
                         <input type="text" id="<%= columna %>_default_value" name="<%= columna %>_default_value" 
                           value="<%= valor[:default_value]%>" class="form-control"/>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="<%= columna %>_combo_string" name="<%= columna %>_combo_string"
+                        checked="<%= 'true' if(val['config'][:combo_string_fk].include?(columna)) %>"/>
                       </td>
                       <td><%= valor[:is_nullable]%></td>
                       <td><%= valor[:data_type]%></td>

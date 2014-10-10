@@ -5,6 +5,8 @@ require 'pg'
 require 'json'
 #require 'sqlite'
 require 'net/ftp'
+require 'prawn'
+require 'prawn/table'
 
 #$db = SQLite3::Database.new( "entornos.db" )
 
@@ -29,7 +31,8 @@ class App < Sinatra::Application
               :tablas => {},
               :enlaces => [],
               :graficos => {},
-              :timers => {} }
+              :timers => {},
+              :listados => {} }   # tabla => { nombre='', titulo='', url='' }
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
   
   @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
@@ -327,6 +330,7 @@ class App < Sinatra::Application
       when 'delete'      then delete_id(@@app, controler, params)
       when 'delete_json' then delete_id_json(@@app, controler, params)        
       when 'listar'      then listar_tabla(@@app, controler, params, 0)
+      when 'generatepdf' then generarPDF(@@app, controler, params)
       end
     end
   end
@@ -334,7 +338,7 @@ class App < Sinatra::Application
   get '/:controler/:funcion/:id' do |controler, funcion, id|
     #redirect "/#{controler}/#{funcion}" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
     
-    if(!controler.eql?('config') || !controler.eql?('favicon.ico'))
+    if(validController(controler))
       case funcion
       #when 'update'      then update_id(controler, id, params)
       #when 'update_json' then update_id_json(controler, id, params)
@@ -347,7 +351,7 @@ class App < Sinatra::Application
   
   post '/:controler/:funcion/:id' do |controler, funcion, id|
     if(validController(controler))
-      listar_tabla_json(controler, params, id)
+      listar_tabla_json(@@app, controler, params, id, 0)
     end
   end
 

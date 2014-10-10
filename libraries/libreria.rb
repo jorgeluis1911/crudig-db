@@ -18,7 +18,7 @@ class App < Sinatra::Application
 
   def listar_tabla_json(app, controler, params, start_limit)
     message=''
-    puts 'hehe---------'
+    puts '--listando JSON----'
     
     order = {}
     order[:order] = app.set_order(params)
@@ -113,7 +113,20 @@ class App < Sinatra::Application
     erb result
   end  
 
-  
+
+  def get_listar_tabla_json(app, controler, params, start_limit)
+    message=''
+    puts '--listando JSON----'
+    
+    order = {}
+    order[:order] = app.set_order(params)
+    order[:grid2_order] = app.set_sub_grid_order(params)
+    
+    #return listar_json(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
+
+    return app.select_mysql(' * ', controler, params, start_limit)
+  end
+    
   def select_demos_config_id(idConfig)
     conexionBDId = {:bd=>"fullcrud",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}
 
@@ -159,7 +172,72 @@ class App < Sinatra::Application
   end  
 
 
+  def generarPDF(app, controler, params)
 
+    result = get_listar_tabla_json(app, controler, params, 0)
+    
+    pdf = Prawn::Document.new    
+    #pdf.margin_box( {:top=>30, :left=>30,:right=>30,:bottom=>30} )
+    pdf.font_size 10
+    
+    pdf.text "Reporte de tabla : "+controler
+    pdf.move_down(-15)
+    pdf.text "Generado: "+Time.now.to_s , :align => :right
+              
+    #t = pdf.make_table([ ["this is the first row"],["this is the second row"] ])
+    #t.draw
+    
+    pdf.move_down 20
+    
+    lista = Array.new
+    columns = Array.new
+    result[controler].each do |num, row|
+      fila = Array.new
+      cols = Array.new
+      row.each do |col, value|
+        fila << value
+        cols << col
+      end
+      lista << fila
+      columns << cols
+    end
+
+    listado = Array.new
+    listado = [columns[0]] + lista
+    #puts listado
+    pdf.table(listado, :width => 530)
+    #pdf.text lista.to_s
+    
+    #string = "page <page> of <total>"
+    string = "página <page> de <total>"
+    # Green page numbers 1 to 7
+    options = { :at => [pdf.bounds.right - 150, 0],
+                :width => 150,
+                :align => :right,
+                #:page_filter => (1..7),
+                :start_count_at => 1,
+                :color => "000000" }
+    pdf.number_pages string, options
+ 
+    pdf.render_file "public/informes/"+controler+".pdf"
+
+    #t = make_table([ ["this is the first row"],["this is the second row"] ])
+    #t.draw
+    
+    message= 'No se pudieron actualizar los datos.'
+    result = ''
+        
+    if(1==1)
+      message= 'Datos actualizados con éxito.'
+      result = '{"valido":"1", "mensaje":"'+message+'"}'
+    else  
+      result = '{"valido":"0", "mensaje":"'+message+' - '+actualizado+'"}'
+    end
+    
+    send_file "public/informes/"+controler+".pdf", :filename => controler+".pdf", :type => "application/pdf"
+    
+    #erb listado.to_s
+  end
   
   def validController(controler)
     valido = false
@@ -177,6 +255,9 @@ class App < Sinatra::Application
       FALSE
     end
   end
+
+
+
   
   def home_page( message )
     erb :features, :locals => {}
@@ -236,7 +317,8 @@ class App < Sinatra::Application
                               :params => params, :tablas => @@config[:tablas],
                               :idioma => @@config[:config][:idioma],
                               :traductor => @@idiomas[@@config[:config][:idioma]],
-                              :timers => @@config[:timers]}
+                              :timers => @@config[:timers],
+                              :listados => @@config[:listados]}
   end
   
   def listar_json( tabla='', filas={}, message='',order={}, params={} )

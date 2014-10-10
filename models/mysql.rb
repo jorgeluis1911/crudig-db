@@ -53,6 +53,7 @@ class MySQLconex < Aplicacion
         config_tabla[:detalle_de] = ''
         config_tabla[:referencias] = {}
         config_tabla[:paginador] = 10
+        config_tabla[:combo_string_fk] = []
         @aplicacion[:tablas][row['table_name']]['config'] = config_tabla
         @aplicacion[:tablas][row['table_name']]['columnas'] = {}
       end
@@ -63,7 +64,7 @@ class MySQLconex < Aplicacion
       columna[:position] = row['ORDINAL_POSITION']
       columna[:default_value] = row['COLUMN_DEFAULT']
       columna[:is_nullable] = row['is_nullable']
-      columna[:data_type] = row['DATA_TYPE'].to_s
+      columna[:data_type] = row['DATA_TYPE'].to_s   # varchar , char , text
       columna[:length] = row['CHARACTER_MAXIMUM_LENGTH']
       columna[:column_key] = row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
       columna[:comments] = row['COLUMN_COMMENT']
@@ -81,6 +82,13 @@ class MySQLconex < Aplicacion
       # => configuración de vista
       columna[:vista_grid] = true
       columna[:texto_grid] = ''
+      
+      # => campos a mostrar en combo texto FK
+      combo_string = @aplicacion[:tablas][tablas]['config'][:combo_string_fk]
+      if ( (row['DATA_TYPE'].to_s=='varchar' || row['DATA_TYPE'].to_s=='char') && combo_string.length==0 )
+        combo_string << row['column_name']
+        puts row['column_name']
+      end
             
       @aplicacion[:tablas][tablas]['config'][:referidas] = []
       if columna[:tabla_rel]
@@ -118,7 +126,9 @@ class MySQLconex < Aplicacion
         from << ' left join '+value[:tabla_rel]+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'.'+value[:column_rel]
         select << "#{value[:tabla_rel]}.#{value[:column_rel]} as #{value[:tabla_rel]}_#{value[:column_rel]},"
         
-        filas[value[:tabla_rel]] = simple_select( value[:column_rel], ' FROM '+value[:tabla_rel],'','','')
+        combo_string = ''
+        @aplicacion[:tablas][value[:tabla_rel]]['config'][:combo_string_fk].each{ |val| combo_string += val+','}
+        filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], ' FROM '+value[:tabla_rel],'','','')
       end
     }
     select = select[0..-2]
