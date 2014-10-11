@@ -154,6 +154,8 @@ class MySQLconex < Aplicacion
     filas = Hash.new
     cont = 0
     
+    puts 'simple_select()'
+    puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit
     @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit).each_hash{ |row|
       filas["#{cont}"] = row
       cont += 1

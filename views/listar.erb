@@ -127,7 +127,7 @@ end
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">Agregar nuevo listado</h4>
+              <h4 class="modal-title" id="myModalLabel">Guardar nuevo informe</h4>
             </div>
             <div class="modal-body">
               <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= tabla%>/create_json" 
@@ -298,7 +298,7 @@ end
                     <li><a href="" data-toggle="modal" data-target="#addlistado_<%= tabla%>">Guardar nuevo</a></li>
                     
                     <li class="divider"></li>
-                    <li role="presentation" class="dropdown-header">Mis listados :</li>
+                    <li role="presentation" class="dropdown-header">Mis informes :</li>
                     <% if (listados[tabla] && listados[tabla].length < 1) %>
                       <% listados[tabla].each do |fila, values| %>
                         <li><a href="<%= values[:url] %>"><%= values[:nombre] %></a></li>
@@ -438,10 +438,8 @@ end
    </div>-->
       </div>
       
-      <%=  crear_modal_add_informe(tabla) %>
-      
+      <%=  crear_modal_add_informe(tabla) %>      
       <%=  crear_modal_agregar(tablas, tabla, filas) %>
-      
       <%=  crear_modal_editar(tablas, tabla, filas) %>
     
 
@@ -492,7 +490,29 @@ end
               <table class="table table-condensed table-bordered">
                 <thead>
                   <tr class="info">
-                    <th><a href="/<%= tabla_detalle%>/listar"><span class="glyphicon glyphicon-refresh"></span></a></th>
+                    <th>
+                      <a href="/<%= tabla_detalle%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                      
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                          <span class="glyphicon glyphicon-print"></span><span class="caret" style="margin-left: 5px"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a target="_blank" href="/<%= tabla_detalle %>/generatepdf">Imprimir</a></li>
+                          <li><a href="" data-toggle="modal" data-target="#addlistado_<%= tabla_detalle%>">Guardar nuevo</a></li>
+                          
+                          <li class="divider"></li>
+                          <li role="presentation" class="dropdown-header">Mis informes :</li>
+                          <% if (listados[tabla_detalle] && listados[tabla_detalle].length < 1) %>
+                            <% listados[tabla_detalle].each do |fila, values| %>
+                              <li><a href="<%= values[:url] %>"><%= values[:nombre] %></a></li>
+                            <% end %>
+                          <% else %>
+                            <li role="presentation" class="dropdown-header"> - Ninguno - </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    </th>
                     <% tablas[tabla_detalle]['columnas'].each do |col, value| %>
                       <th><a href="/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>"><%= col%>
                         <% if (order[:grid2_order] == 'desc') %>
@@ -627,6 +647,7 @@ end
             
           </div>
           
+          <%=  crear_modal_add_informe(tabla_detalle) %>
           <%=  crear_modal_agregar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle]) %>
           <%=  crear_modal_editar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle]) %>
         <% end %>

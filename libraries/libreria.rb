@@ -181,7 +181,7 @@ class App < Sinatra::Application
     pdf.font_size 10
     
     pdf.text "Reporte de tabla : "+controler
-    pdf.move_down(-15)
+    pdf.move_down(-10)
     pdf.text "Generado: "+Time.now.to_s , :align => :right
               
     #t = pdf.make_table([ ["this is the first row"],["this is the second row"] ])

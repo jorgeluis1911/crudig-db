@@ -205,12 +205,18 @@ class App < Sinatra::Application
     message = ''
     
     #if(@@appCRUDig=='')
+    if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
       @@appCRUDig = MySQLconex.new @@crudigConfig
       message= @@appCRUDig.load_bd_MySQL( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
                                           @@crudigConfig[:config][:user], @@crudigConfig[:config][:pass], 
                                           @@crudigConfig[:config][:bd], @@crudigConfig[:config][:port])
-      # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
-      @@crudigConfig[:enlaces] = []
+      # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"},
+    else
+      @@appDemos = PSqlconex.new @@demosConfig
+      message= @@appDemos.load_bd_PS( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
+                                      'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
+    end   
+    @@crudigConfig[:enlaces] = []
     #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
     #end
     #if(@@appCRUDig!='')
