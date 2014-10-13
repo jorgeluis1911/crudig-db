@@ -126,8 +126,14 @@ class MySQLconex < Aplicacion
         from << ' left join '+value[:tabla_rel]+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'.'+value[:column_rel]
         select << "#{value[:tabla_rel]}.#{value[:column_rel]} as #{value[:tabla_rel]}_#{value[:column_rel]},"
         
+        combo = @aplicacion[:tablas][value[:tabla_rel]]['config'][:combo_string_fk]
         combo_string = ''
-        @aplicacion[:tablas][value[:tabla_rel]]['config'][:combo_string_fk].each{ |val| combo_string += val+','}
+        
+        if (combo.length > 0)
+          select << "#{value[:tabla_rel]}.#{combo.first} as #{value[:tabla_rel]}_#{combo.first},"    
+          combo.each{ |val| combo_string += val+','}
+        end
+        
         filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], ' FROM '+value[:tabla_rel],'','','')
       end
     }
@@ -169,5 +175,12 @@ class MySQLconex < Aplicacion
     puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
     return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
   end  
+
+
+# => errores SQL
+
+# - Duplicate entry '1' for key 'PRIMARY'
+
+
 
 end

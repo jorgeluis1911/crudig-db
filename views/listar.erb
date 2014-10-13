@@ -346,20 +346,22 @@ end
       					</td>
       					<% tablas[tabla]['columnas'].each do |col, value| %>
         					  <td>
-        					  <% if (value[:column_rel] && value[:column_key]=='PRI') %>
+        					  <% if (value[:column_rel]) %>
           					    <select class="form-control" id="<%= col%>" name="<%= col%>" >
           					      <option value="">-Todos-</option>
           					      <% filas[value[:tabla_rel]].each do |id, fila| %>
           					      
               					      <option value="<%= fila[value[:column_rel]]%>" 
-              					        <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> 
-              					        ><%= fila[ tablas[value[:tabla_rel]]['config'][:combo_string_fk].first ] %></option>
+              					        <%= 'selected' if (params[col].eql?(fila[value[:column_rel]])) %> >
+              					        <% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+              					           valor = fila[value[:column_rel]]
+                                   valor = fila[ combo_string ] if (combo_string)  %> 
+              					        <%= valor %></option>
           					      <% end %>
           					    </select>
           					  </td>
 <!--       					  <td>
-                        <input type="search" class="form-control"
-                            id="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
+                        <input type="search" class="form-control" id="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                             name="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                             value="<%= params[value[:tabla_rel]+'_'+value[:column_rel]] %>" />    -->
         					  <% else %>
@@ -408,23 +410,25 @@ end
                     <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
         				</td>
         				<% en.each do |col, valor| %>
-      				    <% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) %>
+      				    <% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) 
+      				        tabla_ref = tablas[tabla]['columnas'][col][:tabla_rel]
+                      combo_string = tablas[ tabla_ref ]['config'][:combo_string_fk].first
+                      valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
+      				    %>
       				      <td>
-      				        <a href="/<%= tablas[tabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
-      				          id="enlace_<%= col%>" idlista="<%= valor%>" combo="<%= col%>"><%= valor%></a>
-      				          <!-- falta agregar el campo que visualiza el texto del enlace
-      				            por defecto el la clave ajena
-      				            -->
+      				        <a href="/<%= tabla_ref %>/listar?<%= col+'='+valor%>" id="enlace_<%= col%>" 
+      				          idlista="<%= valor%>" combo="<%= col%>"><%= valor %></a>
       				      </td>
       				    <% else if (tablas[tabla]['columnas'][col]) %>
-      				      <td fila="<%= col%>"><%= valor %></td>
+      				      <td fila="<%= col%>">
+      				        <%= valor %></td>
       				    <% end end %>
       				  <% end %>
       			  </tr>
       			</form>
       			<% end %>  			  
       		</tbody>
-      	</table> 
+      	</table>
       	<%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas[tabla].length < 1) %>
       	<%#= tablas[tabla]['columnas']  	
       	%>
@@ -550,7 +554,7 @@ end
                           <td>
                             <%  #  filas[:filas_detalle][tabla_detalle]
                             %>
-                          <% if (value[:column_rel] && value[:column_key]=='PRI')
+                          <% if (value[:column_rel] )
                                 filas_sub_grid = filas[:filas_detalle][tabla_detalle]
                                 if (filas_sub_grid[value[:tabla_rel]]) %>
                                 <select class="form-control" id="<%= col%>" name="<%= col%>" >
@@ -558,7 +562,10 @@ end
                                   <% filas_sub_grid[value[:tabla_rel]].each do |id, fila| %>
                                       <option value="<%= fila[value[:column_rel]]%>" 
                                         <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
-                                        <%= fila[ tablas[value[:tabla_rel]]['config'][:combo_string_fk].first ] %></option>
+                                        <% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+                                           valor = fila[value[:column_rel]]
+                                           valor = fila[ combo_string ] if (combo_string)  %> 
+                                        <%= valor %></option>
                                   <% end %>
                                 </select>
                                 <% else %>
@@ -566,8 +573,7 @@ end
                                 <% end %>
                                 </td>
 <!--                            <td>
-                                  <input type="search" class="form-control"
-                                    id="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
+                                  <input type="search" class="form-control" id="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                                     name="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                                     value="<%= params[value[:tabla_rel]+'_'+value[:column_rel]] %>" />    -->
                           <% else %>
@@ -629,10 +635,15 @@ end
                           </form>-->
                         </td>
                         <% en.each do |col, valor| %>
-                          <% if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_rel]) %>
+                          <% if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_rel]) 
+                                tabla_ref = tablas[tabla_detalle]['columnas'][col][:tabla_rel]
+                                combo_string = tablas[ tabla_ref ]['config'][:combo_string_fk].first
+                                valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
+                          %>
                             <td>
                               <a href="/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
-                                id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
+                                id="enlace_<%= col%>" combo="<%= col%>"><%= valor %></a>
+                            </td>
                           <% else   if (tablas[tabla_detalle]['columnas'][col]) %>
                             <td fila="<%= col%>"><%= valor%></td>
                           <% end    end%>
