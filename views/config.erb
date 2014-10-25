@@ -29,7 +29,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <% enlaces.each do |link| %>
-               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -37,46 +37,47 @@
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <% if (idioma != 'ES' ) %>   <li><a href="/ayuda">ES</a></li> <% end %>
-                <% if (idioma != 'EN' ) %>   <li><a href="/ticas">EN</a></li> <% end %>
-                <% if (idioma != 'FR' ) %>   <li><a href="/confi">FR</a></li> <% end %>
-                <% if (idioma != 'DE' ) %>   <li><a href="/demos">DE</a></li> <% end %>
-                <% if (idioma != 'IT' ) %>   <li><a href="/demos">IT</a></li> <% end %>
-                <% if (idioma != 'PR' ) %>   <li><a href="/demos">PR</a></li> <% end %>
+                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/ayuda">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/ticas">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/confi">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/demos">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/demos">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/demos">PR</a></li> <% end %>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/ayuda">Ayuda</a></li>
-                <li><a href="/caracteristicas">Características</a></li>
-                <li><a href="/config">Versiones</a></li>
+                <li><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
+                <li><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+                <li><a href="/<%= idioma %>/config">Versiones</a></li>
                 <li class="divider"></li>
-                <li><a href="/demos">Demos</a></li>
+                <li><a href="/<%= idioma %>/demos">Demos</a></li>
               </ul>
             </li>
                         
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/configuraciones">Configuraciones</a></li>
+                <li><a href="/<%= idioma %>/mejoras">Mejoras</a></li>
+                <li><a href="/<%= idioma %>/configuraciones">Configuraciones</a></li>
                 <li class="divider"></li>
-                <li><a href="/config">Nueva configuración</a></li>
+                <li><a href="/<%= idioma %>/config">Nueva configuración</a></li>
               </ul>
             </li>
             
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/chartArea">Area</a></li>
-                <li><a href="/chartCircle">Círculo</a></li>                
-                <li><a href="/chartBar">Barras</a></li>
-                <li><a href="/chartColumn">Columnas</a></li>
-                <li><a href="/chartCombo">Combo</a></li>
-                <li><a href="/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
+                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
+                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
+                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
+                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
+                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
                 <li class="divider"></li>
-                <li><a href="/mycharts">Mis gráficos</a></li>
+                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
               </ul>
             </li>
           </ul>
@@ -352,7 +353,7 @@
                       </td>
                       <td>
                         <input type="checkbox" id="<%= columna %>_combo_string" name="<%= columna %>_combo_string"
-                        checked="<%= 'true' if(val['config'][:combo_string_fk].include?(columna)) %>"/>
+                        <%= 'checked' if (val['config'][:combo_string_fk].include?(columna)) %>/>
                       </td>
                       <td><%= valor[:is_nullable]%></td>
                       <td><%= valor[:data_type]%></td>
@@ -362,19 +363,16 @@
                           value="<%= valor[:comments]%>" class="form-control"/>
                       </td>
                       <td>
-                        <select class="form-control" id="<%= columna %>_ver_engrid" name="<%= columna %>_ver_engrid">
-                          <option value="1">Si</option><option value="0">No</option>
-                        </select>
+                        <input type="checkbox" id="<%= columna %>_ver_engrid" name="<%= columna %>_ver_engrid"
+                        <%= 'checked' if (valor[:vista_grid]==true) %>/>
                       </td>
                       <td>
                         <input type="text" id="<%= columna %>_vertexto_engrid" name="<%= columna %>_vertexto_engrid" 
                         value="<%= valor[:texto_grid]%>" class="form-control"/>
                       </td>
                       <td>
-                        <select class="form-control" id="<%= columna %>_es_archivo" name="<%= columna %>_es_archivo">
-                          <option value="1" <%= 'selected' if valor[:es_archivo].eql?('1') %>>Si</option>
-                          <option value="0" <%= 'selected' if valor[:es_archivo].eql?('0') %>>No</option>
-                        </select>
+                        <input type="checkbox" id="<%= columna %>_es_archivo" name="<%= columna %>_es_archivo"
+                        <%= 'checked' if (valor[:es_archivo].eql?('1')) %>/>
                       </td>
                       <td>
                         <input type="text" id="<%= columna %>_carpeta_ftp" name="<%= columna %>_carpeta_ftp" 

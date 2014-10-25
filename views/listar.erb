@@ -4,20 +4,20 @@ paginador = ''
 if (filas['filas_total'] && filas['filas_total']['0'])
   paginas = filas['filas_total']['0']['total'].to_i / tablas[tabla]['config'][:paginador].to_i
   
-  paginador = '<ul class="pagination pull-right"><li><a href="/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
+  paginador = '<ul class="pagination pull-right"><li><a href="/'+idioma+'/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
   
   (paginas-1).times do |i|
-    paginador=paginador +'<li><a href="/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
+    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
   end 
   
   if (paginas > 0)
-    paginador=paginador +'<li><a href="/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
+    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
   end
 end
 %>
 
             
-<% def crear_modal_agregar(tablas, tabla, filas) %>
+<% def crear_modal_agregar(tablas, tabla, filas, idioma) %>
             
       <!-- Modal Agregar-->
             
@@ -30,7 +30,7 @@ end
               <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= tabla%></h4>
             </div>
             <div class="modal-body">
-              <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= tabla%>/create_json" 
+              <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= idioma %>/<%= tabla%>/create_json" 
                   id="agregarform" name="agregarformPopPup" 
                   class="form-horizontal" enctype="multipart/form-data" >
                     <% tablas[tabla]['columnas'].each do |col, value| %>
@@ -69,7 +69,7 @@ end
 <% end %>
 
 
-<% def crear_modal_editar(tablas, tabla, filas) %>
+<% def crear_modal_editar(tablas, tabla, filas, idioma) %>
       
       <!-- Modal Editar-->
       
@@ -81,7 +81,7 @@ end
               <h4 class="modal-title" id="myModalLabel">Editando registro de <%= tabla%></h4>
             </div>
             <div class="modal-body">
-              <form method="get" action="/<%= tabla%>/update_id_json" id="editarform" name="editarform" 
+              <form method="get" action="/<%= idioma %>/<%= tabla%>/update_id_json" id="editarform" name="editarform" 
                   class="form-horizontal" role="form">
                     <% tablas[tabla]['columnas'].each do |col, value| %>
                     <div class="form-group">
@@ -120,7 +120,7 @@ end
 
 
             
-<% def crear_modal_add_informe(tabla) %>
+<% def crear_modal_add_informe(tabla, idioma) %>
             
       <div class="modal fade" id="addlistado_<%= tabla%>" name="addlistado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -130,7 +130,7 @@ end
               <h4 class="modal-title" id="myModalLabel">Guardar nuevo informe</h4>
             </div>
             <div class="modal-body">
-              <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= tabla%>/create_json" 
+              <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= idioma %>/<%= tabla%>/create_json" 
                   id="agregarform" name="agregarformPopPup" 
                   class="form-horizontal" enctype="multipart/form-data" >
                     
@@ -194,7 +194,7 @@ end
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <% enlaces.each do |link| %>
-               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -202,46 +202,47 @@ end
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <% if (idioma != 'ES' ) %>   <li><a href="/ES/">ES</a></li> <% end %>
-                <% if (idioma != 'EN' ) %>   <li><a href="/EN/">EN</a></li> <% end %>
-                <% if (idioma != 'FR' ) %>   <li><a href="/FR/">FR</a></li> <% end %>
-                <% if (idioma != 'DE' ) %>   <li><a href="/DE/">DE</a></li> <% end %>
-                <% if (idioma != 'IT' ) %>   <li><a href="/IT/">IT</a></li> <% end %>
-                <% if (idioma != 'PR' ) %>   <li><a href="/PR/">PR</a></li> <% end %>
+                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/ES/">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/EN/">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/FR/">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/DE/">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/IT/">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/PR/">PR</a></li> <% end %>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/ayuda">Ayuda</a></li>
-                <li><a href="/caracteristicas">Características</a></li>
-                <li><a href="/config">Versiones</a></li>
+                <li><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
+                <li><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+                <li><a href="/<%= idioma %>/config">Versiones</a></li>
                 <li class="divider"></li>
-                <li><a href="/demos">Demos</a></li>
+                <li><a href="/<%= idioma %>/demos">Demos</a></li>
               </ul>
             </li>
 
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/configuraciones">Configuraciones</a></li>
+                <li><a href="/<%= idioma %>/mejoras">Mejoras</a></li>
+                <li><a href="/<%= idioma %>/configuraciones">Configuraciones</a></li>
                 <li class="divider"></li>
-                <li><a href="/config">Nueva configuración</a></li>
+                <li><a href="/<%= idioma %>/config">Nueva configuración</a></li>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/chartArea">Area</a></li>
-                <li><a href="/chartCircle">Círculo</a></li>                
-                <li><a href="/chartBar">Barras</a></li>
-                <li><a href="/chartColumn">Columnas</a></li>
-                <li><a href="/chartCombo">Combo</a></li>
-                <li><a href="/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
+                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
+                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
+                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
+                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
+                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
                 <li class="divider"></li>
-                <li><a href="/mycharts">Mis gráficos</a></li>
+                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
               </ul>
             </li>
           </ul>
@@ -271,7 +272,7 @@ end
         <table class="table table-condensed table-bordered">
       		<thead>
         		<tr class="info">
-        		  <th><a href="/<%= tabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+        		  <th><a href="/<%= idioma %>/<%= tabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
         		    <div class="btn-group">        		            
                   <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
@@ -279,13 +280,13 @@ end
                   
                   <ul class="dropdown-menu">
                     <li role="presentation" class="dropdown-header">Refrescar cada :</li>
-                    <li><a href="/refrescar/<%= tabla%>/10">10 seg</a></li>
-                    <li><a href="/refrescar/<%= tabla%>/15">15 seg</a></li>
-                    <li><a href="/refrescar/<%= tabla%>/20">20 seg</a></li>
-                    <li><a href="/refrescar/<%= tabla%>/25">25 seg</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>/10">10 seg</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>/15">15 seg</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>/20">20 seg</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>/25">25 seg</a></li>
                     <li class="divider"></li>
-                    <li><a href="/refrescar/<%= tabla%>/0">Quitar</a></li>
-                    <li><a href="/refrescar/<%= tabla%>">Quitar todos</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>/0">Quitar</a></li>
+                    <li><a href="/<%= idioma %>/refrescar/<%= tabla%>">Quitar todos</a></li>
                   </ul>
                 </div>
         		    
@@ -294,14 +295,14 @@ end
                     <span class="glyphicon glyphicon-print"></span><span class="caret" style="margin-left: 5px"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a target="_blank" href="/<%= tabla %>/generatepdf">Imprimir</a></li>
+                    <li><a target="_blank" href="/<%= idioma %>/<%= tabla %>/generatepdf">Imprimir</a></li>
                     <li><a href="" data-toggle="modal" data-target="#addlistado_<%= tabla%>">Guardar nuevo</a></li>
                     
                     <li class="divider"></li>
                     <li role="presentation" class="dropdown-header">Mis informes :</li>
                     <% if (listados[tabla] && listados[tabla].length < 1) %>
                       <% listados[tabla].each do |fila, values| %>
-                        <li><a href="<%= values[:url] %>"><%= values[:nombre] %></a></li>
+                        <li><a target="_blank" href="<%= values[:url] %>"><%= values[:nombre] %></a></li>
                       <% end %>
                     <% else %>
                       <li role="presentation" class="dropdown-header"> - Ninguno - </li>
@@ -310,7 +311,7 @@ end
                 </div>
         		  </th>
         		  <% tablas[tabla]['columnas'].each do |col, value| %>
-                  <th><a href="/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= col%>"><%= col%>
+                  <th><a href="/<%= idioma %>/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= col%>"><%= col%>
                     <% if (order[:order] == 'desc') %>
                       <span class="glyphicon glyphicon-chevron-up"></span></a>
                     <% else %>
@@ -319,7 +320,7 @@ end
                   </th>
                   
 <!--              <% if (value[:column_rel]) %>
-                    <th><a href="/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= value[:tabla_rel]+'_'+value[:column_rel]%>">
+                    <th><a href="/<%= idioma %>/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= value[:tabla_rel]+'_'+value[:column_rel]%>">
                           <%= value[:tabla_rel]+'_'+value[:column_rel]%>
                       <% if (order[:order] == 'desc') %>
                         <span class="glyphicon glyphicon-chevron-up"></span></a>
@@ -331,16 +332,39 @@ end
               <% end %>
         		</tr>
 
-      		  <form action="/<%= tabla%>/listar" method="get" name="buscar" id="form_buscar1">
+      		  <form action="/<%= idioma %>/<%= tabla%>/listar" method="get" name="buscar" id="form_buscar1">
         			<tr>
       				  <td>
         				  <a href="" class="btn btn-default btn-xs btn_a" 
         				    data-toggle="modal" data-target="#agregarfila_<%= tabla%>" onclick="agregar()">
         				      <span class="glyphicon glyphicon-plus"></span>
         				  </a>
-        				  <a href="/<%= tabla%>" class="btn btn-default btn-xs btn_a" onclick="document.forms[0].submit(); return false;">
-        				    <span class="glyphicon glyphicon-search"></span>
-        				  </a>
+        				  
+        				  <div class="btn-group">
+        				    <button type="button" class="btn btn-default btn-xs btn_a" style="margin: 0px;"
+        				      onclick="document.forms[0].submit(); return false;">
+        				      <span class="glyphicon glyphicon-search"></span>
+        				    </button>
+                    <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" 
+                      style="margin: 0px;" data-toggle="dropdown">
+                      <span class="caret"></span><span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a target="_blank" href="/<%= idioma %>/<%= tabla %>/generatepdf">Guardar por defecto</a></li>
+                      <li><a href="" data-toggle="modal" data-target="#addbusqueda_<%= tabla%>">Guardar busqueda</a></li>
+                      
+                      <li class="divider"></li>
+                      <li role="presentation" class="dropdown-header">Mis busquedas :</li>
+                      <% if (busquedas[tabla] ) %>
+                        <% busquedas[tabla][:otras].each do |busqueda| %>
+                          <li><a href="<%= busqueda[:url] %>"><%= busqueda[:nombre] %></a></li>
+                        <% end %>
+                      <% else %>
+                        <li role="presentation" class="dropdown-header"> - Ninguna - </li>
+                      <% end %>
+                    </ul>
+                  </div>
+                  
       					<!--<td><input type="submit" value="Add"/>
       					     <input type="submit" value="Search"/> -->
       					</td>
@@ -374,7 +398,7 @@ end
       		</thead>
           <tbody>
       		<% filas[tabla].each do |key, en| %>
-      			<form action="/<%= tabla%>/update_json" method="get" name="form_editar" id="form_editar_<%= tabla+key%>">
+      			<form action="/<%= idioma %>/<%= tabla%>/update_json" method="get" name="form_editar" id="form_editar_<%= tabla+key%>">
       			  <tr id="<%= tabla+key%>">
       			    <td width="95px">
       			      <div class="btn-group">
@@ -396,8 +420,8 @@ end
                           end
                         end
                       %>
-                      <li><a href="/jerarquiaUp/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia arriba</a></li>
-                      <li><a href="/jerarquiaDown/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia abajo</a></li>
+                      <li><a href="/<%= idioma %>/jerarquiaUp/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia arriba</a></li>
+                      <li><a href="/<%= idioma %>/jerarquiaDown/<%= (tabla+'?'+ids) %>" target="_blank">Jerarquía hacia abajo</a></li>
                     </ul>
                   </div>
                   
@@ -416,7 +440,7 @@ end
                       valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
       				    %>
       				      <td>
-      				        <a href="/<%= tabla_ref %>/listar?<%= col+'='+valor%>" id="enlace_<%= col%>" 
+      				        <a href="/<%= idioma %>/<%= tabla_ref %>/listar?<%= combo_string+'='+valor%>" id="enlace_<%= col%>" 
       				          idlista="<%= valor%>" combo="<%= col%>"><%= valor %></a>
       				      </td>
       				    <% else if (tablas[tabla]['columnas'][col]) %>
@@ -442,9 +466,9 @@ end
    </div>-->
       </div>
       
-      <%=  crear_modal_add_informe(tabla) %>      
-      <%=  crear_modal_agregar(tablas, tabla, filas) %>
-      <%=  crear_modal_editar(tablas, tabla, filas) %>
+      <%=  crear_modal_add_informe(tabla, idioma) %>      
+      <%=  crear_modal_agregar(tablas, tabla, filas, idioma) %>
+      <%=  crear_modal_editar(tablas, tabla, filas, idioma) %>
     
 
       <!-- Grid detalle -->
@@ -495,14 +519,14 @@ end
                 <thead>
                   <tr class="info">
                     <th>
-                      <a href="/<%= tabla_detalle%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                      <a href="/<%= idioma %>/<%= tabla_detalle%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
                       
                       <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
                           <span class="glyphicon glyphicon-print"></span><span class="caret" style="margin-left: 5px"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                          <li><a target="_blank" href="/<%= tabla_detalle %>/generatepdf">Imprimir</a></li>
+                          <li><a target="_blank" href="/<%= idioma %>/<%= tabla_detalle %>/generatepdf">Imprimir</a></li>
                           <li><a href="" data-toggle="modal" data-target="#addlistado_<%= tabla_detalle%>">Guardar nuevo</a></li>
                           
                           <li class="divider"></li>
@@ -518,7 +542,7 @@ end
                       </div>
                     </th>
                     <% tablas[tabla_detalle]['columnas'].each do |col, value| %>
-                      <th><a href="/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>"><%= col%>
+                      <th><a href="/<%= idioma %>/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>"><%= col%>
                         <% if (order[:grid2_order] == 'desc') %>
                           <span class="glyphicon glyphicon-chevron-up"></span></a>
                         <% else %>
@@ -526,7 +550,7 @@ end
                         <% end %>
                       </th>
 <!--                  <% if (value[:column_rel]) %>
-                        <th><a href="/<%= tabla_detalle%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= value[:tabla_rel]+'_'+value[:column_rel]%>&g_g=<%= tabla_detalle%>">
+                        <th><a href="/<%= idioma %>/<%= tabla_detalle%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= value[:tabla_rel]+'_'+value[:column_rel]%>&g_g=<%= tabla_detalle%>">
                               <%= value[:tabla_rel]+'_'+value[:column_rel]%>
                           <% if (order[:grid2_order] == 'desc') %><span class="glyphicon glyphicon-chevron-up"></span></a>
                           <% else %>                <span class="glyphicon glyphicon-chevron-down"></span></a>
@@ -536,14 +560,14 @@ end
                     <% end %>
                   </tr>
 
-                  <form action="/<%= tabla_detalle%>/listar" method="get" name="buscar" id="form_buscar2_<%= tabla_detalle%>">
+                  <form action="/<%= idioma %>/<%= tabla_detalle%>/listar" method="get" name="buscar" id="form_buscar2_<%= tabla_detalle%>">
                     <tr>
                       <td>                          
                         <a href="" class="btn btn-default btn-xs btn_a" 
                           data-toggle="modal" data-target="#agregarfila_<%= tabla_detalle%>" onclick="agregar()">
                             <span class="glyphicon glyphicon-plus"></span>
                         </a>
-                        <a href="/<%= tabla_detalle%>" class="btn btn-default btn-xs btn_a" 
+                        <a href="/<%= idioma %>/<%= tabla_detalle%>" class="btn btn-default btn-xs btn_a" 
                           onclick="buscar_tabs('form_buscar2_<%= tabla_detalle%>'); return false;">
                           <span class="glyphicon glyphicon-search"></span>
                         </a>
@@ -595,7 +619,7 @@ end
                   %>
                   <% filas_detalle.each do |key, en| %>
                     <tr id="<%= tabla_detalle+key%>">
-                      <form action="/<%= tabla_detalle%>/update_json" method="get" name="form_editar" id="form_editar_<%= tabla_detalle+key%>">
+                      <form action="/<%= idioma %>/<%= tabla_detalle%>/update_json" method="get" name="form_editar" id="form_editar_<%= tabla_detalle+key%>">
                         <td width="95px">
                           <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
@@ -616,20 +640,20 @@ end
                                   end
                                 end
                               %>
-                              <li><a href="/jerarquiaUp/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                              <li><a href="/<%= idioma %>/jerarquiaUp/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
                                 Jerarquía hacia arriba</a></li>
-                              <li><a href="/jerarquiaDown/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                              <li><a href="/<%= idioma %>/jerarquiaDown/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
                                 Jerarquía hacia abajo</a></li>
                             </ul>
                           </div>
                           
-                          <a href="/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                          <a href="/<%= idioma %>/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
                             onclick="before_update('<%= tabla_detalle+key%>'); return false;">
                             <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
-                          <a href="/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                          <a href="/<%= idioma %>/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
                             onclick="cancel_update('<%= tabla_detalle+key %>'); return false;">
                             <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
-                          <!--<form action="/<%= tabla%>/<%= key%>" method="post">
+                          <!--<form action="/<%= idioma %>/<%= tabla%>/<%= key%>" method="post">
                             <input type="hidden" name="_method" value="delete" />
                             <input type="submit" value="Delete" class="btn btn-default"/>
                           </form>-->
@@ -641,7 +665,7 @@ end
                                 valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
                           %>
                             <td>
-                              <a href="/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                              <a href="/<%= idioma %>/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= combo_string+'='+valor%>"
                                 id="enlace_<%= col%>" combo="<%= col%>"><%= valor %></a>
                             </td>
                           <% else   if (tablas[tabla_detalle]['columnas'][col]) %>
@@ -658,9 +682,9 @@ end
             
           </div>
           
-          <%=  crear_modal_add_informe(tabla_detalle) %>
-          <%=  crear_modal_agregar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle]) %>
-          <%=  crear_modal_editar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle]) %>
+          <%=  crear_modal_add_informe(tabla_detalle, idioma) %>
+          <%=  crear_modal_agregar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle], idioma) %>
+          <%=  crear_modal_editar(tablas, tabla_detalle, filas[:filas_detalle][tabla_detalle], idioma) %>
         <% end %>
         
         
@@ -705,6 +729,41 @@ end
           </div>
         </div>
       </div>      
+      
+      
+      <!--  guardar nueva busqueda  -->
+            
+      <div class="modal fade" id="addbusqueda_<%= tabla%>" name="addbusqueda" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Guardar nueva busqueda</h4>
+            </div>
+            <div class="modal-body">
+              <form method="post" onsubmit="return agregarPopPup(this)" action="/<%= idioma %>/<%= tabla%>/save_search_json" 
+                  id="agregarform" name="agregarformPopPup" 
+                  class="form-horizontal" enctype="multipart/form-data" >
+                    
+                    <div class="form-group">
+                      <label for="nom_listado" class="col-sm-2 control-label">Nombre</label>
+                      <div class="col-sm-8">
+                        <input class="form-control" type="text" id="nom_busqueda" name="nom_busqueda" />
+                      </div>
+                    </div>
+                    
+                    <input class="form-control" type="hidden" id="url_busqueda" name="url_busqueda" 
+                        value="<%= request.url %>"/>
+                    
+                <br />
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="agregarbtn" class="btn btn-info" value="Guardar">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       
 
       <script>
@@ -863,7 +922,7 @@ end
             texto = cells[i].firstChild.getAttribute("oldvalue");
             hijos = cells[i].getElementsByTagName('select');
             if( hijos && hijos.length > 0) {
-              texto = '<a href="/employees/listar?emp_no='+hijos[0].getAttribute("oldvalue")+'" id="enlace_'+hijos[0].id+'" ';
+              texto = '<a href="/<%= idioma %>/employees/listar?emp_no='+hijos[0].getAttribute("oldvalue")+'" id="enlace_'+hijos[0].id+'" ';
               texto += 'idlista="'+hijos[0].getAttribute("oldvalue")+'" combo="'+hijos[0].id+'">';
               
               for(var j = 0; j < hijos[0].length; j++){

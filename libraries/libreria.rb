@@ -172,6 +172,43 @@ class App < Sinatra::Application
   end  
 
 
+
+  def save_generatepdf_json(app, controler, params)
+    unless @@config[:listados][controler]
+      @@config[:listados][controler] = Array.new
+    end
+    @@config[:listados][controler] << {:nombre=>'', :url=>'', :titulo=>''}
+    
+    puts @@config[:listados][controler].to_s
+    
+    result = '{"valido":"1", "mensaje":"Nuevo listado guardado con éxito"}'
+    erb result
+  end
+  
+  def default_search_json(app, controler, params)
+    unless @@config[:busquedas][controler]
+      @@config[:busquedas][controler] = {:defecto =>'', :otras => Array.new }
+    end
+    @@config[:busquedas][controler][:defecto] = params[:url_busqueda]
+    
+    puts @@config[:busquedas][controler].to_s
+    
+    result = '{"valido":"1", "mensaje":"Busqueda por defecto guardada con éxito"}'
+    erb result 
+  end
+    
+  def saveSearch_json(app, controler, params)
+    unless @@config[:busquedas][controler]
+      @@config[:busquedas][controler] = {:defecto=>'', :otras => Array.new }
+    end
+    @@config[:busquedas][controler][:otras] << {:nombre=> params[:nom_busqueda], :url=> params[:url_busqueda]} 
+    
+    puts @@config[:busquedas][controler].to_s
+    
+    result = '{"valido":"1", "mensaje":"Nueva busqueda guardada con éxito"}'
+    erb result 
+  end
+
   def generarPDF(app, controler, params)
 
     result = get_listar_tabla_json(app, controler, params, 0)
@@ -248,6 +285,19 @@ class App < Sinatra::Application
     return valido    
   end
   
+  def validLanguage(lang)
+    valido = false
+    lang2 = lang.downcase 
+    
+    # => en = INGLES /  es = ESPAÑOL / fr = FRANCES / de = ALEMAN  / it =ITALIANO / pr =PORTUGUES
+      
+    if(lang2.eql?('es') || lang2.eql?('en') || lang2.eql?('fr') || 
+       lang2.eql?('de') || lang2.eql?('it') || lang2.eql?('pr') )
+      valido = true;
+    end    
+    return valido    
+  end  
+  
   def existe?(controler)
     if @@config[:tablas].has_key?(controler)
       TRUE
@@ -260,14 +310,23 @@ class App < Sinatra::Application
 
   
   def home_page( message )
-    erb :features, :locals => {}
+    erb :features, :locals => {:idioma => @@config[:config][:idioma]}
   end
 
   def view_ayuda(message)
     erb :"help/ayuda", :locals => {:config => @@config[:config],
                        :enlaces => @@config[:enlaces],
-                       :message => message}
+                       :message => message,
+                       :idioma => @@config[:config][:idioma]}
   end
+  
+  def view_mejoras(message)
+    erb :mejoras, :locals => {:config => @@config[:config],
+                       :enlaces => @@config[:enlaces],
+                       :message => message,
+                       :idioma => @@config[:config][:idioma],
+                       :mejoras => @@config[:mejoras]}
+  end  
 
   def view_configuraciones_demos(message, filas={})
     erb :"demos/listarDemosConfig", :locals => {:config => @@config[:config],
@@ -318,7 +377,8 @@ class App < Sinatra::Application
                               :idioma => @@config[:config][:idioma],
                               :traductor => @@idiomas[@@config[:config][:idioma]],
                               :timers => @@config[:timers],
-                              :listados => @@config[:listados]}
+                              :listados => @@config[:listados],
+                              :busquedas => @@config[:busquedas]}
   end
   
   def listar_json( tabla='', filas={}, message='',order={}, params={} )
@@ -341,7 +401,8 @@ class App < Sinatra::Application
 
     erb :jerarquia, :locals => {:tabla => tabla, :filas => filas, :message => message,
                                 :order => order, :enlaces => @@config[:enlaces],
-                                :params => params, :tablas => @@config[:tablas]}
+                                :params => params, :tablas => @@config[:tablas],
+                                :idioma => @@config[:config][:idioma] }
   end    
     
 end

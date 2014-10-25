@@ -32,7 +32,9 @@ class App < Sinatra::Application
               :enlaces => [],
               :graficos => {},
               :timers => {},
-              :listados => {} }   # tabla => { nombre='', titulo='', url='' }
+              :mejoras => {},     # tabla => { min , max, minW, maxW }
+              :busquedas => {},   # tabla => { defecto = '', otras => [ nombre='', url='' ] }
+              :listados => {} }   # tabla => [ nombre='', titulo='', url='' ]
                   #:enlaces => {'1'=>'usuarios','2'=>'fotos','3'=>'entorno'} }
   
   @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
@@ -40,13 +42,26 @@ class App < Sinatra::Application
   @@demosConfig = {:config => {:idioma=>"ES",:bd=>"demosCrudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
                     :tablas => {}, :enlaces => []}
   $id_entorno = 0
+  
+  @@timer = 0;
+
 
   get '/' do
+    redirect "/es"
+  end  
+  get '/:lang' do |lang|
+    redirect "/es" unless (validLanguage(lang))
+    
     mensaje='<h1>Bienvenidos a nuestra App de facil mantenimiento de tus Bases de Datos</h1>'
     home_page(mensaje)
   end
+  get '/:lang/' do |lang|
+    redirect '/'+lang
+  end
   
-  get '/caracteristicas' do 
+  get '/:lang/caracteristicas' do |lang|
+    redirect "/es/caracteristicas" unless (validLanguage(lang))
+    
     message = ''
     erb :features, :locals => {:config => @@config[:config],
                              :tablas => @@config[:tablas],
@@ -54,52 +69,62 @@ class App < Sinatra::Application
                              :message => message,}    
   end
   
-  get '/caracteristicas/' do
-    redirect "/caracteristicas"
+  get '/:lang/caracteristicas/' do |lang|
+    redirect "/es/caracteristicas" unless (validLanguage(lang))
+    redirect "/#{lang}/caracteristicas"
   end  
   
   # =>    rutas para los graficos
-  get '/chartArea' do
+  get '/:lang/chartArea' do |lang|
+    redirect "/es/chartArea" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/area', message, {}, {})
   end
     
-  get '/chartBar' do 
+  get '/:lang/chartBar' do |lang|
+    redirect "/es/chartBar" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/barras', message, {}, {})
   end
   
-  get '/chartCircle' do
+  get '/:lang/chartCircle' do |lang|
+    redirect "/es/chartCircle" unless (validLanguage(lang))
     viewChart( 'charts/circle', '', {}, {})
   end
 
-  get '/chartCircle/testingChart' do
+  get '/:lang/chartCircle/testingChart' do |lang|
+    redirect "/es/chartCircle/testingChart" unless (validLanguage(lang))
+    
     message = ''
     results = @@app.testingCircle( params ) if params[:testing]
     viewChart( 'charts/circle', message, {}, results)
   end
   
-  get '/chartColumn' do
+  get '/:lang/chartColumn' do |lang|
+    redirect "/es/chartColumn" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/column', message, {}, {})    
   end
 
-  get '/chartCombo' do
+  get '/:lang/chartCombo' do |lang|
+    redirect "/es/chartCombo" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/combo', message, {}, {})    
   end
 
-  get '/chartLine' do
+  get '/:lang/chartLine' do |lang|
+    redirect "/es/chartLine" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/line', message, {}, {})
   end
 
-  get '/mycharts' do
+  get '/:lang/mycharts' do |lang|
+    redirect "/es/mycharts" unless (validLanguage(lang))
     message = ''
     
     viewChart( 'charts/misgraficos', message, {}, {}) 
@@ -107,26 +132,32 @@ class App < Sinatra::Application
           
   # =>    final de rutas para los graficos
   
-  get '/jerarquiaUp/:tabla' do |tabla|
+  get '/:lang/jerarquiaUp/:tabla' do |lang, tabla|
+    redirect "/es/jerarquiaUp/#{tabla}" unless (validLanguage(lang))
+    
     message = ''
     results = @@app.jerarquia("Up", params, tabla) if (@@config[:tablas][tabla])
     verJerarquia( tabla, results, message, {}, params)
   end
   
-  get '/jerarquiaDown/:tabla' do |tabla|
+  get '/:lang/jerarquiaDown/:tabla' do |lang, tabla|
+    redirect "/es/jerarquiaDown/#{tabla}" unless (validLanguage(lang))
+    
     message = ''
     results = @@app.jerarquia("Down", params, tabla) if (@@config[:tablas][tabla])
     verJerarquia( tabla, results, message, {}, params)    
   end  
 
 
-  get '/refrescar/:tabla' do |tabla|
+  get '/:lang/refrescar/:tabla' do |lang, tabla|
+    redirect "/es/refrescar/#{tabla}" unless (validLanguage(lang))
     @@config[:timers] = {}
     
-    redirect '/refrescar/'+tabla+'/0'
+    redirect "#{lang}/refrescar/#{tabla}/0"
   end
   
-  get '/refrescar/:tabla/:segundos' do |tabla, segundos|
+  get '/:lang/refrescar/:tabla/:segundos' do |lang, tabla, segundos|
+    redirect "/es/refrescar/#{tabla}/#{segundos}" unless (validLanguage(lang))
     
     if(!tabla.eql?('config') || !tabla.eql?('favicon.ico'))
       case segundos
@@ -147,16 +178,28 @@ class App < Sinatra::Application
     end
   end
   
-  
-  get '/ayuda' do
+  get '/:lang/mejoras' do |lang|
+    redirect "/es/mejoras" unless (validLanguage(lang))
     message = ''
-    view_ayuda(message)    
+    view_mejoras(message)
   end
-  get '/ayuda/' do
-    redirect '/ayuda'
+  get '/:lang/mejoras/' do |lang|
+    redirect "/es/mejoras" unless (validLanguage(lang))
+    redirect "#{lang}/mejoras"
+  end  
+  
+  get '/:lang/ayuda' do |lang|
+    redirect "/es/ayuda" unless (validLanguage(lang))
+    message = ''
+    view_ayuda(message)
+  end
+  get '/:lang/ayuda/' do |lang|
+    redirect "/es/ayuda" unless (validLanguage(lang))
+    redirect "#{lang}/ayuda"
   end
   
-  get '/demos' do
+  get '/:lang/demos' do |lang|
+    redirect "/es/demos" unless (validLanguage(lang))
     message = ''
     url = request.base_url
     
@@ -180,7 +223,10 @@ class App < Sinatra::Application
     #end    
     view_configuraciones_demos(message, filas)
   end
-  get '/demos/:controler/:funcion' do |controler, funcion|
+  
+  get '/:lang/demos/:controler/:funcion' do |lang, controler, funcion|
+    redirect "/es/demos/#{controler}/#{funcion}" unless (validLanguage(lang))
+    
     if(validController(controler))
       case funcion
       when 'create'      then create_id(@@appDemos, controler, params)
@@ -193,15 +239,20 @@ class App < Sinatra::Application
       end
     end
   end    
-  get '/demos/' do
-    redirect '/demos'
+  
+  get '/:lang/demos/' do |lang|
+    redirect "/es/demos" unless (validLanguage(lang))
+    redirect "/#{lang}/demos"
   end
-  get '/demos/config/view/:id' do |idConfig|
+  get '/:lang/demos/config/view/:id' do |lang, idConfig|
+    redirect "/es/demos/config/view/#{idConfig}" unless (validLanguage(lang))
+    
     message = ''
     select_demos_config_id(idConfig)
   end  
   
-  get '/configuraciones' do
+  get '/:lang/configuraciones' do |lang|
+    redirect "/es/configuraciones" unless (validLanguage(lang))
     message = ''
     
     #if(@@appCRUDig=='')
@@ -225,7 +276,10 @@ class App < Sinatra::Application
     
     view_configuraciones(message, filas)
   end
-  get '/configuraciones/:controler/:funcion' do |controler, funcion|
+  
+  get '/:lang/configuraciones/:controler/:funcion' do |lang, controler, funcion|
+    redirect "/es/configuraciones/#{controler}/#{funcion}" unless (validLanguage(lang))
+    
     if(validController(controler))
       case funcion
       when 'create'      then create_id(@@appCRUDig, controler, params)
@@ -238,18 +292,23 @@ class App < Sinatra::Application
       end
     end
   end  
-  get '/configuraciones/' do
-    redirect '/configuraciones'
+  
+  get '/:lang/configuraciones/' do |lang|
+    redirect "/es/configuraciones" unless (validLanguage(lang))
+    redirect "/#{lang}/configuraciones"
   end  
     
-  get '/config' do 
+  get '/:lang/config' do |lang|
+    redirect "/es/config" unless (validLanguage(lang))
+    
     message = ''
     conexionBDId = {:bd=>"fullcrud",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}
     view_config(message, conexionBDId)
   end
   
-  get '/config/' do
-    redirect '/config'
+  get '/:lang/config/' do |lang|
+    redirect "/es/config" unless (validLanguage(lang))
+    redirect "/#{lang}/config"
   end
     
   post '/config/conectarBD' do
@@ -284,9 +343,10 @@ class App < Sinatra::Application
   end  
   
   post '/config/edit/:tabla' do |tabla|
+    redirect "/es/#{controler}/listar" unless (validLanguage(lang))
     message = ''
 
-    redirect "/config" if (tabla.eql?('config') || tabla.eql?('favicon.ico') || tabla.eql?('js') || tabla.eql?('css'))
+    redirect "/config" if (!validController(controler))
 
     result=@@app.save_config_table(@@config[:tablas], tabla, params)
     if result==1
@@ -297,17 +357,21 @@ class App < Sinatra::Application
     view_config(message)
   end
 
-  get '/config/view/:id' do |idConfig|
+  get '/:lang/config/view/:id' do |lang, idConfig|
+    redirect "/es/config/view/#{idConfig}" unless (validLanguage(lang))
+    
     message = ''
     select_config_id('idAdmin', idConfig)
   end
     
-  get '/:controler' do |controler|
-    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico') || controler.eql?('js') || controler.eql?('css'))
+  get '/:lang/:controler' do |lang, controler|
+    redirect "/es/#{controler}/listar" unless (validLanguage(lang))
+    redirect "/#{controler}/listar" unless validController(controler)
   end
     
-  get '/:controler/' do |controler|
-    redirect "/#{controler}/listar" unless (controler.eql?('config') || controler.eql?('favicon.ico') || controler.eql?('js') || controler.eql?('css'))
+  get '/:lang/:controler/' do |lang, controler|
+    redirect "/es/#{controler}/listar" unless (validLanguage(lang))
+    redirect "/#{controler}/listar" unless validController(controler)
   end
 
   post '/:controler/:funcion' do |controler, funcion|
@@ -323,26 +387,33 @@ class App < Sinatra::Application
     end
   end  
   
-  get '/:controler/:funcion' do |controler, funcion|
+  get '/:lang/:controler/:funcion' do |lang, controler, funcion|
+    redirect "/es/#{controler}/#{funcion}" unless (validLanguage(lang))
+    
     order = ''
     search = ''
 
     if(validController(controler))
       case funcion
-      when 'create'      then create_id(@@app, controler, params)
-      when 'create_json' then create_id_json(@@app, controler, params)
-      when 'update'      then update_id(@@app, controler, params)
-      when 'update_json' then update_id_json(@@app, controler, params)
-      when 'delete'      then delete_id(@@app, controler, params)
-      when 'delete_json' then delete_id_json(@@app, controler, params)        
-      when 'listar'      then listar_tabla(@@app, controler, params, 0)
-      when 'generatepdf' then generarPDF(@@app, controler, params)
+        when 'create'                 then create_id(@@app, controler, params)
+        when 'create_json'            then create_id_json(@@app, controler, params)
+        when 'update'                 then update_id(@@app, controler, params)
+        when 'update_json'            then update_id_json(@@app, controler, params)
+        when 'delete'                 then delete_id(@@app, controler, params)
+        when 'delete_json'            then delete_id_json(@@app, controler, params)        
+        when 'listar'                 then listar_tabla(@@app, controler, params, 0)
+        when 'generatepdf'            then generarPDF(@@app, controler, params)
+        when 'save_generatepdf_json'  then save_generatepdf_json(@@app, controler, params)
+        when 'default_search_json'    then default_search_json(@@app, controler, params)
+        when 'save_search_json'       then saveSearch_json(@@app, controler, params)
       end
     end
+    
   end
   
-  get '/:controler/:funcion/:id' do |controler, funcion, id|
+  get '/:lang/:controler/:funcion/:id' do |lang, controler, funcion, id|
     #redirect "/#{controler}/#{funcion}" unless (controler.eql?('config') || controler.eql?('favicon.ico'))
+    redirect "/es/#{controler}/#{funcion}/#{id}" unless (validLanguage(lang))
     
     if(validController(controler))
       case funcion
@@ -355,7 +426,7 @@ class App < Sinatra::Application
     end
   end
   
-  post '/:controler/:funcion/:id' do |controler, funcion, id|
+  post '/:controler/:funcion/:id' do |controler, funcion, id|    
     if(validController(controler))
       listar_tabla_json(@@app, controler, params, id, 0)
     end

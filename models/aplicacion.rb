@@ -2,10 +2,13 @@ class Aplicacion
   
   attr_reader :aplicacion
   attr_reader :conexion
+  attr_reader :timer
   
   def initialize( args )
     @aplicacion = args
     @conexion = nil
+    
+    @timer = 0
   end
 
   #     funciones archivos FTP

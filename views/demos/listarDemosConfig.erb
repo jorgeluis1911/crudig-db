@@ -30,7 +30,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <% enlaces.each do |link| %>
-               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -38,25 +38,25 @@
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/ayuda">Ayuda</a></li>
-                <li><a href="/caracteristicas">Características</a></li>
-                <li><a href="/config">Versiones</a></li>
+                <li><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
+                <li><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+                <li><a href="/<%= idioma %>/config">Versiones</a></li>
                 <li class="divider"></li>
-                <li><a href="/demos">Demos</a></li>
+                <li><a href="/<%= idioma %>/demos">Demos</a></li>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/chartArea">Area</a></li>
-                <li><a href="/chartCircle">Círculo</a></li>                
-                <li><a href="/chartBar">Barras</a></li>
-                <li><a href="/chartColumn">Columnas</a></li>
-                <li><a href="/chartCombo">Combo</a></li>
-                <li><a href="/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
+                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
+                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
+                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
+                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
+                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
                 <li class="divider"></li>
-                <li><a href="/mycharts">Mis gráficos</a></li>
+                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
               </ul>
             </li>
           </ul>
@@ -100,7 +100,7 @@
       			<% filas[configTabla].each do |key, en| %>
       			  <tr id="<%= en['id_config']%>">
       			    <td width="60px">
-                  <a href="/demos/config/view/<%= en['id_config']%>" id="edit_save_<%= en['id_config']%>" class="btn btn-default btn-xs btn_a">
+                  <a href="/<%= idioma %>/demos/config/view/<%= en['id_config']%>" id="edit_save_<%= en['id_config']%>" class="btn btn-default btn-xs btn_a">
                     <span class="glyphicon glyphicon-tasks" title="Configurar"></span></a>
                       <!--onclick="cancel_update('<%= en['id_config']%>'); return false;"-->
                       
@@ -112,7 +112,7 @@
         				<% en.each do |col, valor| %>
       				    <% if (crudigTablas[configTabla]['columnas'][col] && crudigTablas[configTabla]['columnas'][col][:column_rel]) %>
       				      <td>
-      				        <a href="/demos/<%= crudigTablas[configTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+      				        <a href="/<%= idioma %>/demos/<%= crudigTablas[configTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
       				          id="enlace_<%= col%>" idlista="<%= valor%>" combo="<%= col%>"><%= valor%></a>
       				          <!-- falta agregar el campo que visualiza el texto del enlace
       				            por defecto el la clave ajena
@@ -142,7 +142,7 @@
               <thead>
                 <tr class="info">
                   <th>
-                    <a href="/demos/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                    <a href="/<%= idioma %>/demos/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
                     <a href="" class="btn btn-default btn-xs btn_a" 
                         data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
                           <span class="glyphicon glyphicon-plus"></span>
@@ -184,17 +184,17 @@
                               end
                             end
                           %>
-                          <li><a href="/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                          <li><a href="/<%= idioma %>/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
                             Jerarquía hacia arriba</a></li>
-                          <li><a href="/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                          <li><a href="/<%= idioma %>/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
                             Jerarquía hacia abajo</a></li>
                         </ul>
                       </div>
                       
-                      <a href="/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                      <a href="/<%= idioma %>/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
                         onclick="before_update('<%= usersTabla+key%>'); return false;">
                         <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
-                      <a href="/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                      <a href="/<%= idioma %>/demos/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
                         onclick="cancel_update('<%= usersTabla+key %>'); return false;">
                         <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
                       <!--<form action="/<%= tabla%>/<%= key%>" method="post">
@@ -205,7 +205,7 @@
                     <% en.each do |col, valor| %>
                       <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
                         <td>
-                          <a href="/demos/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                          <a href="/<%= idioma %>/demos/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
                             id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
                       <% else %>
                         <td><%= valor%></td>
@@ -451,7 +451,7 @@
             texto = cells[i].firstChild.getAttribute("oldvalue");
             hijos = cells[i].getElementsByTagName('select');
             if( hijos && hijos.length > 0) {
-              texto = '<a href="/employees/listar?emp_no='+hijos[0].getAttribute("oldvalue")+'" id="enlace_'+hijos[0].id+'" ';
+              texto = '<a href="/<%= idioma %>/employees/listar?emp_no='+hijos[0].getAttribute("oldvalue")+'" id="enlace_'+hijos[0].id+'" ';
               texto += 'idlista="'+hijos[0].getAttribute("oldvalue")+'" combo="'+hijos[0].id+'">';
               
               for(var j = 0; j < hijos[0].length; j++){

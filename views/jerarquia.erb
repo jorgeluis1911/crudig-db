@@ -4,14 +4,14 @@ paginador = ''
 if (filas['filas_total'] && filas['filas_total']['0'])
   paginas = filas['filas_total']['0']['total'].to_i / tablas[tabla]['config'][:paginador]
   
-  paginador = '<ul class="pagination pull-right"><li><a href="/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
+  paginador = '<ul class="pagination pull-right"><li><a href="/<%= idioma %>/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
   
   (paginas-1).times do |i|
-    paginador=paginador +'<li><a href="/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
+    paginador=paginador +'<li><a href="/<%= idioma %>/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
   end 
   
   if (paginas > 0)
-    paginador=paginador +'<li><a href="/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
+    paginador=paginador +'<li><a href="/<%= idioma %>/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
   end
 end
 =end
@@ -41,13 +41,13 @@ end
       <% filas[tabla].each do |key, en| %>
         <tr id="<%= key%>">
           <td>
-            <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+            <a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
               onclick="return false;">
               <span class="glyphicon glyphicon-chevron-down"></span></a>            
-            <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+            <a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
               onclick="before_update('<%= key%>'); return false;">
               <span class="glyphicon glyphicon-pencil"></span></a>
-            <a href="/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+            <a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
               onclick="cancel_update('<%= key%>'); return false;">
               <span class="glyphicon glyphicon-trash"></a>
           </td>
@@ -56,7 +56,7 @@ end
           if(en[:fila].size > 0)
             en[:fila].each do |col, valor| %>
               <td><% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) %>
-                    <a href="/<%= tablas[tabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"><%= valor%></a>
+                    <a href="/<%= idioma %>/<%= tablas[tabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"><%= valor%></a>
                   <% else %>
                     <%= valor%>
                   <% end %>
@@ -120,14 +120,14 @@ end
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <% enlaces.each do |link| %>
-               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class="navbar-right"><a href="/caracteristicas">Características</a></li>
-            <li class="navbar-right"><a href="/config">Config</a></li>
-            <li class="navbar-right"><a href="/config">Versiones</a></li>
-            <li class="navbar-right"><a href="/graficos">Gráficos</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/config">Config</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/config">Versiones</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/graficos">Gráficos</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

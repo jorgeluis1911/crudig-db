@@ -76,22 +76,22 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <% enlaces.each do |link| %>
-               <li><a href="/<%= link%>/listar"><%= link%></a></li>
+               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class="navbar-right"><a href="/caracteristicas">Características</a></li>
-            <li class="navbar-right"><a href="/config">Config</a></li>
-            <li class="navbar-right"><a href="/config">Versiones</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/config">Config</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/config">Versiones</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/chartArea">Area</a></li>
-                <li><a href="/chartCircle">Círculo</a></li>                
-                <li><a href="/chartBar">Barras</a></li>
-                <li><a href="/chartColumn">Columnas</a></li>
-                <li><a href="/chartCombo">Combo</a></li>
-                <li><a href="/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
+                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
+                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
+                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
+                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
+                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
               </ul>
             </li>
           </ul>

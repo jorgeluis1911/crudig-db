@@ -26,10 +26,14 @@ class MySQLconex < Aplicacion
   def load_config_MySQL(bd_name)
     tablas = ''
     
+    time1 = Time.now
+    
     @aplicacion[:enlaces] = []
     @aplicacion[:tablas] = {}
     
     referidas = {}
+    
+    time11 = Time.now
     
     select = 'col.table_name, col.column_name, col.column_default, col.is_nullable, col.DATA_TYPE, col.CHARACTER_MAXIMUM_LENGTH, 
               col.COLUMN_KEY, col.PRIVILEGES, col.COLUMN_COMMENT, col.ORDINAL_POSITION, 
@@ -39,10 +43,14 @@ class MySQLconex < Aplicacion
     order = ' ORDER BY col.table_name, col.ordinal_position '
     @conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
       #print row['column_name']
+      
+      time22 = Time.now
+      puts "    consulta - Time elapsed #{(time22 - time11)*1000} milliseconds"
 
       if !row['table_name'].eql?(tablas)
         @aplicacion[:enlaces] << row['table_name']
         @aplicacion[:tablas][row['table_name']] = {}
+        @aplicacion[:mejoras][row['table_name']] = {:min=>0, :max=>0, :minW=>0, :maxW=>0}
         
         config_tabla= {}
         config_tabla[:inner_join] = true
@@ -99,15 +107,23 @@ class MySQLconex < Aplicacion
         referidas[columna[:tabla_rel]] << tablas
       end
       @aplicacion[:tablas][tablas]['columnas'][row['column_name']] = columna
+      
+      time11 = Time.now
     }
     referidas.each{ |tabla, tablas_ref|   
       @aplicacion[:tablas][tabla]['config'][:referidas] = tablas_ref
     }
     
+    time2 = Time.now
+    puts "load_BD MySQL - Time elapsed #{(time2 - time1)*1000} milliseconds"
+    
     return '<div class="alert alert-success"><p>Confuración BD cargada con éxito</p></div>'
   end
 
   def select_mysql(select, tabla, params, start_limit)
+    
+    time1 = Time.now
+    
     filas = Hash.new
     cont = 0
     
@@ -120,7 +136,10 @@ class MySQLconex < Aplicacion
     select = ''
     from = 'FROM '+tabla
     #@aplicacion[:tablas][tabla].each {|key, value| select << "#{key}," if (value[:column_key] != 'PRI' )}
-    @aplicacion[:tablas][tabla]['columnas'].each {|key, value| 
+    @aplicacion[:tablas][tabla]['columnas'].each {|key, value|
+      
+      time3 = Time.now
+      
       select << "#{tabla}.#{key},"
       if (value[:column_rel])
         from << ' left join '+value[:tabla_rel]+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'.'+value[:column_rel]
@@ -136,6 +155,9 @@ class MySQLconex < Aplicacion
         
         filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], ' FROM '+value[:tabla_rel],'','','')
       end
+      
+      time2 = Time.now
+      puts "    bucle select general - Time elapsed #{(time2 - time3)*1000} milliseconds"
     }
     select = select[0..-2]
     
@@ -152,6 +174,10 @@ class MySQLconex < Aplicacion
     
     filas['filas_total'] = simple_select(' COUNT(*) as total ', from, where_sql, '', '')
     #puts filas
+    
+    time2 = Time.now
+    puts "select general - Time elapsed #{(time2 - time1)*1000} milliseconds"
+    
     return filas
   end
   
@@ -160,8 +186,8 @@ class MySQLconex < Aplicacion
     filas = Hash.new
     cont = 0
     
-    puts 'simple_select()'
-    puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit
+    #puts 'simple_select()'
+    #puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit
     @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit).each_hash{ |row|
       filas["#{cont}"] = row
       cont += 1
@@ -172,7 +198,7 @@ class MySQLconex < Aplicacion
   
   def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
     load_bd unless(@conexion)
-    puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
+    #puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
     return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
   end  
 
