@@ -41,8 +41,11 @@ end
                           <select class="form-control" id="<%= col%>" name="<%= col%>" required>
                             <% filas[value[:tabla_rel]].each do |id, fila| %>
                                 <option value="<%= fila[value[:column_rel]]%>" 
-                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
-                                  <%= fila[value[:column_rel]]%></option>
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]])) %> >
+                                  <% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+                                     valor = fila[value[:column_rel]]
+                                     valor = fila[ combo_string ] if (combo_string)  %>
+                                <%= valor %></option>
                             <% end %>
                           </select>
                       <% elsif(value[:es_archivo].eql?('1')) %>
@@ -50,7 +53,8 @@ end
                       <% else %>
                         <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
                             maxlength="<%= value[:length] if value[:length]%>" class="form-control"
-                            <%= 'required' if value[:column_key]=='PRI' %>/>
+                            <%= 'required' if value[:column_key]=='PRI' %>
+                            <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
                       <% end %>
                       </div>
                     </div>
@@ -91,8 +95,11 @@ end
                           <select class="form-control" id="<%= col%>" name="<%= col%>" required>
                             <% filas[value[:tabla_rel]].each do |id, fila| %>
                                 <option value="<%= fila[value[:column_rel]]%>" 
-                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
-                                  <%= fila[value[:column_rel]]%></option>
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]])) %> >
+                                  <% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+                                     valor = fila[value[:column_rel]]
+                                     valor = fila[ combo_string ] if (combo_string)  %>
+                                <%= valor %></option>
                             <% end %>
                           </select>
                       <% elsif(value[:es_archivo].eql?('1')) %>
@@ -100,7 +107,8 @@ end
                       <% else %>
                         <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
                             maxlength="<%= value[:length] if value[:length]%>" class="form-control"
-                            <%= 'required' if value[:column_key]=='PRI' %>/>
+                            <%= 'required' if value[:column_key]=='PRI' %>
+                            <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
                       <% end %>
                       </div>
                     </div>
@@ -202,47 +210,50 @@ end
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/ES/">ES</a></li> <% end %>
-                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/EN/">EN</a></li> <% end %>
-                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/FR/">FR</a></li> <% end %>
-                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/DE/">DE</a></li> <% end %>
-                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/IT/">IT</a></li> <% end %>
-                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/PR/">PR</a></li> <% end %>
+                <% if (idioma != 'ES' ) %>   <li><a href="/ES/">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/EN/">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/FR/">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/DE/">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/IT/">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/PR/">PR</a></li> <% end %>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:info] %><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
-                <li><a href="/<%= idioma %>/caracteristicas">Características</a></li>
-                <li><a href="/<%= idioma %>/config">Versiones</a></li>
+                <li><a href="/<%= idioma %>/ayuda"><%= traductor[:menu][:ayuda] %></a></li>
+                <li><a href="/<%= idioma %>/caracteristicas"><%= traductor[:menu][:caracteristicas] %></a></li>
+                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:versiones] %></a></li>
                 <li class="divider"></li>
-                <li><a href="/<%= idioma %>/demos">Demos</a></li>
+                <li><a href="/<%= idioma %>/demos"><%= traductor[:menu][:demos] %></a></li>
               </ul>
             </li>
 
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:config] %><b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/<%= idioma %>/mejoras">Mejoras</a></li>
-                <li><a href="/<%= idioma %>/configuraciones">Configuraciones</a></li>
+                <li><a href="/<%= idioma %>/configuraciones"><%= traductor[:menu][:configuraciones] %></a></li>
                 <li class="divider"></li>
-                <li><a href="/<%= idioma %>/config">Nueva configuración</a></li>
+                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:nueva_config] %></a></li>
               </ul>
             </li>
             
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:graficos] %><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
-                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
-                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
-                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
-                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
-                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/chartArea"><%= traductor[:menu][:chart_area] %></a></li>
+                <li><a href="/<%= idioma %>/chartCircle"><%= traductor[:menu][:chart_circulo] %></a></li>                
+                <li><a href="/<%= idioma %>/chartBar"><%= traductor[:menu][:chart_barras] %></a></li>
+                <li><a href="/<%= idioma %>/chartColumn"><%= traductor[:menu][:chart_columnas] %></a></li>
+                <li><a href="/<%= idioma %>/chartCombo"><%= traductor[:menu][:chart_combo] %></a></li>
+                <li><a href="/<%= idioma %>/chartLine"><%= traductor[:menu][:lineas] %></a></li>
                 <li class="divider"></li>
-                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
+                <li><a href="/<%= idioma %>/mycharts"><%= traductor[:menu][:mis_graficos] %></a></li>
               </ul>
             </li>
           </ul>
@@ -311,7 +322,13 @@ end
                 </div>
         		  </th>
         		  <% tablas[tabla]['columnas'].each do |col, value| %>
-                  <th><a href="/<%= idioma %>/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= col%>"><%= col%>
+                  <th>
+                    <a href="/<%= idioma %>/<%= tabla%>/listar?order=<%= order[:order]%>&field=<%= col%>">
+                      <% if value[:texto_grid] && value[:texto_grid] != '' %>
+                        <%= value[:texto_grid]  %>
+                      <%  else  %>
+                        <%= col  %>
+                      <%  end   %>
                     <% if (order[:order] == 'desc') %>
                       <span class="glyphicon glyphicon-chevron-up"></span></a>
                     <% else %>
@@ -389,7 +406,8 @@ end
                             name="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                             value="<%= params[value[:tabla_rel]+'_'+value[:column_rel]] %>" />    -->
         					  <% else %>
-                      <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" class="form-control" >
+                      <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                          class="form-control" <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
                     <% end %>
                     </td>
                 <% end %>
@@ -408,6 +426,9 @@ end
                     <ul class="dropdown-menu">
                       <li><a href="" data-toggle="modal" data-target="#editarfila_<%= tabla%>" >
                           Editar en ventana</a>
+                      </li>
+                      <li><a target="_blank" href="/<%= idioma %>/<%= tabla%>/" >
+                          Editar en nueva página</a>
                       </li>
                       <%  ids = ''
                         en.each do |col, valor| 
@@ -433,27 +454,28 @@ end
         				    data-toggle="modal" data-target="#msgDelete">
                     <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
         				</td>
+        				<% alias_campos = 1 %>
         				<% en.each do |col, valor| %>
       				    <% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) 
       				        tabla_ref = tablas[tabla]['columnas'][col][:tabla_rel]
                       combo_string = tablas[ tabla_ref ]['config'][:combo_string_fk].first
-                      valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
+                      valor = en[ tabla_ref+'_'+combo_string+'_'+alias_campos.to_s ] if (combo_string)
       				    %>
       				      <td>
-      				        <a href="/<%= idioma %>/<%= tabla_ref %>/listar?<%= combo_string+'='+valor%>" id="enlace_<%= col%>" 
-      				          idlista="<%= valor%>" combo="<%= col%>"><%= valor %></a>
+      				        <a href="/<%= idioma %>/<%= tabla_ref %>/listar?<%= combo_string+'='+valor.to_s%>" id="enlace_<%= col%>"
+      				          idlista="<%= valor%>" combo="<%= col%>"><%= valor.to_s %></a>
       				      </td>
-      				    <% else if (tablas[tabla]['columnas'][col]) %>
-      				      <td fila="<%= col%>">
-      				        <%= valor %></td>
-      				    <% end end %>
+      				      <% alias_campos = alias_campos + 1 %>
+      				    <% elsif (tablas[tabla]['columnas'][col]) %>
+      				        <td fila="<%= col%>"><%= valor %></td>
+      				    <% end %>
       				  <% end %>
       			  </tr>
       			</form>
-      			<% end %>  			  
+      		<% end %>
       		</tbody>
       	</table>
-      	<%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas[tabla].length < 1) %>
+      	<%= '<div class="alert alert-danger"> No tiene datos esta tabla </div>' if (filas[tabla].length < 1) %>
       	<%#= tablas[tabla]['columnas']  	
       	%>
       	<%#= filas 
@@ -542,7 +564,13 @@ end
                       </div>
                     </th>
                     <% tablas[tabla_detalle]['columnas'].each do |col, value| %>
-                      <th><a href="/<%= idioma %>/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>"><%= col%>
+                      <th>
+                        <a href="/<%= idioma %>/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>">
+                            <% if value[:texto_grid] && value[:texto_grid] != '' %>
+                              <%= value[:texto_grid]  %>
+                            <%  else  %>
+                              <%= col  %>
+                            <%  end   %>
                         <% if (order[:grid2_order] == 'desc') %>
                           <span class="glyphicon glyphicon-chevron-up"></span></a>
                         <% else %>
@@ -593,7 +621,8 @@ end
                                   <% end %>
                                 </select>
                                 <% else %>
-                                  <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" class="form-control"/>
+                                  <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                                      class="form-control" <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
                                 <% end %>
                                 </td>
 <!--                            <td>
@@ -601,7 +630,8 @@ end
                                     name="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
                                     value="<%= params[value[:tabla_rel]+'_'+value[:column_rel]] %>" />    -->
                           <% else %>
-                            <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" class="form-control"/>
+                            <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                                class="form-control"  <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
                           <% end %>
                           </td>
                       <%  } %>
@@ -657,20 +687,22 @@ end
                             <input type="hidden" name="_method" value="delete" />
                             <input type="submit" value="Delete" class="btn btn-default"/>
                           </form>-->
-                        </td>
+                        </td>                
+                        <% alias_campos = 1 %>
                         <% en.each do |col, valor| %>
                           <% if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_rel]) 
                                 tabla_ref = tablas[tabla_detalle]['columnas'][col][:tabla_rel]
                                 combo_string = tablas[ tabla_ref ]['config'][:combo_string_fk].first
-                                valor = en[ tabla_ref+'_'+combo_string ] if (combo_string)
+                                valor = en[ tabla_ref+'_'+combo_string+'_'+alias_campos.to_s ] if (combo_string)
                           %>
                             <td>
-                              <a href="/<%= idioma %>/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= combo_string+'='+valor%>"
-                                id="enlace_<%= col%>" combo="<%= col%>"><%= valor %></a>
+                              <a href="/<%= idioma %>/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= combo_string+'='+valor.to_s%>"
+                                id="enlace_<%= col%>" combo="<%= col%>"><%= valor.to_s %></a>
                             </td>
-                          <% else   if (tablas[tabla_detalle]['columnas'][col]) %>
+                            <% alias_campos = alias_campos + 1 %>
+                          <% elsif (tablas[tabla_detalle]['columnas'][col]) %>
                             <td fila="<%= col%>"><%= valor%></td>
-                          <% end    end%>
+                          <% end %>
                         <% end %>
                       </form>
                     </tr>
@@ -779,7 +811,7 @@ end
 
         
         function agregarPrueba(){
-          alert('asdasd');
+          //alert('asdasd');
           return false;
         }
         
@@ -881,15 +913,15 @@ end
             //  si
             var formEdit = document.getElementById("form_editar_"+id);
             //alert(document.getElementById(id).innerHTML )
-            alert(formEdit.action+mySerialize(id))
+            //alert(formEdit.action+mySerialize(id))
             url = formEdit.action+mySerialize(id)
             $.getJSON( url )
               .done(function(data) {
-                alert( "bien--"+data );
+                //alert( "bien--"+data );
                 changeRowUpdated(id);
               })
               .fail(function(data) {
-                alert( data.mensaje );
+                //alert( data.mensaje );
                 setMensaje("Error al actualizar los datos", "danger");
               });
           }else if(actualizar == false){
@@ -1019,6 +1051,17 @@ end
             });
           event.preventDefault();
           return false;
+        }
+        
+        
+        function solo_num(e){
+          patron = /[1234567890.,\/-]/;   //solo numeros y lineas
+          
+          tecla = (document.all) ? e.keyCode : e.which;
+          if (tecla==8 || tecla==0) return true;
+          
+          te = String.fromCharCode(tecla);
+          return patron.test(te);
         }
 
       </script>

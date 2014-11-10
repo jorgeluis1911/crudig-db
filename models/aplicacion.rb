@@ -11,6 +11,27 @@ class Aplicacion
     @timer = 0
   end
 
+  def refresh
+    begin
+      @conexion.query( "SELECT 1" )
+      
+    rescue Mysql::Error => err
+
+      load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
+                @aplicacion[:config][:user], @aplicacion[:config][:pass],
+                @aplicacion[:config][:bd],   @aplicacion[:config][:port])
+                      
+    rescue Errno::Error => err
+      #$stderr.puts "%p while testing connection: %s" % [ err.class, err.message ]
+            
+      load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
+                @aplicacion[:config][:user], @aplicacion[:config][:pass],
+                @aplicacion[:config][:bd],   @aplicacion[:config][:port])
+                      
+    end
+  end
+
+
   #     funciones archivos FTP
   
   def conectFTP( host, port, user, pass)
@@ -93,8 +114,8 @@ class Aplicacion
     columnas = ''
     values=''
     
-    puts params['foto']
-    puts puts params['foto'][:filename] if params['foto']
+    #puts params[:foto]
+    #puts params[:foto][:filename] if params[:foto]
     
     params.each{ |key, value|
       if (@aplicacion[:tablas][tabla]['columnas'][key])

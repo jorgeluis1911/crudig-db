@@ -1,6 +1,6 @@
 class PSqlconex < Aplicacion
 
-  def load_bd_PS( driver, dominio, usuario, pass, bd_name, port)
+  def load_bd( driver, dominio, usuario, pass, bd_name, port)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
     #real_connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, sock=nil, flag=nil).
     begin
@@ -154,7 +154,8 @@ class PSqlconex < Aplicacion
   end
   
   def simple_select(select, from, where_sql, ordenar_sql, limit)
-    load_bd unless(@conexion)
+    refresh
+    
     filas = Hash.new
     cont = 0
     
@@ -168,7 +169,8 @@ class PSqlconex < Aplicacion
   end
   
   def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
-    load_bd unless(@conexion)
+    refresh
+    
     puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
     return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
   end  

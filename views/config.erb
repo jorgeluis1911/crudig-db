@@ -234,7 +234,7 @@
         
       
       <% tablas.each do |tabla, val| %>
-        <form method="post" action="/config/edit/<%= tabla %>">
+        <form method="post" action="/<%= idioma %>/config/edit/<%= tabla %>">
           <div class="panel panel-default">
             <div class="panel-heading">
               <input type="button" name="conectar" id="conectar" style="float: right;" 
@@ -244,7 +244,8 @@
               <input type="button" name="conectar" id="conectar" style="float: right;" 
                   class="btn btn-sm btn-danger" value="Cancelar" />
               
-                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" href="#form<%= tabla %>"><%= tabla %></a>
+                <a class="headtabla" data-toggle="collapse" data-parent="#accordion" 
+                    href="#form<%= tabla %>"><%= tabla %></a>
               
             </div>
             <div class="panel-collapse collapse in" id="form<%= tabla %>">

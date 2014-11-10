@@ -1,6 +1,6 @@
 class MySQLconex < Aplicacion
   
-  def load_bd_MySQL( driver, dominio, usuario, pass, bd_name, port)
+  def load_bd( driver, dominio, usuario, pass, bd_name, port)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
     #real_connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, sock=nil, flag=nil).
 
@@ -25,11 +25,14 @@ class MySQLconex < Aplicacion
   
   def load_config_MySQL(bd_name)
     tablas = ''
+    combo_string = []
+    row_name = ''
     
     time1 = Time.now
-    
+        
     @aplicacion[:enlaces] = []
     @aplicacion[:tablas] = {}
+    @aplicacion[:mejoras] = {}
     
     referidas = {}
     
@@ -48,6 +51,12 @@ class MySQLconex < Aplicacion
       puts "    consulta - Time elapsed #{(time22 - time11)*1000} milliseconds"
 
       if !row['table_name'].eql?(tablas)
+        
+        if (@aplicacion[:tablas][tablas] && 
+            @aplicacion[:tablas][tablas]['config'][:combo_string_fk].length == 0)
+          combo_string << row_name
+        end
+        
         @aplicacion[:enlaces] << row['table_name']
         @aplicacion[:tablas][row['table_name']] = {}
         @aplicacion[:mejoras][row['table_name']] = {:min=>0, :max=>0, :minW=>0, :maxW=>0}
@@ -67,12 +76,15 @@ class MySQLconex < Aplicacion
       end
       tablas = row['table_name']
       
+      solo_texto = ['varchar', 'char', 'text', 'long_text']
       # => agregar las columnas
       columna= {}
       columna[:position] = row['ORDINAL_POSITION']
       columna[:default_value] = row['COLUMN_DEFAULT']
       columna[:is_nullable] = row['is_nullable']
       columna[:data_type] = row['DATA_TYPE'].to_s   # varchar , char , text
+      columna[:is_number] = 1
+      columna[:is_number] = 0 if (solo_texto.index columna[:data_type] )
       columna[:length] = row['CHARACTER_MAXIMUM_LENGTH']
       columna[:column_key] = row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
       columna[:comments] = row['COLUMN_COMMENT']
@@ -93,9 +105,9 @@ class MySQLconex < Aplicacion
       
       # => campos a mostrar en combo texto FK
       combo_string = @aplicacion[:tablas][tablas]['config'][:combo_string_fk]
-      if ( (row['DATA_TYPE'].to_s=='varchar' || row['DATA_TYPE'].to_s=='char') && combo_string.length==0 )
+      if ( (row['DATA_TYPE'].to_s=='varchar' || row['DATA_TYPE'].to_s=='char') )
         combo_string << row['column_name']
-        puts row['column_name']
+        #puts row['column_name']
       end
             
       @aplicacion[:tablas][tablas]['config'][:referidas] = []
@@ -106,11 +118,18 @@ class MySQLconex < Aplicacion
         referidas[columna[:tabla_rel]] = []   unless ( referidas[columna[:tabla_rel]] )
         referidas[columna[:tabla_rel]] << tablas
       end
+      row_name = row['column_name']
       @aplicacion[:tablas][tablas]['columnas'][row['column_name']] = columna
       
       time11 = Time.now
-    }
-    referidas.each{ |tabla, tablas_ref|   
+    }    
+    
+    if (@aplicacion[:tablas][tablas] && 
+        @aplicacion[:tablas][tablas]['config'][:combo_string_fk].length == 0)
+      combo_string << row_name
+    end
+        
+    referidas.each{ |tabla, tablas_ref|
       @aplicacion[:tablas][tabla]['config'][:referidas] = tablas_ref
     }
     
@@ -121,6 +140,7 @@ class MySQLconex < Aplicacion
   end
 
   def select_mysql(select, tabla, params, start_limit)
+    refresh
     
     time1 = Time.now
     
@@ -134,30 +154,42 @@ class MySQLconex < Aplicacion
         #@aplicacion[:tablas][tabla]['config'][:paginador] = 10 
     
     select = ''
-    from = 'FROM '+tabla
+    from = tabla
+    alias_SQL = 1
+    alias_campos = 1
     #@aplicacion[:tablas][tabla].each {|key, value| select << "#{key}," if (value[:column_key] != 'PRI' )}
     @aplicacion[:tablas][tabla]['columnas'].each {|key, value|
       
       time3 = Time.now
-      
-      select << "#{tabla}.#{key},"
+
+      select = select+"#{tabla}.#{key},"
       if (value[:column_rel])
-        from << ' left join '+value[:tabla_rel]+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'.'+value[:column_rel]
-        select << "#{value[:tabla_rel]}.#{value[:column_rel]} as #{value[:tabla_rel]}_#{value[:column_rel]},"
+        from = from+' left join '+value[:tabla_rel]+' as '+value[:tabla_rel]+'_'+alias_SQL.to_s
+        from = from+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'_'+alias_SQL.to_s+'.'+value[:column_rel]
+        select = select+"#{value[:tabla_rel]}_#{alias_SQL.to_s}.#{value[:column_rel]} "
+        select = select+" as #{value[:tabla_rel]}_#{value[:column_rel]}_#{alias_campos},"
+        
+        puts select
+        puts from
         
         combo = @aplicacion[:tablas][value[:tabla_rel]]['config'][:combo_string_fk]
         combo_string = ''
         
         if (combo.length > 0)
-          select << "#{value[:tabla_rel]}.#{combo.first} as #{value[:tabla_rel]}_#{combo.first},"    
+          select = select+"#{value[:tabla_rel]}_#{alias_SQL.to_s}.#{combo.first} "
+          select = select+" as #{value[:tabla_rel]}_#{combo.first}_#{alias_campos},"
           combo.each{ |val| combo_string += val+','}
+          alias_campos = alias_campos + 1
         end
         
-        filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], ' FROM '+value[:tabla_rel],'','','')
+        unless filas[value[:tabla_rel]]
+          filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], value[:tabla_rel],'','','')
+        end
       end
       
+      alias_SQL = alias_SQL + 1
       time2 = Time.now
-      puts "    bucle select general - Time elapsed #{(time2 - time3)*1000} milliseconds"
+      #puts "    bucle select general - Time elapsed #{(time2 - time3)*1000} milliseconds"
     }
     select = select[0..-2]
     
@@ -176,19 +208,21 @@ class MySQLconex < Aplicacion
     #puts filas
     
     time2 = Time.now
-    puts "select general - Time elapsed #{(time2 - time1)*1000} milliseconds"
+    #puts "select general - Time elapsed #{(time2 - time1)*1000} milliseconds"
     
     return filas
   end
   
   def simple_select(select, from, where_sql, ordenar_sql, limit)
-    load_bd unless(@conexion)
+    refresh
+    
     filas = Hash.new
     cont = 0
     
     #puts 'simple_select()'
-    #puts 'SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit
-    @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql+limit).each_hash{ |row|
+    puts 'SELECT '+select
+    puts 'FROM '+from+' '+where_sql+' '+ordenar_sql+limit
+    @conexion.query('SELECT '+select+' FROM '+from+' '+where_sql+' '+ordenar_sql+limit.to_s).each_hash{ |row|
       filas["#{cont}"] = row
       cont += 1
     }
@@ -197,7 +231,7 @@ class MySQLconex < Aplicacion
   end  
   
   def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
-    load_bd unless(@conexion)
+    refresh
     #puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
     return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
   end  

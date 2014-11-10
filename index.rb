@@ -24,6 +24,8 @@ class App < Sinatra::Application
   @@appCRUDig = ''
   @@appDemos = ''
   
+  @@debug = 0
+  
   @@idiomas = Hash.new
   @@filas = Hash.new
   @@config = {:config => {:idioma=>"ES",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
@@ -206,13 +208,13 @@ class App < Sinatra::Application
     #if(@@appCRUDig=='')
     if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
       @@appDemos = MySQLconex.new @@demosConfig
-      message= @@appDemos.load_bd_MySQL( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
+      message= @@appDemos.load_bd( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
                                           @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
                                           @@demosConfig[:config][:bd], @@demosConfig[:config][:port])
       # => @@demosConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
     else
       @@appDemos = PSqlconex.new @@demosConfig
-      message= @@appDemos.load_bd_PS( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
+      message= @@appDemos.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
                                       'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
     end  
     @@demosConfig[:enlaces] = []
@@ -255,22 +257,25 @@ class App < Sinatra::Application
     redirect "/es/configuraciones" unless (validLanguage(lang))
     message = ''
     
+    url = request.base_url
+
     #if(@@appCRUDig=='')
     if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
       @@appCRUDig = MySQLconex.new @@crudigConfig
-      message= @@appCRUDig.load_bd_MySQL( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
+      message= @@appCRUDig.load_bd( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
                                           @@crudigConfig[:config][:user], @@crudigConfig[:config][:pass], 
                                           @@crudigConfig[:config][:bd], @@crudigConfig[:config][:port])
       # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"},
     else
-      @@appDemos = PSqlconex.new @@demosConfig
-      message= @@appDemos.load_bd_PS( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
+      @@appCRUDig = PSqlconex.new @@demosConfig
+      message= @@appCRUDig.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
                                       'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
     end   
     @@crudigConfig[:enlaces] = []
     #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
     #end
     #if(@@appCRUDig!='')
+      #filas = @@appCRUDig.simple_select(' * ', 'configuraciones', '', '', '')
       filas = @@appCRUDig.select_mysql(' * ', 'configuraciones', params, 0)
     #end
     
@@ -280,7 +285,7 @@ class App < Sinatra::Application
   get '/:lang/configuraciones/:controler/:funcion' do |lang, controler, funcion|
     redirect "/es/configuraciones/#{controler}/#{funcion}" unless (validLanguage(lang))
     
-    if(validController(controler))
+    if(validController(controler))     
       case funcion
       when 'create'      then create_id(@@appCRUDig, controler, params)
       when 'create_json' then create_id_json(@@appCRUDig, controler, params)
@@ -317,10 +322,10 @@ class App < Sinatra::Application
     case params[:driver]
     when 'Mysql', 'MariaDB'  then 
       @@app = MySQLconex.new @@config
-      message= @@app.load_bd_MySQL( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
+      message= @@app.load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
     when 'Postgress' then
       @@app = PSqlconex.new @@config
-      message= @@app.load_bd_PS( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
+      message= @@app.load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
     when 'SQLServer' 
     when 'Oracle'  
     else  message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión</p></div>'
@@ -329,7 +334,8 @@ class App < Sinatra::Application
     view_config(message, @@config[:config])
   end
   
-  post '/config/conectarFTP' do
+  post '/:lang/config/conectarFTP' do |lang|
+    redirect "/es/config" unless (validLanguage(lang))
     message = ''
     
     result = @@app.conectFTP(params[:host], params[:port], params[:usuario], params[:pass])
@@ -342,11 +348,11 @@ class App < Sinatra::Application
     view_config(message, @@config[:config])
   end  
   
-  post '/config/edit/:tabla' do |tabla|
-    redirect "/es/#{controler}/listar" unless (validLanguage(lang))
+  post '/:lang/config/edit/:tabla' do |lang, tabla|
+    redirect "/es/config" unless (validLanguage(lang))
     message = ''
 
-    redirect "/config" if (!validController(controler))
+    redirect "/#{lang}/config" if (!validController(tabla))
 
     result=@@app.save_config_table(@@config[:tablas], tabla, params)
     if result==1
@@ -354,7 +360,7 @@ class App < Sinatra::Application
     else
       message='<div class="alert alert-success"><p>Configuraciones guardadas con éxito para la tabla '+tabla+'</p></div>'
     end
-    view_config(message)
+    view_config(message, @@config[:config])
   end
 
   get '/:lang/config/view/:id' do |lang, idConfig|
@@ -366,12 +372,14 @@ class App < Sinatra::Application
     
   get '/:lang/:controler' do |lang, controler|
     redirect "/es/#{controler}/listar" unless (validLanguage(lang))
-    redirect "/#{controler}/listar" unless validController(controler)
+    redirect "/#{lang}/#{controler}/listar" unless validController(controler)
+    redirect "/#{lang}/#{controler}/listar"
   end
     
   get '/:lang/:controler/' do |lang, controler|
     redirect "/es/#{controler}/listar" unless (validLanguage(lang))
-    redirect "/#{controler}/listar" unless validController(controler)
+    redirect "/#{lang}/#{controler}/listar" unless validController(controler)
+    redirect "/#{lang}/#{controler}/listar"
   end
 
   post '/:controler/:funcion' do |controler, funcion|
@@ -386,7 +394,13 @@ class App < Sinatra::Application
       end
     end
   end  
-  
+
+
+  get '/:lang/:controler/' do |lang, controler, funcion|
+    redirect "/es/#{controler}/#{funcion}" unless (validLanguage(lang))
+    
+  end
+    
   get '/:lang/:controler/:funcion' do |lang, controler, funcion|
     redirect "/es/#{controler}/#{funcion}" unless (validLanguage(lang))
     
@@ -395,6 +409,10 @@ class App < Sinatra::Application
 
     if(validController(controler))
       case funcion
+        #when 'view'                   then create_id(@@app, controler, params)
+        #when 'view_json'              then create_id_json(@@app, controler, params)
+        when 'get'                    then get_id(@@app, controler, params)
+        when 'get_json'               then get_id_json(@@app, controler, params)                  
         when 'create'                 then create_id(@@app, controler, params)
         when 'create_json'            then create_id_json(@@app, controler, params)
         when 'update'                 then update_id(@@app, controler, params)
@@ -407,6 +425,8 @@ class App < Sinatra::Application
         when 'default_search_json'    then default_search_json(@@app, controler, params)
         when 'save_search_json'       then saveSearch_json(@@app, controler, params)
       end
+    else
+      redirect "/es/config"
     end
     
   end

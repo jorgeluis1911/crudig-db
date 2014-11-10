@@ -34,31 +34,53 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             
-            <li class="navbar-right"><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
-            
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/configuraciones">Configuraciones</a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/config">Nueva configuración</a></li>
+                <% if (idioma != 'ES' ) %>   <li><a href="/ES/">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/EN/">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/FR/">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/DE/">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/IT/">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/PR/">PR</a></li> <% end %>
               </ul>
             </li>
             
-            <li class="navbar-right"><a href="/<%= idioma %>/config">Versiones</a></li>
-            
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:info] %><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
-                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
-                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
-                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
-                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
-                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
+                <li><a href="/<%= idioma %>/ayuda"><%= traductor[:menu][:ayuda] %></a></li>
+                <li><a href="/<%= idioma %>/caracteristicas"><%= traductor[:menu][:caracteristicas] %></a></li>
+                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:versiones] %></a></li>
                 <li class="divider"></li>
-                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
+                <li><a href="/<%= idioma %>/demos"><%= traductor[:menu][:demos] %></a></li>
+              </ul>
+            </li>
+
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:config] %><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/<%= idioma %>/mejoras">Mejoras</a></li>
+                <li><a href="/<%= idioma %>/configuraciones"><%= traductor[:menu][:configuraciones] %></a></li>
+                <li class="divider"></li>
+                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:nueva_config] %></a></li>
+              </ul>
+            </li>
+            
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <%= traductor[:menu][:graficos] %><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/<%= idioma %>/chartArea"><%= traductor[:menu][:chart_area] %></a></li>
+                <li><a href="/<%= idioma %>/chartCircle"><%= traductor[:menu][:chart_circulo] %></a></li>                
+                <li><a href="/<%= idioma %>/chartBar"><%= traductor[:menu][:chart_barras] %></a></li>
+                <li><a href="/<%= idioma %>/chartColumn"><%= traductor[:menu][:chart_columnas] %></a></li>
+                <li><a href="/<%= idioma %>/chartCombo"><%= traductor[:menu][:chart_combo] %></a></li>
+                <li><a href="/<%= idioma %>/chartLine"><%= traductor[:menu][:lineas] %></a></li>
+                <li class="divider"></li>
+                <li><a href="/<%= idioma %>/mycharts"><%= traductor[:menu][:mis_graficos] %></a></li>
               </ul>
             </li>
           </ul>
@@ -69,86 +91,102 @@
         
     <div class="container">
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-10">
           
           <div>
-            <h2 id="overview" class="page-header">Listados</h2>
+            <h2 id="listados_href" class="page-header">Listados</h2>
             <p class="lead">probando</p>
             
-            <h4 id="overview-doctype">HTML5 doctype</h4>
+            <h4 id="insercion_href">Inserción</h4>
+            <p>texto</p>
+            <img src="/img/insercion.jpg" alt="conexiones" width="50%"/>
+            
+            <h4 id="edicion_href">Edición</h4>
+            <p>texto</p>
+            
+            <h4 id="busquedas_href">Búsquedas</h4>
+            <p>texto</p>
+            
+            <h4 id="autorefresco_href">Autorefresco</h4>
+            <p>texto</p>
+            
+            <h4 id="informes_href">Informes</h4>
             <p>texto</p>
           </div>
           
           <div>
-            <h2 id="overview" class="page-header">Gráficos</h2>
+            <h2 id="graficos_href" class="page-header">Gráficos</h2>
             <p class="lead">probando</p>
             
-            <h4 id="overview-doctype">Área</h4>
+            <h4 id="area_href">Área</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Círculos</h4>
+            <h4 id="ciraculos_href">Círculos</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Barras</h4>
+            <h4 id="barras_href">Barras</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Columnas</h4>
+            <h4 id="columnas_href">Columnas</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Combo</h4>
+            <h4 id="combo_href">Combo</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Líneas</h4>
+            <h4 id="lineas_href">Líneas</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Mis gráficos</h4>
+            <h4 id="misgraficos_href">Mis gráficos</h4>
             <p>texto</p>            
           </div>
           
           <div>
-            <h2 id="overview" class="page-header">Config</h2>
+            <h2 id="config_href" class="page-header">Config</h2>
             <p class="lead">probando</p>
             
-            <h4 id="overview-doctype">Configuraciones</h4>
+            <h4 id="configuraciones_href">Configuraciones</h4>
             <p>texto</p>
             
-            <h4 id="overview-doctype">Usuarios</h4>
+            <h4 id="usuarios_href">Usuarios</h4>
             <p>texto</p>
           </div>
           
         </div>
         
-        <div class="col-md-3">
-          <ul class="nav">
+        <div class="col-md-2 menu_ayuda">
+          <ul style="position: relative;">
 
-              <li class="">
-                <a href="#modals">Listados</a>
-                <ul class="nav">
-                  <li class=""><a href="#modals-examples">Configuraciones</a></li>
-                  <li class=""><a href="#modals-sizes">Usuarios</a></li>
-                </ul>
-              </li>
-              <li class="">
-                <a href="#js-overview">Gráficos</a>
-                <ul class="nav">
-                  <li class=""><a href="#js-individual-compiled">Área</a></li>
-                  <li class=""><a href="#js-individual-compiled">Círculos</a></li>
-                  <li class=""><a href="#js-individual-compiled">Barras</a></li>
-                  <li class=""><a href="#js-individual-compiled">Columnas</a></li>
-                  <li class=""><a href="#js-individual-compiled">Combo</a></li>
-                  <li class=""><a href="#js-individual-compiled">Líneas</a></li>
-                  <li class=""><a href="#js-individual-compiled">Mis gráficos</a></li>
-                </ul>
-              </li>
-              <li class="">
-                <a href="#modals">Config</a>
-                <ul class="nav">
-                  <li class=""><a href="#modals-examples">Configuraciones</a></li>
-                  <li class=""><a href="#modals-sizes">Usuarios</a></li>
-                </ul>
-              </li>
+            <li class="">
+              <a href="#modals">Listados</a>
+              <ul>
+                <li class=""><a href="#insercion_href">Inserción</a></li>
+                <li class=""><a href="#edicion_href">Edición</a></li>
+                <li class=""><a href="#busquedas_href">Busquedas</a></li>
+                <li class=""><a href="#autorefresco_href">Autorefresco</a></li>
+                <li class=""><a href="#informes_href">Informes</a></li>
+              </ul>
+            </li>
+            <li class="">
+              <a href="#graficos_href">Gráficos</a>
+              <ul>
+                <li><a href="#area_href">Área</a></li>
+                <li><a href="#circulo_href">Círculos</a></li>
+                <li><a href="#barras_href">Barras</a></li>
+                <li><a href="#columnas_href">Columnas</a></li>
+                <li><a href="#combo_href">Combo</a></li>
+                <li><a href="#lineas_href">Líneas</a></li>
+                <li><a href="#misgraficos_href">Mis gráficos</a></li>
+              </ul>
+            </li>
+            <li class="">
+              <a href="#config_href">Config</a>
+              <ul>
+                <li><a href="#configuraciones_href">Configuraciones</a></li>
+                <li><a href="#usuarios_href">Usuarios</a></li>
+              </ul>
+            </li>
 
-            </ul>
+          </ul>
         </div>
       </div>
     </div>

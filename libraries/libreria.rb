@@ -1,6 +1,10 @@
 class App < Sinatra::Application
 
   
+  def is_conexion?()
+    
+  end
+  
   def listar_tabla(app, controler, params, start_limit)
     return unless validController(controler)
     message=''
@@ -279,9 +283,11 @@ class App < Sinatra::Application
   def validController(controler)
     valido = false
     
-    if(!controler.eql?('config') || !controler.eql?('favicon.ico') || !controler.eql?('js') || !controler.eql?('css'))
+    if(@@config[:tablas][controler] && 
+        (!controler.eql?('config') || !controler.eql?('favicon.ico') || 
+          !controler.eql?('js') || !controler.eql?('css')))
       valido = true;
-    end    
+    end
     return valido    
   end
   
@@ -293,6 +299,8 @@ class App < Sinatra::Application
       
     if(lang2.eql?('es') || lang2.eql?('en') || lang2.eql?('fr') || 
        lang2.eql?('de') || lang2.eql?('it') || lang2.eql?('pr') )
+      
+      @@config[:config][:idioma] = lang
       valido = true;
     end    
     return valido    
@@ -310,13 +318,15 @@ class App < Sinatra::Application
 
   
   def home_page( message )
-    erb :features, :locals => {:idioma => @@config[:config][:idioma]}
+    erb :features, :locals => {:traductor => @@idiomas[@@config[:config][:idioma]],
+                                :idioma => @@config[:config][:idioma]}
   end
 
   def view_ayuda(message)
     erb :"help/ayuda", :locals => {:config => @@config[:config],
                        :enlaces => @@config[:enlaces],
                        :message => message,
+                       :traductor => @@idiomas[@@config[:config][:idioma]],
                        :idioma => @@config[:config][:idioma]}
   end
   
@@ -324,6 +334,7 @@ class App < Sinatra::Application
     erb :mejoras, :locals => {:config => @@config[:config],
                        :enlaces => @@config[:enlaces],
                        :message => message,
+                       :traductor => @@idiomas[@@config[:config][:idioma]],
                        :idioma => @@config[:config][:idioma],
                        :mejoras => @@config[:mejoras]}
   end  
@@ -336,6 +347,7 @@ class App < Sinatra::Application
                                    :enlaces => @@config[:enlaces],
                                    :filas => filas,
                                    :crudigTablas => @@demosConfig[:tablas],
+                                   :traductor => @@idiomas[@@config[:config][:idioma]],
                                    :idioma => @@demosConfig[:config][:idioma],
                                    :message => message}
   end
@@ -348,6 +360,7 @@ class App < Sinatra::Application
                                    :enlaces => @@config[:enlaces],
                                    :filas => filas,
                                    :crudigTablas => @@crudigConfig[:tablas],
+                                   :traductor => @@idiomas[@@config[:config][:idioma]],
                                    :idioma => @@config[:config][:idioma],
                                    :message => message}
   end
@@ -357,6 +370,7 @@ class App < Sinatra::Application
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
                              :conexionBD => conexionBDId,
+                             :traductor => @@idiomas[@@config[:config][:idioma]],
                              :idioma => @@config[:config][:idioma],
                              :message => message}
   end
@@ -366,6 +380,7 @@ class App < Sinatra::Application
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
                              :conexionBD => conexionBDId,
+                             :traductor => @@idiomas[@@config[:config][:idioma]],
                              :idioma => @@config[:config][:idioma],
                              :message => message}
   end
@@ -393,6 +408,7 @@ class App < Sinatra::Application
   def viewChart( urlchart , message='', params={} , resultChart={})
     erb :"#{urlchart}", :locals => { :message => message, :enlaces => @@config[:enlaces],
                                     :params => params, :tablas => @@config[:tablas],
+                                    :traductor => @@idiomas[@@config[:config][:idioma]],
                                     :idioma => @@config[:config][:idioma],
                                     :resultChart => resultChart }
   end
@@ -402,6 +418,7 @@ class App < Sinatra::Application
     erb :jerarquia, :locals => {:tabla => tabla, :filas => filas, :message => message,
                                 :order => order, :enlaces => @@config[:enlaces],
                                 :params => params, :tablas => @@config[:tablas],
+                                :traductor => @@idiomas[@@config[:config][:idioma]],
                                 :idioma => @@config[:config][:idioma] }
   end    
     
