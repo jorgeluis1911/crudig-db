@@ -1,104 +1,3 @@
-            
-<% def crear_modal_agregar(tablas, tabla, filas) %>
-            
-            <!-- Modal Agregar-->
-            
-      <div class="modal fade" id="agregarfila_<%= tabla%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= tabla%></h4>
-            </div>
-            <div class="modal-body">
-              <form method="post" action="/<%= tabla%>/create_json" id="agregarform" name="agregarform" 
-                  class="form-horizontal" enctype="multipart/form-data" role="form">
-                    <% tablas[tabla]['columnas'].each do |col, value| %>
-                    <div class="form-group">
-                      <label for="<%= col%>" class="col-sm-2 control-label"><%= col%></label>
-                      <div class="col-sm-10">
-                      <% if (value[:column_rel]) %>
-                          <select class="form-control" id="<%= col%>" name="<%= col%>" required>
-                            <% filas[value[:tabla_rel]].each do |id, fila| %>
-                                <option value="<%= fila[value[:column_rel]]%>" 
-                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
-                                  <%= fila[value[:column_rel]]%></option>
-                            <% end %>
-                          </select>
-                      <% elsif(value[:es_archivo].eql?('1')) %>
-                          <input class="form-control" type="file" id="<%= col%>" name="<%= col%>" />
-                      <% else %>
-                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
-                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"
-                            <%= 'required' if value[:column_key]=='PRI' %>/>
-                      <% end %>
-                      </div>
-                    </div>
-                    <% end %>
-                <br />
-      
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <input type="submit" name="agregarbtn" class="btn btn-info" value="Crear Nuevo">
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-   <% return '' %>
-<% end %>
-
-
-<% def crear_modal_editar(tablas, tabla, filas) %>
-      
-      <!-- Modal Editar-->
-      
-      <div class="modal fade" id="editarfila_<%= tabla%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 600px;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">Editando registro de <%= tabla%></h4>
-            </div>
-            <div class="modal-body">
-              <form method="get" action="/<%= tabla%>/update_id_json" id="editarform" name="editarform" 
-                  class="form-horizontal" role="form">
-                    <% tablas[tabla]['columnas'].each do |col, value| %>
-                    <div class="form-group">
-                      <label for="<%= col%>" class="col-sm-2 control-label"><%= col%></label>
-                      <div class="col-sm-10">
-                      <% if (value[:column_rel]) %>
-                          <select class="form-control" id="<%= col%>" name="<%= col%>" required>
-                            <% filas[value[:tabla_rel]].each do |id, fila| %>
-                                <option value="<%= fila[value[:column_rel]]%>" 
-                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
-                                  <%= fila[value[:column_rel]]%></option>
-                            <% end %>
-                          </select>
-                      <% elsif(value[:es_archivo].eql?('1')) %>
-                          <input class="form-control" type="file" id="<%= col%>" name="<%= col%>" />                          
-                      <% else %>
-                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
-                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"
-                            <%= 'required' if value[:column_key]=='PRI' %>/>
-                      <% end %>
-                      </div>
-                    </div>
-                    <% end %>
-                <br />
-      
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <input type="submit" name="editarbtn" class="btn btn-info" value="Guardar Cambios">
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-   <% return '' %>
-<% end %>
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -117,8 +16,9 @@
   </head>  
   <body>
     
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+        
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -258,106 +158,200 @@
       			<% end %>  			  
       		</tbody>
       	</table> 
-      	<%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas[configTabla].length < 1) %>
+      	<%= '<div class="alert alert-danger"> No tiene datos esta tabla </div>' if (filas[configTabla].length < 1) %>
       </div>
 
-
+      <%= filas[:filas_detalle] %>
       
-      <div class="tab-content">
-        <div class="tab-pane active" id="user_crudig">  
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <label><b>Usuarios</b></label>
-            </div>
-            
-            <table class="table table-condensed table-bordered">
-              <thead>
-                <tr class="info">
-                  <th>
-                    <a href="/<%= idioma %>/configuraciones/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
-                    <a href="" class="btn btn-default btn-xs btn_a" 
-                        data-toggle="modal" data-target="#agregarfila" onclick="agregar()">
-                          <span class="glyphicon glyphicon-plus"></span>
-                    </a>
-                  </th>
-                  <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
-                    <th><%= col%></th>
-                    <% if (value[:column_rel]) %>
-                      <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
-                    <% end %>
-                  <% end %>
-                </tr>
-              </thead>
-              <tbody>                    
-                <%#= filas[:filas_detalle] 
-                %>
-                <%  filas_detalle = {}
-                    if (filas[:filas_detalle][usersTabla])
-                    #if (filas[usersTabla])
-                      filas_detalle = filas[:filas_detalle][usersTabla][usersTabla]
-                    end 
-                %>
-                <% filas_detalle.each do |key, en| %>
-                  <tr id="<%= usersTabla+key%>">
-                    <td>
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
-                          <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a href="" data-toggle="modal" data-target="#editarfila" >
-                              Editar en ventana</a>
-                          </li>
-                          <%  ids = ''
-                            en.each do |col, valor| 
-                              if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_key]=='PRI')
-                                if(ids.eql? '')
-                                  ids = ids+col.to_s+'='+valor.to_s
-                                else
-                                  ids = ids+'&'+col.to_s+'='+valor.to_s
-                                end
-                              end
-                            end
-                          %>
-                          <li><a href="/<%= idioma %>/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
-                            Jerarquía hacia arriba</a></li>
-                          <li><a href="/<%= idioma %>/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
-                            Jerarquía hacia abajo</a></li>
-                        </ul>
-                      </div>
-                      
-                      <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
-                        onclick="before_update('<%= usersTabla+key%>'); return false;">
-                        <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
-                      <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
-                        onclick="cancel_update('<%= usersTabla+key %>'); return false;">
-                        <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
-                      <!--<form action="/<%= tabla%>/<%= key%>" method="post">
-                        <input type="hidden" name="_method" value="delete" />
-                        <input type="submit" value="Delete" class="btn btn-default"/>
-                      </form>-->
-                    </td>
-                    <% en.each do |col, valor| %>
-                      <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
-                        <td>
-                          <a href="/<%= idioma %>/configuraciones/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
-                            id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
-                      <% else %>
-                        <td fila="<%= col%>"><%= valor%></td>
-                      <% end %>
-                    <% end %>
-                  </tr>
-                <% end %>   
-              </tbody>
-            </table>
-            <%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas_detalle.length < 1) %>
-          </div>
-          
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label><b>Usuarios</b></label>
         </div>
+        
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr class="info">
+              <th>
+                <a href="/<%= idioma %>/configuraciones/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                <a href="" class="btn btn-default btn-xs btn_a" 
+                    data-toggle="modal" data-target="#agregarUser" onclick="agregar()">
+                      <span class="glyphicon glyphicon-plus"></span>
+                </a>
+              </th>
+              <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                <th><%= col%></th>
+                <% if (value[:column_rel]) %>
+                  <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
+                <% end %>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>                    
+            <%#= filas[:filas_detalle] 
+            %>
+            <%  filas_detalle = {}
+                if (filas[:filas_detalle][usersTabla])
+                #if (filas[usersTabla])
+                  filas_detalle = filas[:filas_detalle][usersTabla][usersTabla]
+                end 
+            %>
+            <% filas_detalle.each do |key, en| %>
+              <tr id="<%= usersTabla+key%>">
+                <td>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="" data-toggle="modal" data-target="#editarUser">
+                          Editar en ventana</a>
+                      </li>
+                      <%  ids = ''
+                        en.each do |col, valor| 
+                          if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_key]=='PRI')
+                            if(ids.eql? '')
+                              ids = ids+col.to_s+'='+valor.to_s
+                            else
+                              ids = ids+'&'+col.to_s+'='+valor.to_s
+                            end
+                          end
+                        end
+                      %>
+                      <li><a href="/<%= idioma %>/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia arriba</a></li>
+                      <li><a href="/<%= idioma %>/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia abajo</a></li>
+                    </ul>
+                  </div>
+                  
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="before_update('<%= usersTabla+key%>'); return false;">
+                    <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="cancel_update('<%= usersTabla+key %>'); return false;">
+                    <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
+                  <!--<form action="/<%= tabla%>/<%= key%>" method="post">
+                    <input type="hidden" name="_method" value="delete" />
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                  </form>-->
+                </td>
+                <% en.each do |col, valor| %>
+                  <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
+                    <td>
+                      <a href="/<%= idioma %>/configuraciones/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                        id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
+                  <% else %>
+                    <td fila="<%= col%>"><%= valor%></td>
+                  <% end %>
+                <% end %>
+              </tr>
+            <% end %>   
+          </tbody>
+        </table>
+        <% if(defined?(filas_users)) %>
+          <%= '<div class="alert alert-danger"> No tiene datos esta tabla </div>' if (filas_users.length < 1) %>
+        <% else %>
+          <%= '<div class="alert alert-danger"> Seleccione una configuración </div>' %>
+        <% end %>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label><b>Roles</b></label>
+        </div>
+        
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr class="info">
+              <th>
+                <a href="/<%= idioma %>/configuraciones/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                <a href="" class="btn btn-default btn-xs btn_a" 
+                    data-toggle="modal" data-target="#agregarRole" onclick="agregar()">
+                      <span class="glyphicon glyphicon-plus"></span>
+                </a>
+              </th>
+              <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                <th><%= col%></th>
+                <% if (value[:column_rel]) %>
+                  <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
+                <% end %>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>                    
+            <%#= filas[:filas_detalle] 
+            %>
+            <%  filas_detalle = {}
+                if (filas[:filas_detalle][usersTabla])
+                #if (filas[usersTabla])
+                  filas_detalle = filas[:filas_detalle][usersTabla][usersTabla]
+                end 
+            %>
+            <% filas_detalle.each do |key, en| %>
+              <tr id="<%= usersTabla+key%>">
+                <td>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="" data-toggle="modal" data-target="#editarfila" >
+                          Editar en ventana</a>
+                      </li>
+                      <%  ids = ''
+                        en.each do |col, valor| 
+                          if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_key]=='PRI')
+                            if(ids.eql? '')
+                              ids = ids+col.to_s+'='+valor.to_s
+                            else
+                              ids = ids+'&'+col.to_s+'='+valor.to_s
+                            end
+                          end
+                        end
+                      %>
+                      <li><a href="/<%= idioma %>/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia arriba</a></li>
+                      <li><a href="/<%= idioma %>/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia abajo</a></li>
+                    </ul>
+                  </div>
+                  
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="before_update('<%= usersTabla+key%>'); return false;">
+                    <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="cancel_update('<%= usersTabla+key %>'); return false;">
+                    <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
+                  <!--<form action="/<%= tabla%>/<%= key%>" method="post">
+                    <input type="hidden" name="_method" value="delete" />
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                  </form>-->
+                </td>
+                <% en.each do |col, valor| %>
+                  <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
+                    <td>
+                      <a href="/<%= idioma %>/configuraciones/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                        id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
+                  <% else %>
+                    <td fila="<%= col%>"><%= valor%></td>
+                  <% end %>
+                <% end %>
+              </tr>
+            <% end %>   
+          </tbody>
+        </table>
+        <% if(defined?(filas_roles)) %>
+          <%= '<div class="alert alert-danger"> No tiene datos esta tabla </div>' if (filas_roles.length < 1) %>
+        <% else %>
+          <%= '<div class="alert alert-danger"> Seleccione una configuración </div>' %>
+        <% end %>
       </div>
       
+            
     </div> 
 
+<!--    Configuraciones   -->
             
       <!-- Modal Agregar-->
       
@@ -475,6 +469,224 @@
         </div>
       </div>      
       
+
+<!--    Usuarios      -->
+            
+      <!-- Modal Agregar-->
+      
+      <div class="modal fade" id="agregarUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= usersTabla%></h4>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="/configuraciones/<%= usersTabla%>/create_json" id="agregarform" name="agregarform" 
+                  class="form-horizontal" enctype="multipart/form-data">
+                    <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                    <div class="form-group">
+                      <label for="<%= col%>" class="col-sm-2 control-label"><%= col%></label>
+                      <div class="col-sm-10">
+                      <% if (value[:column_rel]) %>
+                          <select class="form-control" id="<%= col%>" name="<%= col%>" required>
+                            <% filas[value[:tabla_rel]].each do |id, fila| %>
+                                <option value="<%= fila[value[:column_rel]]%>" 
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
+                                  <%= fila[value[:column_rel]]%></option>
+                            <% end %>
+                          </select>
+                      <% elsif(value[:es_archivo].eql?('1')) %>
+                          <input class="form-control" type="file" id="<%= col%>" name="<%= col%>" />
+                      <% else %>
+                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"
+                            <%= 'required' if value[:column_key]=='PRI' %>/>
+                      <% end %>
+                      </div>
+                    </div>
+                    <% end %>
+                <br />
+      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="agregarbtn" class="btn btn-info" value="Crear Nuevo">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Editar-->
+      
+      <div class="modal fade" id="editarUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 600px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Nuevo registro de <%= usersTabla%></h4>
+            </div>
+            <div class="modal-body">
+              <form method="get" action="/configuraciones/<%= usersTabla%>/update_id_json" id="editarform" name="editarform" 
+                  class="form-horizontal" role="form">
+                    <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                      <div class="col-sm-10">
+                      <% if (value[:column_rel]) %>
+                          <select class="form-control" id="<%= col%>" name="<%= col%>" >
+                            <% filas[value[:tabla_rel]].each do |id, fila| %>
+                                <option value="<%= fila[value[:column_rel]]%>" 
+                                  <%= 'selected' if (params[col].eql?(fila[value[:column_rel]]))%> >
+                                  <%= fila[value[:column_rel]]%></option>
+                            <% end %>
+                          </select>
+                      <% else %>
+                        <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                            maxlength="<%= value[:length] if value[:length]%>" class="form-control"/>
+                      <% end %>
+                      </div>
+                    </div>
+                    <% end %>
+                <br />
+      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="editarbtn" class="btn btn-info" value="Guardar Cambios">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desea editar -->
+      <div class="modal fade" id="msgUpdateUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 400px;">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>¿Seguro que desea actualizar estos datos?</h4>
+              <button type="submit" class="btn btn-info" data-dismiss="modal" id="update_boton"
+                onclick="final_update('', true); return false;" >Sí, actualizar los datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_boton"
+                onclick="final_update('', false); return false;" >No, cancelar datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">No, cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- desea eliminar -->
+      <div class="modal fade" id="msgDeleteUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 400px;">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>¿Seguro que desea eliminar estos datos?</h4>
+              <button type="submit" class="btn btn-info" data-dismiss="modal" id="delete_boton"
+                onclick="eliminar_fila('', true); return false;" >Sí, eliminar los datos</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" >No, cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>      
+
+
+<!--    Roles     -->
+      
+      
+      <div class="modal fade" id="agregarRole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 700px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Nuevo registro de Rol</h4>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="/configuraciones/config_roles/create_json" id="agregarform" name="agregarform" 
+                  class="form-horizontal" enctype="multipart/form-data">
+                
+                <div class="form-group">
+                  <label for="" class="col-sm-3 control-label">Nombre del Rol</label>
+                  <div class="col-sm-9">
+                    <input type="search" id="" name="" value="" maxlength="" class="form-control" required/>
+                  </div>
+                </div>
+                
+                <br />
+                
+                <table width="100%">
+                  <thead>
+                    <tr><th><a>- Tablas +</a></th>
+                      <th style="width: 55px;"><a>- crear +</a></th>
+                      <th style="width: 45px;"><a>- leer +</a></th>
+                      <th style="width: 75px;"><a>- modificar +</a></th>
+                      <th style="width: 70px;"><a>- eliminar +</a></th>
+                      
+                      <th style="width: 75px;"><a>- informes +</a></th>
+                      <th style="width: 70px;"><a>- gráficos +</a></th>
+                      <th style="width: 75px;"><a>- refrescar +</a></th>
+                    </tr>
+                  </thead>
+                  <tbody style="text-align: center;">
+                    <tr><td><a>- nom_tabla +</a></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                    </tr>
+                    <tr><td>nom_tabla</td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                    </tr>
+                    <tr><td>nom_tabla</td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                    </tr>
+                    <tr><td>nom_tabla</td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                      <td><input type="checkbox" id="_combo_string" name="_combo_string"
+                        <%= 'checked' if (1) %>/></td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <br /><br />
+                
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <input type="submit" name="agregarbtn" class="btn btn-info" value="Crear Nuevo">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+            
+      
+
 
       <script>
       

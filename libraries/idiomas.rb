@@ -19,14 +19,61 @@ class App < Sinatra::Application
                      :versiones => 'Versiones',   :demos => 'Demos',
                      
                      :graficos => 'Gráficos',             :chart_area => 'Áreas',
-                     :chart_circulo => 'Circulos',        :chart_barras => 'Barras',
+                     :chart_circulo => 'Círculos',        :chart_barras => 'Barras',
                      :chart_columnas => 'Columnas',       :chart_combo  => 'Combos',
                      :chart_lineas => 'Líneas',           :mis_graficos => 'Mis Gráficos',
                    }
   
   @@idiomas['es'][:mensajes] = { :config => '', :config => ''}
   
-  
+  @@idiomas['es'][:ayuda_menu] = { :empezando => 'Empezando', 
+                                   :conectar_BD => 'Conectar BD', :conectar_FTP => 'Conectar FTP',
+                                   :config_tablas => 'Configurar Tablas', :config_cols => 'Configurar Columnas',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Formularios y Tablas',
+                     :insercion => 'Inserción', :edicion => 'Edición', :busquedas => 'Busquedas', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Gráficos',
+                     :areas => 'Áreas', :circulos => 'Círculos', :barras => 'Barras', 
+                     :columnas => 'Columnas', :combos => 'Combos', :lineas => 'Líneas',
+                     :mis_graficos=> 'Mis gráficos', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configuraciones', :usuarios => 'Usuarios'}
+
+  @@idiomas['es'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['es'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
+
 # => INGLES  
 
   @@idiomas['en'][:config] = { :btn_guardar => '',        :btn_cancelar => '',
@@ -41,13 +88,60 @@ class App < Sinatra::Application
                      :versiones => 'Versions',   :demos => 'Demos',
                      
                      :graficos => 'Graphics',             :chart_area => 'Areas',
-                     :chart_circulo => 'Circulos',        :chart_barras => 'Barras',
-                     :chart_columnas => 'Columnas',       :chart_combo  => 'Combos',
+                     :chart_circulo => 'Circles',        :chart_barras => 'Barras',
+                     :chart_columnas => 'Columns',       :chart_combo  => 'Combos',
                      :chart_lineas => 'Lines',           :mis_graficos => 'My Grafics',
                    }
   
   @@idiomas['en'][:mensajes] = { :config => '', :config => ''}  
   
+  @@idiomas['en'][:ayuda_menu] = { :empezando => 'Get starting',
+                                   :conectar_BD => 'Conect BD', :conectar_FTP => 'Conect FTP',
+                                   :config_tablas => 'Configurate Tables', :config_cols => 'Configurate Columns',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Forms and Tables',
+                     :insercion => 'Inserts', :edicion => 'Editions', :busquedas => 'Searchs', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Graphics',
+                     :areas => 'Areas', :circulos => 'Circles', :barras => 'Barras', 
+                     :columnas => 'Columns', :combos => 'Combos', :lineas => 'Lines',
+                     :mis_graficos=> 'My Grafics', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configurations', :usuarios => 'Users'}
+
+  @@idiomas['en'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['en'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
 
 # => fr = FRANCES 
@@ -71,7 +165,54 @@ class App < Sinatra::Application
                    }
   
   @@idiomas['fr'][:mensajes] = { :config => '', :config => ''}  
+  
+  @@idiomas['fr'][:ayuda_menu] = { :empezando => 'Get starting',
+                                   :conectar_BD => 'Conect BD', :conectar_FTP => 'Conect FTP',
+                                   :config_tablas => 'Configurate Tables', :config_cols => 'Configurate Columns',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Forms and Tables',
+                     :insercion => 'Inserts', :edicion => 'Editions', :busquedas => 'Searchs', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Graphics',
+                     :areas => 'Areas', :circulos => 'Circles', :barras => 'Barras', 
+                     :columnas => 'Columns', :combos => 'Combos', :lineas => 'Lines',
+                     :mis_graficos=> 'My Grafics', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configurations', :usuarios => 'Users'}
 
+  @@idiomas['fr'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['fr'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
 
 # => de = ALEMAN  
@@ -95,6 +236,54 @@ class App < Sinatra::Application
                    }
   
   @@idiomas['de'][:mensajes] = { :config => '', :config => ''}  
+  
+  @@idiomas['de'][:ayuda_menu] = { :empezando => 'Get starting',
+                                   :conectar_BD => 'Conect BD', :conectar_FTP => 'Conect FTP',
+                                   :config_tablas => 'Configurate Tables', :config_cols => 'Configurate Columns',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Forms and Tables',
+                     :insercion => 'Inserts', :edicion => 'Editions', :busquedas => 'Searchs', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Graphics',
+                     :areas => 'Areas', :circulos => 'Circles', :barras => 'Barras', 
+                     :columnas => 'Columns', :combos => 'Combos', :lineas => 'Lines',
+                     :mis_graficos=> 'My Grafics', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configurations', :usuarios => 'Users'}
+
+  @@idiomas['de'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['de'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
 
 # => it =ITALIANO 
@@ -119,7 +308,54 @@ class App < Sinatra::Application
                    }
   
   @@idiomas['it'][:mensajes] = { :config => '', :config => ''}  
+  
+  @@idiomas['it'][:ayuda_menu] = { :empezando => 'Get starting',
+                                   :conectar_BD => 'Conect BD', :conectar_FTP => 'Conect FTP',
+                                   :config_tablas => 'Configurate Tables', :config_cols => 'Configurate Columns',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Forms and Tables',
+                     :insercion => 'Inserts', :edicion => 'Editions', :busquedas => 'Searchs', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Graphics',
+                     :areas => 'Areas', :circulos => 'Circles', :barras => 'Barras', 
+                     :columnas => 'Columns', :combos => 'Combos', :lineas => 'Lines',
+                     :mis_graficos=> 'My Grafics', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configurations', :usuarios => 'Users'}
 
+  @@idiomas['it'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['it'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
 
 # => pr =PORTUGUES
@@ -144,13 +380,54 @@ class App < Sinatra::Application
                    }
   
   @@idiomas['pr'][:mensajes] = { :config => '', :config => ''}  
-
-
-
-
-
   
-  
+  @@idiomas['pr'][:ayuda_menu] = { :empezando => 'Get starting',
+                                   :conectar_BD => 'Conect BD', :conectar_FTP => 'Conect FTP',
+                                   :config_tablas => 'Configurate Tables', :config_cols => 'Configurate Columns',
+                                   :demos => 'Demos', 
+                                   
+                     :formularios => 'Forms and Tables',
+                     :insercion => 'Inserts', :edicion => 'Editions', :busquedas => 'Searchs', 
+                     :autorecargas => 'Autorecargar', :informes => 'Informes', 
+                     
+                     :graficos => 'Graphics',
+                     :areas => 'Areas', :circulos => 'Circles', :barras => 'Barras', 
+                     :columnas => 'Columns', :combos => 'Combos', :lineas => 'Lines',
+                     :mis_graficos=> 'My Grafics', 
+                     
+                     :config => 'Config', :configuraciones=> 'Configurations', :usuarios => 'Users'}
+ 
+  @@idiomas['pr'][:ayuda_secciones] = { :empezando_h2 => 'Empezando',
+                                       :conectar_BD_h4 => 'Conectar BD', :conectar_FTP_h4 => 'Conectar FTP',
+                                       :config_tablas_h4 => 'Configurar Tablas', :config_cols_h4 => 'Configurar Columnas',
+                                       :demos_h4 => 'Demos',
+                     
+                     :formularios_h2 => 'Formularios y Tablas',
+                     :insercion_h4 => 'Inserción', :edicion_h4 => 'Edición', :busquedas_h4 => 'Busquedas', 
+                     :autorecargas_h4 => 'Autorecargar', :informes_h4 => 'Informes', 
+                     
+                     :graficos_h2 => 'Gráficos',
+                     :areas_h4 => 'Áreas', :circulos_h4 => 'Círculos', :barras_h4 => 'Barras', 
+                     :columnas_h4 => 'Columnas', :combos_h4 => 'Combos', :lineas_h4 => 'Líneas',
+                     :mis_graficos_h4 => 'Mis gráficos', 
+                     
+                     :config_h2 => 'Config', :configuraciones_h4 => 'Configuraciones', :usuarios_h4 => 'Usuarios'}                
+
+  @@idiomas['pr'][:ayuda_textos] = {:empezando_text => 'texto',
+                                    :conectar_BD_text => 'texto BD', :conectar_FTP_text => 'texto FTP',
+                                    :config_tablas_text => 'texto Tablas', :config_cols_text => 'texto Columnas',
+                                    :demos_text => 'texto',
+                                    
+                     :formularios_text => 'Formularios y Tablas',
+                     :insercion_text => 'Inserción', :edicion_text => 'Edición', :busquedas_text => 'Busquedas', 
+                     :autorecargas_text => 'Autorecargar', :informes_text => 'Informes', 
+                     
+                     :graficos_text => 'Gráficos',
+                     :areas_text => 'Áreas', :circulos_text => 'Círculos', :barras_text => 'Barras', 
+                     :columnas_text => 'Columnas', :combos_text => 'Combos', :lineas_text => 'Líneas',
+                     :mis_graficos_text => 'Mis gráficos', 
+                     
+                     :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
+
   
 end
-

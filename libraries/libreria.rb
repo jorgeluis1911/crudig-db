@@ -293,14 +293,14 @@ class App < Sinatra::Application
   
   def validLanguage(lang)
     valido = false
-    lang2 = lang.downcase 
+    lang2 = lang.downcase
     
     # => en = INGLES /  es = ESPAÑOL / fr = FRANCES / de = ALEMAN  / it =ITALIANO / pr =PORTUGUES
       
     if(lang2.eql?('es') || lang2.eql?('en') || lang2.eql?('fr') || 
        lang2.eql?('de') || lang2.eql?('it') || lang2.eql?('pr') )
       
-      @@config[:config][:idioma] = lang
+      @@config[:config][:idioma] = lang2
       valido = true;
     end    
     return valido    

@@ -13,21 +13,21 @@ class Aplicacion
 
   def refresh
     begin
-      @conexion.query( "SELECT 1" )
+      @conexion["SELECT 1"]
       
     rescue Mysql::Error => err
 
       load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
                 @aplicacion[:config][:user], @aplicacion[:config][:pass],
                 @aplicacion[:config][:bd],   @aplicacion[:config][:port])
-                      
+=begin                      
     rescue Errno::Error => err
       #$stderr.puts "%p while testing connection: %s" % [ err.class, err.message ]
             
       load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
                 @aplicacion[:config][:user], @aplicacion[:config][:pass],
                 @aplicacion[:config][:bd],   @aplicacion[:config][:port])
-                      
+=end                      
     end
   end
 
@@ -70,7 +70,7 @@ class Aplicacion
     puts 'Update '+tabla+' Set '+set+' Where '+where
     if (where != '')
       begin
-        @conexion.query('Update '+tabla+' Set '+set+' Where '+where)
+        @conexion['Update '+tabla+' Set '+set+' Where '+where]
       rescue Mysql::Error => e
         #puts e.errno     #puts e.error
         return e.error
@@ -95,7 +95,7 @@ class Aplicacion
     puts 'Delete From '+tabla+' '+where
     if (where != '')
       begin
-        @conexion.query('Delete From '+tabla+' Where '+where)
+        @conexion['Delete From '+tabla+' Where '+where]
       rescue Mysql::Error => e
         #puts e.errno     #puts e.error
         return e.error
@@ -128,7 +128,7 @@ class Aplicacion
     
     error = ''
     begin
-      @conexion.query('INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')')
+      @conexion['INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')']
     rescue Mysql::Error => e
       #puts e.errno
       #puts e.error
@@ -274,7 +274,7 @@ class Aplicacion
       
     if (from != 'FROM ' &&  @conexion)
       #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
-      result = @conexion.query('SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql)
+      result = @conexion['SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql]
     end
     return result
   end
@@ -299,18 +299,25 @@ class Aplicacion
     
   end
 
-
+  def castToBol(ceroUno)
+    if (ceroUno=='0')
+      false
+    else
+      true
+    end
+  end
 
   def save_config_table(tablas, nom_tabla, params)
     return 1 unless tablas[nom_tabla]
     #puts tablas[nom_tabla]['config']
     #puts tablas[nom_tabla]['config'][:inner_join]
     
-    tablas[nom_tabla]['config'][:inner_join] = params[:inner_join]     if params[:inner_join]
+    tablas[nom_tabla]['config'][:inner_join] = castToBol(params[:inner_join])     if params[:inner_join]
     tablas[nom_tabla]['config'][:nombre_grid] = params[:nombre_tabla]    if params[:nombre_tabla]
-    tablas[nom_tabla]['config'][:ver_en_menu] = params[:ver_tabla_en_menu]    if params[:ver_tabla_en_menu]
-    tablas[nom_tabla]['config'][:insert_window] = params[:insertar_por_ventana] if params[:insertar_por_ventana]
-    tablas[nom_tabla]['config'][:edit_window] = params[:editar_por_ventana]    if params[:editar_por_ventana]
+    tablas[nom_tabla]['config'][:ver_en_menu] = castToBol(params[:ver_tabla_en_menu])    if params[:ver_tabla_en_menu]
+    tablas[nom_tabla]['config'][:nombre_menu] = params[:nombre_menu]    if params[:nombre_menu]
+    tablas[nom_tabla]['config'][:insert_window] = castToBol(params[:insertar_por_ventana]) if params[:insertar_por_ventana]
+    tablas[nom_tabla]['config'][:edit_window] = castToBol(params[:editar_por_ventana])    if params[:editar_por_ventana]
     # =>  :detalle_de 
     tablas[nom_tabla]['config'][:paginador] = params[:paginador]      if params[:paginador]
     

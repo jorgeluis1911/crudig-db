@@ -7,8 +7,11 @@ require 'json'
 require 'net/ftp'
 require 'prawn'
 require 'prawn/table'
+require 'sequel'
 
 #$db = SQLite3::Database.new( "entornos.db" )
+
+# => http://app-rack2.herokuapp.com
 
 class App < Sinatra::Application
 
@@ -25,10 +28,23 @@ class App < Sinatra::Application
   @@appDemos = ''
   
   @@debug = 0
+ 
+=begin
+  :tabla1=>{:c=>1,:r=>1,:u=>1,:d=>1,:i=>1,:g=>1,:a=>1,:n=>1}
   
+{:tabla1=>{:c=>1,:r=>1,:u=>1,:d=>1,:i=>1},    43 letras Maximo * 20 tablas =   
+:tabla2=>{:c=>1,:r=>1,:u=>1}}
+ 
+  replace
+  
+{tabla1={c1,r1,u1},    20 letras Maximo * 20 tablas =   400 letras maximo
+ tabla2={c1,r1,u1}}
+  
+=end
+   
   @@idiomas = Hash.new
   @@filas = Hash.new
-  @@config = {:config => {:idioma=>"ES",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
+  @@config = {:config => {:idioma=>"es",:bd=>"",:host=>"",:user=>"",:pass=>"",:driver=>"",:port=>"",
                           :hostFTP=>"",:portFTP=>"",:userFTP=>"",:passFTP=>"",:rutaFTP=>""}, 
               :tablas => {},
               :enlaces => [],

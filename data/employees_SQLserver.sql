@@ -165,3 +165,14 @@ ALTER TABLE salaries
 --
 ALTER TABLE titles
   ADD CONSTRAINT titles_ibfk_1 FOREIGN KEY (emp_no) REFERENCES employees (emp_no) ON DELETE CASCADE;
+
+
+
+
+
+select * from departments
+select * from dept_emp
+select * from dept_manager
+select * from employees
+select * from salaries
+select * from titles

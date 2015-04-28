@@ -1,11 +1,14 @@
 class MySQLconex < Aplicacion
-  
+
   def load_bd( driver, dominio, usuario, pass, bd_name, port)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
     #real_connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, sock=nil, flag=nil).
 
     begin
-      @conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
+      Sequel.datetime_class = Date
+      #Sequel.convert_two_digit_years = false
+      @conexion = Sequel.connect('mysql://'+usuario+':'+pass+'@'+dominio+':'+port+'/'+bd_name)
+      #@conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
       
       # raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
       
@@ -15,8 +18,14 @@ class MySQLconex < Aplicacion
       @aplicacion[:config][:pass]=pass
       @aplicacion[:config][:driver]=driver
       @aplicacion[:config][:port]=port
+      
+      puts Date.parse('2014-03-05', true)
+      
+      #@conexion.convert_invalid_date_time = nil
+      
       return load_config_MySQL( bd_name )
-    rescue Mysql::Error
+    rescue Sequel::Error => e
+      puts e
       return '<div class="alert alert-danger"><p>No se puede conectar a la Base de Datos, compruebe su usuario y contraseña</p></div>'
     end
     #puts "DBI:#{driver}:#{bd_name}:#{dominio}"
@@ -44,56 +53,59 @@ class MySQLconex < Aplicacion
     from = 'FROM INFORMATION_SCHEMA.columns as col left join INFORMATION_SCHEMA.key_column_usage as col_u 
                 on col_u.table_name=col.table_name and col_u.column_name=col.column_name'
     order = ' ORDER BY col.table_name, col.ordinal_position '
-    @conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
-      #print row['column_name']
+    #@conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
+    @conexion['SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order].each{ |row|
+      #print row[:column_name]
       
       time22 = Time.now
-      puts "    consulta - Time elapsed #{(time22 - time11)*1000} milliseconds"
+      puts row
+      #puts "    consulta - Time elapsed #{(time22 - time11)*1000} milliseconds"
 
-      if !row['table_name'].eql?(tablas)
+      if !row[:table_name].eql?(tablas)
         
         if (@aplicacion[:tablas][tablas] && 
             @aplicacion[:tablas][tablas]['config'][:combo_string_fk].length == 0)
           combo_string << row_name
         end
         
-        @aplicacion[:enlaces] << row['table_name']
-        @aplicacion[:tablas][row['table_name']] = {}
-        @aplicacion[:mejoras][row['table_name']] = {:min=>0, :max=>0, :minW=>0, :maxW=>0}
+        @aplicacion[:enlaces] << row[:table_name]
+        @aplicacion[:tablas][row[:table_name]] = {}
+        @aplicacion[:mejoras][row[:table_name]] = {:min=>0, :max=>0, :minW=>0, :maxW=>0}
         
         config_tabla= {}
         config_tabla[:inner_join] = true
-        config_tabla[:nombre_grid] = ''
+        config_tabla[:nombre_grid] = row[:table_name]
         config_tabla[:ver_en_menu] = true
+        config_tabla[:nombre_menu] = row[:table_name]
         config_tabla[:insert_window] = true
         config_tabla[:edit_window] = true
         config_tabla[:detalle_de] = ''
         config_tabla[:referencias] = {}
         config_tabla[:paginador] = 10
         config_tabla[:combo_string_fk] = []
-        @aplicacion[:tablas][row['table_name']]['config'] = config_tabla
-        @aplicacion[:tablas][row['table_name']]['columnas'] = {}
+        @aplicacion[:tablas][row[:table_name]]['config'] = config_tabla
+        @aplicacion[:tablas][row[:table_name]]['columnas'] = {}
       end
-      tablas = row['table_name']
+      tablas = row[:table_name]
       
       solo_texto = ['varchar', 'char', 'text', 'long_text']
       # => agregar las columnas
       columna= {}
-      columna[:position] = row['ORDINAL_POSITION']
-      columna[:default_value] = row['COLUMN_DEFAULT']
-      columna[:is_nullable] = row['is_nullable']
-      columna[:data_type] = row['DATA_TYPE'].to_s   # varchar , char , text
+      columna[:position] = row[:ORDINAL_POSITION]
+      columna[:default_value] = row[:COLUMN_DEFAULT]
+      columna[:is_nullable] = row[:is_nullable]
+      columna[:data_type] = row[:DATA_TYPE].to_s   # varchar , char , text
       columna[:is_number] = 1
       columna[:is_number] = 0 if (solo_texto.index columna[:data_type] )
-      columna[:length] = row['CHARACTER_MAXIMUM_LENGTH']
-      columna[:column_key] = row['COLUMN_KEY']      # ['PRI', 'UNI', 'MUL']
-      columna[:comments] = row['COLUMN_COMMENT']
+      columna[:length] = row[:CHARACTER_MAXIMUM_LENGTH]
+      columna[:column_key] = row[:COLUMN_KEY]      # ['PRI', 'UNI', 'MUL']
+      columna[:comments] = row[:COLUMN_COMMENT]
       
       # => datos sobre FK
-      columna[:key_name] = row['CONSTRAINT_NAME']
-      columna[:esquema_rel] = row['REFERENCED_TABLE_SCHEMA']
-      columna[:tabla_rel] = row['REFERENCED_TABLE_NAME']
-      columna[:column_rel] = row['REFERENCED_COLUMN_NAME']
+      columna[:key_name] = row[:CONSTRAINT_NAME]
+      columna[:esquema_rel] = row[:REFERENCED_TABLE_SCHEMA]
+      columna[:tabla_rel] = row[:REFERENCED_TABLE_NAME]
+      columna[:column_rel] = row[:REFERENCED_COLUMN_NAME]
       
       # => datos sobre FTP
       columna[:carpeta_ftp] = "/"
@@ -105,9 +117,9 @@ class MySQLconex < Aplicacion
       
       # => campos a mostrar en combo texto FK
       combo_string = @aplicacion[:tablas][tablas]['config'][:combo_string_fk]
-      if ( (row['DATA_TYPE'].to_s=='varchar' || row['DATA_TYPE'].to_s=='char') )
-        combo_string << row['column_name']
-        #puts row['column_name']
+      if ( (row[:DATA_TYPE].to_s=='varchar' || row[:DATA_TYPE].to_s=='char') )
+        combo_string << row[:column_name]
+        #puts row[:column_name]
       end
             
       @aplicacion[:tablas][tablas]['config'][:referidas] = []
@@ -118,8 +130,8 @@ class MySQLconex < Aplicacion
         referidas[columna[:tabla_rel]] = []   unless ( referidas[columna[:tabla_rel]] )
         referidas[columna[:tabla_rel]] << tablas
       end
-      row_name = row['column_name']
-      @aplicacion[:tablas][tablas]['columnas'][row['column_name']] = columna
+      row_name = row[:column_name]
+      @aplicacion[:tablas][tablas]['columnas'][row[:column_name]] = columna
       
       time11 = Time.now
     }    
@@ -222,7 +234,8 @@ class MySQLconex < Aplicacion
     #puts 'simple_select()'
     puts 'SELECT '+select
     puts 'FROM '+from+' '+where_sql+' '+ordenar_sql+limit
-    @conexion.query('SELECT '+select+' FROM '+from+' '+where_sql+' '+ordenar_sql+limit.to_s).each_hash{ |row|
+    #@conexion.query('SELECT '+select+' FROM '+from+' '+where_sql+' '+ordenar_sql+limit.to_s).each_hash{ |row|
+    @conexion['SELECT '+select+' FROM '+from+' '+where_sql+' '+ordenar_sql+limit.to_s].each{ |row|
       filas["#{cont}"] = row
       cont += 1
     }
@@ -233,7 +246,9 @@ class MySQLconex < Aplicacion
   def one_select_sin_count(select, from, where_sql, ordenar_sql, limit)
     refresh
     #puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
-    return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
+    
+    #return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
+    return @conexion['SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit]
   end  
 
 
