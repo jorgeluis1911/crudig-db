@@ -3,15 +3,33 @@ paginador = ''
 
 if (filas['filas_total'] && filas['filas_total']['0'])
   paginas = filas['filas_total']['0']['total'].to_i / tablas[tabla]['config'][:paginador].to_i
-  
-  paginador = '<ul class="pagination pull-right"><li><a href="/'+idioma+'/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
-  
-  (paginas-1).times do |i|
-    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
-  end 
+  botones = 9
+  inicio = 1
+  if (paginas > 0)
+    paginador = '<ul class="pagination pull-right"><li><a href="/'+idioma+'/'+tabla+'/listar">&laquo;</a></li>'
+    if (paginas > botones)
+      paginador = paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+
+                            (tablas[tabla]['config'][:paginador]).to_s+'">2</a></li>'
+      paginador = paginador +'<li><a href="#">...</a></li>'
+      inicio +=1
+    end
+  end
+  repeat = 0
+  (paginas-2).times do |i|
+    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+
+                          (tablas[tabla]['config'][:paginador] * (i + inicio)).to_s+'">'+(i+1+inicio).to_s+'</a></li>'
+    repeat +=1
+    break if(repeat == 3)
+  end
   
   if (paginas > 0)
-    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
+    if (paginas > botones)
+      paginador = paginador +'<li><a href="">...</a></li>'
+      paginador = paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+
+                            (tablas[tabla]['config'][:paginador] * (paginas -2)).to_s+'">'+(paginas -1).to_s+'</a></li>'
+    end
+    paginador=paginador +'<li><a href="/'+idioma+'/'+tabla+'/listar/'+
+                            (tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
   end
 end
 %>
@@ -188,8 +206,8 @@ end
   </head>  
   <body>
     
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -201,14 +219,40 @@ end
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <% enlaces.each do |link| %>
-               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
-            <% end %>
+            <% if tablas.length < 10 %>
+              <% tablas.each do |tabla, value|
+                    if (value['config'][:ver_en_menu] == true)    %>
+                      <li><a href="/<%= idioma %>/<%= tabla%>/listar"><%= value['config'][:nombre_menu]%></a></li>
+                <%  end
+                end %>
+            <% else  
+                grupos = (tablas.length / 10.0).ceil
+                cant = 0
+                tablas.each do |tabla, value|
+                  if (value['config'][:ver_en_menu] == true)
+                    if (cant == 0) %>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <%= value['config'][:nombre_menu]%><b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                <%  end   %>
+                      <li><a href="/<%= idioma %>/<%= tabla%>/listar"><%= value['config'][:nombre_menu]%></a></li>
+                <%  cant += 1
+                    if (cant == grupos) %>
+                        </ul></li>
+                <%    cant = 0
+                    end
+                  end 
+                end
+                if (cant > 0 && cant < grupos) %>
+                        </ul></li>
+            <%  end
+              end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma.upcase %><b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <% if (idioma != 'ES' ) %>   <li><a href="/ES/">ES</a></li> <% end %>
                 <% if (idioma != 'EN' ) %>   <li><a href="/EN/">EN</a></li> <% end %>

@@ -1,3 +1,13 @@
+<% def btnAyuda() %>
+  <span>
+    <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+        data-toggle="popover" title="Popover title" 
+        data-content="And here's some amazing content. It's very engaging. Right?">
+    ?</button>
+  </span>
+  <% return '' %>
+<% end %>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -8,15 +18,16 @@
     
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    <link href="/css/modif_bootstrap.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
   </head>  
   <body>
     
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -28,21 +39,24 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <% enlaces.each do |link| %>
-               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
-            <% end %>
+            <% tablas.each do |tabla, value|
+                  if (value['config'][:ver_en_menu] == true)
+                  %>
+                    <li><a href="/<%= idioma %>/<%= tabla%>/listar"><%= value['config'][:nombre_menu]%></a></li>
+              <%  end
+              end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             
             <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma.upcase %><b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/ayuda">ES</a></li> <% end %>
-                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/ticas">EN</a></li> <% end %>
-                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/confi">FR</a></li> <% end %>
-                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/demos">DE</a></li> <% end %>
-                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/demos">IT</a></li> <% end %>
-                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/demos">PR</a></li> <% end %>
+                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/">PR</a></li> <% end %>
               </ul>
             </li>
             
@@ -97,7 +111,7 @@
       
       <div class="row">
         <div class="col-md-6">
-          <form method="post" action="/config/conectarBD">
+          <form method="post" action="/config/conectarBD" enctype='multipart/form-data'>
             <div class="panel panel-default">
               <div class="panel-heading">
                 <input type="submit" name="conectar" id="conectar" style="float: right;" 
@@ -133,7 +147,15 @@
                         <option value="Oracle"
                           <%= 'selected' if (conexionBD[:driver]=='Oracle')%>
                           >Oracle</option>
+                        <option value="Sqlite"
+                          <%= 'selected' if (conexionBD[:driver]=='Sqlite')%>
+                          >Sqlite</option>
                       </select>
+                  </tr>
+                  <tr>
+                    <td><label>Aricho Sqlite</label></td>
+                    <td><input type="file" id="sqlitefile" name="sqlitefile"
+                      class="form-control"/></td>
                   </tr>                      
                   <tr>
                     <td><label>Dominio</label></td>
@@ -256,18 +278,19 @@
                 </thead>
                 <tbody>
                   <tr class="info">
-                    <td>inner_join<span class="label label-info">?</span></td>
-                    <td>Nombre de Tabla<span class="label label-info">?</span></td>
-                    <td>Ver Tabla en el menú<span class="label label-info">?</span></td>
-                    <td>Insertar por ventana<span class="label label-info">?</span></td>
-                    <td>Editar por ventana<span class="label label-info">?</span></td>
-                    <td>tabla_detalle<span class="label label-info">?</span></td>
-                    <td>Paginador<span class="label label-info">?</span></td>
+                    <td>Unión <%= btnAyuda() %></td>
+                    <td>Nombre de Tabla <%= btnAyuda() %></td>
+                    <td>Ver Tabla en el menú <%= btnAyuda() %></td>
+                    <td>Insertar por ventana <%= btnAyuda() %></td>
+                    <td>Editar por ventana <%= btnAyuda() %></td>
+                    <td>Tablas detalles <%= btnAyuda() %></td>
+                    <td>Paginador <%= btnAyuda() %></td>
                   </tr>
                   <tr>
                     <td>
                       <select class="form-control" id="inner_join" name="inner_join">
-                        <option value="1">Si</option><option value="0">No</option>
+                        <option value="1" <%= 'selected' if (val['config'][:inner_join]==true) %>>Si</option>
+                        <option value="0" <%= 'selected' if (val['config'][:inner_join]==false) %>>No</option>
                       </select>
                     </td>
                     <td>
@@ -276,17 +299,20 @@
                     </td>
                     <td>
                       <select class="form-control" id="ver_tabla_en_menu" name="ver_tabla_en_menu">
-                        <option value="1">Si</option><option value="0">No</option>
+                        <option value="1" <%= 'selected' if (val['config'][:ver_en_menu]==true) %>>Si</option>
+                        <option value="0" <%= 'selected' if (val['config'][:ver_en_menu]==false) %>>No</option>
                       </select>
                     </td>
                     <td>
                       <select class="form-control" id="insertar_por_ventana" name="insertar_por_ventana">
-                        <option value="1">Si</option><option value="0">No</option>
+                        <option value="1" <%= 'selected' if (val['config'][:insert_window]==true) %>>Si</option>
+                        <option value="0" <%= 'selected' if (val['config'][:insert_window]==false) %>>No</option>
                       </select>
                     </td>
                     <td>
                       <select class="form-control" id="editar_por_ventana" name="editar_por_ventana">
-                        <option value="1">Si</option><option value="0">No</option>
+                        <option value="1" <%= 'selected' if (val['config'][:edit_window]==true) %>>Si</option>
+                        <option value="0" <%= 'selected' if (val['config'][:edit_window]==false) %>>No</option>
                       </select>
                     </td>
                     <td><%= val['config'][:detalle_de]%>
@@ -301,8 +327,20 @@
                       <% end %>
                     </td>
                     <td>
-                      <input type="text" id="text_paginador" name="paginador" 
-                        value="<%= val['config'][:paginador]%>" class="form-control"/>
+                      <select class="form-control" id="text_paginador" name="paginador">
+                      <!--<input type="text" id="text_paginador" name="paginador" 
+                        value="<%#= val['config'][:paginador]%>" class="form-control"/>
+                      -->
+                        <option value="10"
+                          <%= 'selected' if ('10'.eql?(val['config'][:paginador]))%> >
+                          10</option>
+                        <option value="20"
+                          <%= 'selected' if ('20'.eql?(val['config'][:paginador]))%> >
+                          20</option>
+                        <option value="30"
+                          <%= 'selected' if ('30'.eql?(val['config'][:paginador]))%> >
+                          30</option>
+                      </select>
                     </td>
                   </tr>
                   <%= '<div class="alert alert-danger"> No tiene configuración está tabla </div>' if (val.length < 1) %>
@@ -321,26 +359,54 @@
                   <tr class="info"><td>columnas</td>
                     
                     <td>position
-                      <div><button type="button" class="btn btn-xs btn-info popover-dismiss" 
-                        data-toggle="popover" title="Popover title" 
-                        data-content="And here's some amazing content. It's very engaging. Right?">
-                        ?</button></div>
-                      <span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
-                    <td>default_value<span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
-                    <td>combo_ref<span class="label label-info">?</span></td>
-                    <td>is_nullable<span class="label label-info">?</span></td>
-                    <td>data_type<span class="label label-info">?</span></td>
-                    <td>length<span class="label label-info">?</span></td>
-                    <td>comments<span class="label label-info">?</span></td>
-                    <td>vista_grid<span class="label label-info">?</span></td>
-                    <td>nombre_col_grid<span class="label label-info">?</span></td>
-                    <td>es_archivo<span class="label label-info">?</span></td>
-                    <td>carpeta_FTP<span class="label label-info">?</span></td>
-                    <td>column_key<span class="label label-info">?</span></td>
-                    <td>key_name<span class="label label-info">?</span></td>
-                    <td>esquema_rel<span class="label label-info">?</span></td>
-                    <td>tabla_rel<span class="label label-info">?</span></td>
-                    <td>column_rel<span class="label label-info">?</span></td>
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>default_value
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>combo_ref
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>is_nullable
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>data_type <%= btnAyuda() %></td>
+                    <td>comments <%= btnAyuda() %></td>
+                    <td>vista_grid <%= btnAyuda() %></td>
+                    <td>nombre_col_grid <%= btnAyuda() %></td>
+                    <td>es_archivo <%= btnAyuda() %></td>
+                    <td>carpeta_FTP <%= btnAyuda() %></td>
+                    
+                    <% if(request.base_url=="127.0.0.1" || 
+                            request.base_url=="http://localhost:9292" || 
+                            request.base_url=="localhost:9292") %>
+                        <td>length <%= btnAyuda() %></td>
+                        <td>column_key <%= btnAyuda() %></td>
+                        <td>key_name <%= btnAyuda() %></td>
+                        <td>esquema_rel <%= btnAyuda() %></td>
+                        <td>tabla_rel <%= btnAyuda() %></td>
+                        <td>column_rel <%= btnAyuda() %></td>
+                    <% end %>
                   </tr>
                   <% val['columnas'].each do |columna, valor| %>
                     <tr><td class="warning"><%= columna %></td>
@@ -358,7 +424,6 @@
                       </td>
                       <td><%= valor[:is_nullable]%></td>
                       <td><%= valor[:data_type]%></td>
-                      <td><%= valor[:length]%></td>
                       <td>
                         <input type="text" id="<%= columna %>_comments" name="<%= columna %>_comments" 
                           value="<%= valor[:comments]%>" class="form-control"/>
@@ -380,12 +445,16 @@
                         value="<%= valor[:carpeta_ftp]%>" class="form-control"/>
                       </td>
                       
-                      <td id="key"><%= valor[:column_key]%></td>
-                      <td id="keyname"><%= valor[:key_name]%></td>
-                      <td id="esquema_relacionada"><%= valor[:esquema_rel]%></td>
-                      <td id="tabla_relacionada"><%= valor[:tabla_rel]%></td>
-                      <td id="columna_relacionada"><%= valor[:column_rel]%></td>
-                      
+                      <% if(request.base_url=="127.0.0.1" || 
+                            request.base_url=="http://localhost:9292" || 
+                            request.base_url=="localhost:9292") %>
+                        <td><%= valor[:length]%></td>
+                        <td id="key"><%= valor[:column_key]%></td>
+                        <td id="keyname"><%= valor[:key_name]%></td>
+                        <td id="esquema_relacionada"><%= valor[:esquema_rel]%></td>
+                        <td id="tabla_relacionada"><%= valor[:tabla_rel]%></td>
+                        <td id="columna_relacionada"><%= valor[:column_rel]%></td>
+                      <% end %>
                     </tr>
                   <% end %>
                   <%= '<div class="alert alert-danger"> No tiene columnas está tabla </div>' if (val.length < 1) %>

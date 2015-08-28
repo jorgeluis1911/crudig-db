@@ -9,8 +9,8 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
     
     
@@ -31,12 +31,20 @@
       function drawChartCombo() {
         // Some raw data (not necessarily accurate)
         var data = google.visualization.arrayToDataTable([
-          ['Month', 'Bolivia', 'Ecuador', 'Madagascar', 'Papua New Guinea', 'Rwanda', 'Average'],
-          ['2004/05',  165,      938,         522,             998,           450,      614.6],
-          ['2005/06',  135,      1120,        599,             1268,          288,      682],
-          ['2006/07',  157,      1167,        587,             807,           397,      623],
-          ['2007/08',  139,      1110,        615,             968,           215,      609.4],
-          ['2008/09',  136,      691,         629,             1026,          366,      569.6]
+          <%
+              # => imprimimos con Ruby los datos para el grafico
+              if (!resultChart.nil? && resultChart.size>0)
+                resultChart.each do |col| %>
+                  <%='[\''+col[0]+'\','+col[1]+'],' %>                
+                <% end %>
+              <%else%>
+                ['Month', 'Bolivia', 'Ecuador', 'Madagascar', 'Papua New Guinea', 'Rwanda', 'Average'],
+                ['2004/05',  165,      938,         522,             998,           450,      614.6],
+                ['2005/06',  135,      1120,        599,             1268,          288,      682],
+                ['2006/07',  157,      1167,        587,             807,           397,      623],
+                ['2007/08',  139,      1110,        615,             968,           215,      609.4],
+                ['2008/09',  136,      691,         629,             1026,          366,      569.6]
+              <%end%>
         ]);
 
         var options = {
@@ -56,7 +64,7 @@
   <body>
     
     <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -110,31 +118,52 @@
           
           <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
             
-            <form role="form">
+            <form role="form" action="/<%= idioma %>/chartCircle/testingChart" method="get">
+              
               <div class="form-group">
                 <label for="">Nombre del gráfico</label>
                 <input type="text" class="form-control" placeholder="">
               </div>
               
               <div class="form-group">
-                <label for="">Elementos a representar</label>
+                <label for="">Mostrar en menú</label>
                 <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <% enlaces.each do |link| %>
+                     <option value="<%= link%>"><%= link%></option>
+                  <% end %>
                 </select>
               </div>
               
               <div class="form-group">
-                <label for="">Cantidades a comparar</label>
+                <label for="">Elementos a representar</label>
                 <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Cantidades a mostrar (eje Y)</label>
+                <select class="form-control">
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Cantidades a mostrar (eje X)</label>
+                <select class="form-control">
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
                 </select>
               </div>
 

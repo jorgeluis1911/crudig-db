@@ -9,8 +9,8 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
     
     
@@ -30,11 +30,19 @@
       // draws it.
       function drawChartBarras() {
         var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2004',  1000,      400],
-          ['2005',  1170,      460],
-          ['2006',  660,       1120],
-          ['2007',  1030,      540]
+          <%
+              # => imprimimos con Ruby los datos para el grafico
+              if (!resultChart.nil? && resultChart.size>0)
+                resultChart.each do |col| %>
+                  <%='[\''+col[0]+'\','+col[1]+'],' %>                
+                <% end %>
+              <%else%>
+                ['Year', 'Sales', 'Expenses'],
+                ['2004',  1000,      400],
+                ['2005',  1170,      460],
+                ['2006',  660,       1120],
+                ['2007',  1030,      540]
+              <%end%>
         ]);
 
         var options = {
@@ -51,7 +59,7 @@
   <body>
     
     <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -105,31 +113,54 @@
           
           <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
             
-            <form role="form">
+            <form role="form" action="/<%= idioma %>/chartCircle/testingChart" method="get">
+              
               <div class="form-group">
                 <label for="">Nombre del gráfico</label>
                 <input type="text" class="form-control" placeholder="">
               </div>
               
               <div class="form-group">
+                <label for="">Mostrar en menú</label>
+                <select class="form-control">
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+                            
+              <div class="form-group">
                 <label for="">Elementos a representar</label>
                 <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
                 </select>
               </div>
               
               <div class="form-group">
-                <label for="">Cantidades a comparar</label>
+                <label for="">Cantidades a mostrar (eje Y)</label>
                 <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Cantidades a mostrar (eje X)</label>
+                <select class="form-control">
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
                 </select>
               </div>
 

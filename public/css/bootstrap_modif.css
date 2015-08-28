@@ -5,7 +5,15 @@
 	line-height: 1.0;	
 }
 
+.container_menu {
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-right: 15px;
+	padding-left: 15px;	
+	width: auto;
+}
 .container {
+	margin-top: 50px;
 	margin-left: 0px;
 	margin-right: 0px;
 	width: auto;
@@ -108,4 +116,10 @@ table > tbody > tr:hover {
 }
 .menu_ayuda li{
 	margin: 4px;
+}
+
+.btn-ayuda {
+	padding: 0px 2px;
+  	margin: 0px;
+  	font-size: 10px;
 }

@@ -9,8 +9,8 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
     
     
@@ -35,7 +35,6 @@
         data.addColumn('number', 'Slices');
         
         data.addRows([
-          
             <%
               # => imprimimos con Ruby los datos para el grafico
               if (!resultChart.nil? && resultChart.size>0)
@@ -63,7 +62,7 @@
   <body>
     
     <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -123,18 +122,36 @@
           
           <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
             
-            <form role="form" action="/chartCircle/testingChart" method="get">
+            <form role="form" action="/<%= idioma %>/chartCircle/testingChart" method="get">
+              
               <div class="form-group">
                 <label for="">Nombre del gráfico</label>
-                <input type="text" id="nameChart" name="nameChart" class="form-control" placeholder="" required="required">
+                <input type="text" id="nameChart" name="nameChart" 
+                  class="form-control" placeholder="" required="required"
+                  <%= 'value="'+params[:nameChart]+'">' if (params[:nameChart]) %>
               </div>
               
+              <div class="form-group">
+                <label for="">Mostrar en menú</label>
+                <select class="form-control"  id="menu" name="menu" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:menu]) %>
+                      ><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+                            
               <div class="form-group">
                 <label for="">Elementos a representar</label>
                 <select class="form-control" id="elementos" name="elementos" required>
                   <% tablas.each do |tabla, arrValue| %>
                     <% arrValue['columnas'].each do |columna, values| %>
-                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:elementos]) %>
+                      ><%=tabla+'.'+columna %></option>
                     <% end %>
                   <% end %>
                 </select>
@@ -145,7 +162,9 @@
                 <select class="form-control" id="cantidades" name="cantidades" required>
                   <% tablas.each do |tabla, arrValue| %>
                     <% arrValue['columnas'].each do |columna, values| %>
-                       <option value="<%=tabla+'.'+columna %>"><%=tabla+'.'+columna %></option>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:cantidades]) %>
+                      ><%=tabla+'.'+columna %></option>
                     <% end %>
                   <% end %>
                 </select>

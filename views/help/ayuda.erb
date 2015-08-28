@@ -9,14 +9,14 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
   </head>  
   <body>
     
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -94,95 +94,126 @@
         <div class="col-md-10">
           
           <div>
-            <h2 id="listados_href" class="page-header">Listados</h2>
-            <p class="lead">probando</p>
+            <h2 id="empezando_href" class="page-header"><%= traductor[:ayuda_secciones][:empezando_h2] %></h2>
+            <p class="lead"><%= traductor[:ayuda_textos][:empezando_text] %></p>
             
-            <h4 id="insercion_href">Inserción</h4>
-            <p>texto</p>
+            <h4 id="conectar_bd_href"><%= traductor[:ayuda_secciones][:conectar_BD_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:conectar_BD_text] %></p>
+
+            <h4 id="conectar_ftp_href"><%= traductor[:ayuda_secciones][:conectar_FTP_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:conectar_FTP_text] %></p>
+                        
+            <h4 id="conf_tablas_href"><%= traductor[:ayuda_secciones][:config_tablas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:config_tablas_text] %></p>
+            
+            <h4 id="conf_columnas_href"><%= traductor[:ayuda_secciones][:config_cols_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:config_cols_text] %></p>
+            
+            <h4 id="demos_href"><%= traductor[:ayuda_secciones][:demos_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:demos_text] %></p>
+          </div>
+          
+          <div>
+            <h2 id="formularios_href" class="page-header"><%= traductor[:ayuda_secciones][:formularios_h2] %></h2>
+            <p class="lead"><%= traductor[:ayuda_textos][:formularios_text] %></p>
+            
+            <h4 id="insercion_href"><%= traductor[:ayuda_secciones][:insercion_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:insercion_text] %></p>
             <img src="/img/insercion.jpg" alt="conexiones" width="50%"/>
             
-            <h4 id="edicion_href">Edición</h4>
-            <p>texto</p>
+            <h4 id="edicion_href"><%= traductor[:ayuda_secciones][:edicion_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:edicion_text] %></p>
             
-            <h4 id="busquedas_href">Búsquedas</h4>
-            <p>texto</p>
+            <h4 id="busquedas_href"><%= traductor[:ayuda_secciones][:busquedas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:busquedas_text] %></p>
             
-            <h4 id="autorefresco_href">Autorefresco</h4>
-            <p>texto</p>
+            <h4 id="autorefresco_href"><%= traductor[:ayuda_secciones][:autorecargas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:autorecargas_text] %></p>
             
-            <h4 id="informes_href">Informes</h4>
-            <p>texto</p>
+            <h4 id="informes_href"><%= traductor[:ayuda_secciones][:informes_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:informes_text] %></p>
           </div>
           
           <div>
-            <h2 id="graficos_href" class="page-header">Gráficos</h2>
-            <p class="lead">probando</p>
+            <h2 id="graficos_href" class="page-header"><%= traductor[:ayuda_secciones][:graficos_h2] %></h2>
+            <p class="lead"><%= traductor[:ayuda_textos][:graficos_text] %></p>
             
-            <h4 id="area_href">Área</h4>
-            <p>texto</p>
+            <h4 id="area_href"><%= traductor[:ayuda_secciones][:areas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:areas_text] %></p>
             
-            <h4 id="ciraculos_href">Círculos</h4>
-            <p>texto</p>
+            <h4 id="ciraculos_href"><%= traductor[:ayuda_secciones][:circulos_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:circulos_text] %></p>
             
-            <h4 id="barras_href">Barras</h4>
-            <p>texto</p>
+            <h4 id="barras_href"><%= traductor[:ayuda_secciones][:barras_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:barras_text] %></p>
             
-            <h4 id="columnas_href">Columnas</h4>
-            <p>texto</p>
+            <h4 id="columnas_href"><%= traductor[:ayuda_secciones][:columnas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:columnas_text] %></p>
             
-            <h4 id="combo_href">Combo</h4>
-            <p>texto</p>
+            <h4 id="combo_href"><%= traductor[:ayuda_secciones][:combos_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:combos_text] %></p>
             
-            <h4 id="lineas_href">Líneas</h4>
-            <p>texto</p>
+            <h4 id="lineas_href"><%= traductor[:ayuda_secciones][:lineas_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:lineas_text] %></p>
             
-            <h4 id="misgraficos_href">Mis gráficos</h4>
-            <p>texto</p>            
+            <h4 id="misgraficos_href"><%= traductor[:ayuda_secciones][:mis_graficos_h4] %></h4>
+            <p><%= traductor[:ayuda_textos][:mis_graficos_text] %></p>
           </div>
           
           <div>
-            <h2 id="config_href" class="page-header">Config</h2>
-            <p class="lead">probando</p>
+            <h2 id="config_href" class="page-header"><%= traductor[:ayuda_secciones][:config_h2] %></h2>
+            <p class="lead"><%= traductor[:ayuda_textos][:config_text] %></p>
             
-            <h4 id="configuraciones_href">Configuraciones</h4>
-            <p>texto</p>
+            <h4 id="configuraciones_href"><%= traductor[:ayuda_secciones][:configuraciones_h4] %>Configuraciones</h4>
+            <p><%= traductor[:ayuda_textos][:configuraciones_text] %></p>
             
-            <h4 id="usuarios_href">Usuarios</h4>
-            <p>texto</p>
+            <h4 id="usuarios_href"><%= traductor[:ayuda_secciones][:usuarios_h4] %>Usuarios</h4>
+            <p><%= traductor[:ayuda_textos][:usuarios_text] %></p>
           </div>
           
         </div>
         
         <div class="col-md-2 menu_ayuda">
-          <ul style="position: relative;">
+          <ul style="position: fixed; top: 60px;">
 
             <li class="">
-              <a href="#modals">Listados</a>
+              <a href="#empezando_href"><%= traductor[:ayuda_menu][:empezando] %></a>
               <ul>
-                <li class=""><a href="#insercion_href">Inserción</a></li>
-                <li class=""><a href="#edicion_href">Edición</a></li>
-                <li class=""><a href="#busquedas_href">Busquedas</a></li>
-                <li class=""><a href="#autorefresco_href">Autorefresco</a></li>
-                <li class=""><a href="#informes_href">Informes</a></li>
+                <li class=""><a href="#conectar_bd_href"><%= traductor[:ayuda_menu][:conectar_BD] %></a></li>
+                <li class=""><a href="#conectar_ftp_href"><%= traductor[:ayuda_menu][:conectar_FTP] %></a></li>
+                <li class=""><a href="#conf_tablas_href"><%= traductor[:ayuda_menu][:config_tablas] %></a></li>
+                <li class=""><a href="#conf_columnas_href"><%= traductor[:ayuda_menu][:config_cols] %></a></li>
+                <li class=""><a href="#demos_href"><%= traductor[:ayuda_menu][:demos] %></a></li>
+              </ul>
+            </li>
+            
+            <li class="">
+              <a href="#formularios_href"><%= traductor[:ayuda_menu][:formularios] %></a>
+              <ul>
+                <li class=""><a href="#insercion_href"><%= traductor[:ayuda_menu][:insercion] %></a></li>
+                <li class=""><a href="#edicion_href"><%= traductor[:ayuda_menu][:edicion] %></a></li>
+                <li class=""><a href="#busquedas_href"><%= traductor[:ayuda_menu][:busquedas] %></a></li>
+                <li class=""><a href="#autorefresco_href"><%= traductor[:ayuda_menu][:autorecargas] %></a></li>
+                <li class=""><a href="#informes_href"><%= traductor[:ayuda_menu][:informes] %></a></li>
               </ul>
             </li>
             <li class="">
-              <a href="#graficos_href">Gráficos</a>
+              <a href="#graficos_href"><%= traductor[:ayuda_menu][:graficos] %></a>
               <ul>
-                <li><a href="#area_href">Área</a></li>
-                <li><a href="#circulo_href">Círculos</a></li>
-                <li><a href="#barras_href">Barras</a></li>
-                <li><a href="#columnas_href">Columnas</a></li>
-                <li><a href="#combo_href">Combo</a></li>
-                <li><a href="#lineas_href">Líneas</a></li>
-                <li><a href="#misgraficos_href">Mis gráficos</a></li>
+                <li><a href="#area_href"><%= traductor[:ayuda_menu][:areas] %></a></li>
+                <li><a href="#circulo_href"><%= traductor[:ayuda_menu][:circulos] %></a></li>
+                <li><a href="#barras_href"><%= traductor[:ayuda_menu][:barras] %></a></li>
+                <li><a href="#columnas_href"><%= traductor[:ayuda_menu][:columnas] %></a></li>
+                <li><a href="#combo_href"><%= traductor[:ayuda_menu][:combos] %></a></li>
+                <li><a href="#lineas_href"><%= traductor[:ayuda_menu][:lineas] %></a></li>
+                <li><a href="#misgraficos_href"><%= traductor[:ayuda_menu][:mis_graficos] %></a></li>
               </ul>
             </li>
             <li class="">
-              <a href="#config_href">Config</a>
+              <a href="#config_href"><%= traductor[:ayuda_menu][:config] %></a>
               <ul>
-                <li><a href="#configuraciones_href">Configuraciones</a></li>
-                <li><a href="#usuarios_href">Usuarios</a></li>
+                <li><a href="#configuraciones_href"><%= traductor[:ayuda_menu][:configuraciones] %></a></li>
+                <li><a href="#usuarios_href"><%= traductor[:ayuda_menu][:usuarios] %></a></li>
               </ul>
             </li>
 
@@ -190,7 +221,11 @@
         </div>
       </div>
     </div>
-          
-      
+    
+    <div id="footer">
+      <hr />
+      <br /><br />
+    </div>
+    
   </body>
 </html>       
