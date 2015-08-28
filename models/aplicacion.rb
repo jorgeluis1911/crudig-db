@@ -165,7 +165,8 @@ class Aplicacion
     
     where = ''
     params.each{ |key, value|
-      if (@aplicacion[:tablas][tabla]['columnas'][key])
+      if (value != nil && value!='' && 
+          @aplicacion[:tablas][tabla]['columnas'][key])
         where = where+' '+tabla+'.'+key+' like \'%'+value+'%\' and ' 
       end
     }

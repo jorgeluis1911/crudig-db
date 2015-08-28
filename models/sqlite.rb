@@ -1,29 +1,32 @@
-class MySQLconex < Aplicacion
+class Sqliteconex < Aplicacion
 
-  def load_bd( driver, dominio, usuario, pass, bd_name, port)
+  def load_bd( driver, rutaFiles, bd_file)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
     #real_connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, sock=nil, flag=nil).
 
     begin
       Sequel.datetime_class = Date
       #Sequel.convert_two_digit_years = false
-      @conexion = Sequel.connect('mysql://'+usuario+':'+pass+'@'+dominio+':'+port+'/'+bd_name)
-      #@conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
+      
+      #puts 'sqlite://'+rutaFiles
+      @conexion = Sequel.connect('sqlite://'+rutaFiles+'/'+bd_file)
+      #Sequel.connect('sqlite://./upload_sqlite/20150820_180140_example.db')
       
       # raise( rb_ePGerror , "PQconnectdb() unable to allocate structure")   unless(@conexion)
       
-      @aplicacion[:config][:bd]=bd_name
-      @aplicacion[:config][:host]=dominio
-      @aplicacion[:config][:user]=usuario
-      @aplicacion[:config][:pass]=pass
+      @aplicacion[:config][:bd]=bd_file
+      @aplicacion[:config][:host]=''  #dominio
+      @aplicacion[:config][:user]=''  #usuario
+      @aplicacion[:config][:pass]=''  #pass
       @aplicacion[:config][:driver]=driver
-      @aplicacion[:config][:port]=port
+      @aplicacion[:config][:port]=''  #port
       
       puts Date.parse('2014-03-05', true)
       
       #@conexion.convert_invalid_date_time = nil
       
-      return load_config_MySQL( bd_name )
+      # bd_name es bd_file 
+      return load_config_SQLite( bd_file )
     rescue Sequel::Error => e
       puts e
       return '<div class="alert alert-danger"><p>No se puede conectar a la Base de Datos, compruebe su usuario y contraseña</p></div>'
@@ -32,7 +35,8 @@ class MySQLconex < Aplicacion
     #@conexion = DBI.connect("DBI:#{driver}:#{bd_name}:#{dominio}", usuario, pass)
   end
   
-  def load_config_MySQL(bd_name)
+  def load_config_SQLite(bd_name)
+    # bd_name es bd_file
     tablas = ''
     combo_string = []
     row_name = ''
@@ -46,7 +50,7 @@ class MySQLconex < Aplicacion
     referidas = {}
     
     time11 = Time.now
-    
+=begin    
     select = 'col.table_name, col.column_name, col.column_default, col.is_nullable, col.DATA_TYPE, col.CHARACTER_MAXIMUM_LENGTH, 
               col.COLUMN_KEY, col.PRIVILEGES, col.COLUMN_COMMENT, col.ORDINAL_POSITION, 
               col_u.CONSTRAINT_NAME, col_u.REFERENCED_TABLE_SCHEMA, col_u.REFERENCED_TABLE_NAME, col_u.REFERENCED_COLUMN_NAME '
@@ -54,7 +58,16 @@ class MySQLconex < Aplicacion
                 on col_u.table_name=col.table_name and col_u.column_name=col.column_name'
     order = ' ORDER BY col.table_name, col.ordinal_position '
     #@conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
-    @conexion['SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order].each{ |row|
+=end
+
+    select = ' sqlm.type, sqlm.tbl_name as table_name, sqlm.name, sqlm.rootpage '
+    from = ' FROM sqlite_master as sqlm '
+    where = ' WHERE sqlm.type =\'table\' '
+    order = ' ORDER BY sqlm.tbl_name '
+    
+    # type = ( table, index, view, trigger )
+    
+    @conexion['SELECT '+select+' '+from+' '+where+' '+order].each{ |row|
       #print row[:column_name]
       
       time22 = Time.now
@@ -88,50 +101,78 @@ class MySQLconex < Aplicacion
       end
       tablas = row[:table_name]
       
-      solo_texto = ['varchar', 'char', 'text', 'long_text']
+      solo_texto = ['varchar', 'nchar', 'text', 'long_text', 
+                    'CHARACTER', 'VARYING CHARACTER',
+                    'NATIVE CHARACTER','NVARCHAR', 'CLOB']
+      
+      # =>  'CHARACTER(20)', 'VARCHAR(255)', 'VARYING CHARACTER(255)'
+      #     'NCHAR(55)', 'NATIVE CHARACTER(70)',
+      #     'NVARCHAR(100)', 'TEXT', 'CLOB'
+      
+      
       # => agregar las columnas
-      columna= {}
-      columna[:position] = row[:ORDINAL_POSITION]
-      columna[:default_value] = row[:COLUMN_DEFAULT]
-      columna[:is_nullable] = row[:is_nullable]
-      columna[:data_type] = row[:DATA_TYPE].to_s   # varchar , char , text
-      columna[:is_number] = 1
-      columna[:is_number] = 0 if (solo_texto.index columna[:data_type] )
-      columna[:length] = row[:CHARACTER_MAXIMUM_LENGTH]
-      columna[:column_key] = row[:COLUMN_KEY]      # ['PRI', 'UNI', 'MUL']
-      columna[:comments] = row[:COLUMN_COMMENT]
       
-      # => datos sobre FK
-      columna[:key_name] = row[:CONSTRAINT_NAME]
-      columna[:esquema_rel] = row[:REFERENCED_TABLE_SCHEMA]
-      columna[:tabla_rel] = row[:REFERENCED_TABLE_NAME]
-      columna[:column_rel] = row[:REFERENCED_COLUMN_NAME]
+      @conexion[' PRAGMA table_info('+tablas+')'].each{ |cols|
       
-      # => datos sobre FTP
-      columna[:carpeta_ftp] = "/"
-      columna[:es_archivo] = "0"  # 0=no 1=si
-      
-      # => configuración de vista
-      columna[:vista_grid] = true
-      columna[:texto_grid] = ''
-      
-      # => campos a mostrar en combo texto FK
-      combo_string = @aplicacion[:tablas][tablas]['config'][:combo_string_fk]
-      if ( (row[:DATA_TYPE].to_s=='varchar' || row[:DATA_TYPE].to_s=='char') )
-        combo_string << row[:column_name]
-        #puts row[:column_name]
-      end
-            
-      @aplicacion[:tablas][tablas]['config'][:referidas] = []
-      if columna[:tabla_rel]
-        @aplicacion[:tablas][tablas]['config'][:referencias][columna[:tabla_rel]] = columna[:column_rel]
-        @aplicacion[:tablas][tablas]['config'][:detalle_de] = columna[:tabla_rel]
-
-        referidas[columna[:tabla_rel]] = []   unless ( referidas[columna[:tabla_rel]] )
-        referidas[columna[:tabla_rel]] << tablas
-      end
-      row_name = row[:column_name]
-      @aplicacion[:tablas][tablas]['columnas'][row[:column_name]] = columna
+        columna= {}
+        columna[:position] = cols[:cid]
+        columna[:default_value] = cols[:dflt_value]
+        columna[:is_nullable] = cols[:notnull]
+        
+        # => "hello".partition("l")   #=> ["he", "l", "lo"]
+        arrayDe3 = cols[:type].to_s.partition('(')
+        
+        columna[:data_type] = arrayDe3[0]   # varchar , char , text
+        
+        if (solo_texto.index { |x| columna[:data_type].include?(x) } )
+          columna[:is_number] = 0   # solo texto
+          
+          columna[:length] = (arrayDe3[2] != '' ? arrayDe3[2].partition(')')[0] : nil)
+        else
+          columna[:is_number] = 1   # solo numero
+          
+          # => falta el Decimal(10,2)
+          columna[:length] = nil    #row[:CHARACTER_MAXIMUM_LENGTH]
+        end
+        columna[:column_key] = nil #row[:COLUMN_KEY]      # ['PRI', 'UNI', 'MUL']
+        columna[:comments] = '' #row[:COLUMN_COMMENT]
+        
+        # => datos sobre FK
+        columna[:key_name] = nil #row[:CONSTRAINT_NAME]
+        columna[:esquema_rel] = nil #row[:REFERENCED_TABLE_SCHEMA]
+        columna[:tabla_rel] = nil #row[:REFERENCED_TABLE_NAME]
+        columna[:column_rel] = nil #row[:REFERENCED_COLUMN_NAME]
+        
+        # => datos sobre FTP
+        columna[:carpeta_ftp] = "/"
+        columna[:es_archivo] = "0"  # 0=no 1=si
+        
+        # => configuración de vista
+        columna[:vista_grid] = true
+        columna[:texto_grid] = ''
+        
+        # => campos a mostrar en combo texto FK
+        combo_string = @aplicacion[:tablas][tablas]['config'][:combo_string_fk]
+        if ( (cols[:data_type].to_s=='varchar' || cols[:data_type].to_s=='char') )
+          combo_string << cols[:name]
+          #puts row[:column_name]
+        end
+              
+        @aplicacion[:tablas][tablas]['config'][:referidas] = []
+        
+=begin
+        if columna[:tabla_rel]
+          @aplicacion[:tablas][tablas]['config'][:referencias][columna[:tabla_rel]] = columna[:column_rel]
+          @aplicacion[:tablas][tablas]['config'][:detalle_de] = columna[:tabla_rel]
+  
+          referidas[columna[:tabla_rel]] = []   unless ( referidas[columna[:tabla_rel]] )
+          referidas[columna[:tabla_rel]] << tablas
+        end
+=end
+        row_name = cols[:name]
+        
+        @aplicacion[:tablas][tablas]['columnas'][row_name] = columna
+      }
       
       time11 = Time.now
     }    

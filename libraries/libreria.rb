@@ -315,6 +315,18 @@ class App < Sinatra::Application
   end
 
 
+  def msgError(texto)
+    return '<div class="alert alert-danger"><p>'+texto+'</p></div>'
+  end
+
+  def msgOk(texto)
+    return '<div class="alert alert-success"><p>'+texto+'</p></div>' 
+  end
+  
+  def msgAviso(texto)
+    return '<div class="alert alert-clear"><p>'+texto+'</p></div>'
+  end
+  
 
   
   def home_page( message )

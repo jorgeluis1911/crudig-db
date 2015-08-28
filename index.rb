@@ -3,7 +3,7 @@ require 'sinatra'
 require 'mysql'
 require 'pg'
 require 'json'
-#require 'sqlite'
+require 'sqlite3'
 require 'net/ftp'
 require 'prawn'
 require 'prawn/table'
@@ -28,6 +28,9 @@ class App < Sinatra::Application
   @@appDemos = ''
   
   @@debug = 0
+  
+  @@rutaFiles = './upload_sqlite'
+  @@fileSqlite = ''
  
 =begin
   :tabla1=>{:c=>1,:r=>1,:u=>1,:d=>1,:i=>1,:g=>1,:a=>1,:n=>1}
@@ -222,7 +225,7 @@ class App < Sinatra::Application
     url = request.base_url
     
     #if(@@appCRUDig=='')
-    if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
+    if(url=='127.0.0.1' || url=='http://localhost:9292' || url=='localhost:9292')
       @@appDemos = MySQLconex.new @@demosConfig
       message= @@appDemos.load_bd( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
                                           @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
@@ -336,6 +339,25 @@ class App < Sinatra::Application
     message = ''
     
     case params[:driver]
+    when 'Sqlite' then
+      puts params
+      if params[:sqlitefile]
+        filename = params[:sqlitefile][:filename]
+        file = params[:sqlitefile][:tempfile]
+        time = Time.new
+  
+        @@fileSqlite = time.strftime("%Y%m%d_%H%M%S_")+filename
+        File.open(File.join( @@rutaFiles, @@fileSqlite), 'wb') do |f|
+          f.write file.read
+        end
+        
+        @@app = Sqliteconex.new @@config
+        message= @@app.load_bd( params[:driver], @@rutaFiles, @@fileSqlite)
+        
+      else
+        message = msgError 'Se debe seleccionar un fichero Sqlite'
+      end
+      
     when 'Mysql', 'MariaDB'  then 
       @@app = MySQLconex.new @@config
       message= @@app.load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
