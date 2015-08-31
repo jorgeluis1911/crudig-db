@@ -172,7 +172,7 @@ class PSqlconex < Aplicacion
     refresh
     
     puts 'SELECT '+select + ' '+ from+' '+where_sql+' '+ordenar_sql +limit
-    return @conexion.query('SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit)
+    return @conexion['SELECT '+select+' '+from+' '+where_sql+' '+ordenar_sql +limit]
   end  
 
 end

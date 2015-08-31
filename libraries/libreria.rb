@@ -325,7 +325,7 @@ class App < Sinatra::Application
   
   def msgAviso(texto)
     return '<div class="alert alert-clear"><p>'+texto+'</p></div>'
-  end  
+  end
 
   
   def home_page( message )

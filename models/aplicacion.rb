@@ -13,21 +13,21 @@ class Aplicacion
 
   def refresh
     begin
-      @conexion.query( "SELECT 1" )
+      @conexion["SELECT 1"]
       
     rescue Mysql::Error => err
 
       load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
                 @aplicacion[:config][:user], @aplicacion[:config][:pass],
                 @aplicacion[:config][:bd],   @aplicacion[:config][:port])
-                      
+=begin                      
     rescue Errno::Error => err
       #$stderr.puts "%p while testing connection: %s" % [ err.class, err.message ]
             
       load_bd(@aplicacion[:config][:driver], @aplicacion[:config][:host],
                 @aplicacion[:config][:user], @aplicacion[:config][:pass],
                 @aplicacion[:config][:bd],   @aplicacion[:config][:port])
-                      
+=end                      
     end
   end
 
@@ -70,7 +70,7 @@ class Aplicacion
     puts 'Update '+tabla+' Set '+set+' Where '+where
     if (where != '')
       begin
-        @conexion.query('Update '+tabla+' Set '+set+' Where '+where)
+        @conexion['Update '+tabla+' Set '+set+' Where '+where]
       rescue Mysql::Error => e
         #puts e.errno     #puts e.error
         return e.error
@@ -95,7 +95,7 @@ class Aplicacion
     puts 'Delete From '+tabla+' '+where
     if (where != '')
       begin
-        @conexion.query('Delete From '+tabla+' Where '+where)
+        @conexion['Delete From '+tabla+' Where '+where]
       rescue Mysql::Error => e
         #puts e.errno     #puts e.error
         return e.error
@@ -128,7 +128,7 @@ class Aplicacion
     
     error = ''
     begin
-      @conexion.query('INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')')
+      @conexion['INSERT INTO '+tabla+' ('+columnas+') VALUES ('+values+')']
     rescue Mysql::Error => e
       #puts e.errno
       #puts e.error
@@ -165,7 +165,8 @@ class Aplicacion
     
     where = ''
     params.each{ |key, value|
-      if (@aplicacion[:tablas][tabla]['columnas'][key])
+      if (value != nil && value!='' && 
+          @aplicacion[:tablas][tabla]['columnas'][key])
         where = where+' '+tabla+'.'+key+' like \'%'+value+'%\' and ' 
       end
     }
@@ -288,8 +289,12 @@ class Aplicacion
     end
       
     if (from != 'FROM ' &&  @conexion)
-      puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
-      result = @conexion.query('SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql)
+
+      #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
+      #result = @conexion.query('SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql)
+
+      #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
+      result = @conexion['SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql]
     end
     return result
   end
