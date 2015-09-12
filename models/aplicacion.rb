@@ -198,9 +198,11 @@ class Aplicacion
   
   
   
-  def inner_join(tabla1, tabla2)
+  def inner_join(tabla1, tabla2, sintabla1=false)
     from = tabla1+' inner join '+tabla2+' on '
-    column = @aplicacion[:tablas][tabla2]['config'][:referencias][tabla1]
+    from = ' inner join '+tabla2+' on ' if sintabla1
+        
+    #column = @aplicacion[:tablas][tabla2]['config'][:referencias][tabla1]
     count = 0;
     @aplicacion[:tablas][tabla2]['columnas'].each { |key_col, value|
       if value[:tabla_rel].eql?(tabla1)
@@ -209,10 +211,19 @@ class Aplicacion
         count+=1
       end
     }
+    if(count == 0)
+      @aplicacion[:tablas][tabla1]['columnas'].each { |key_col, value|
+        if value[:tabla_rel].eql?(tabla2)
+          from = from+' and ' if(count>1)
+          from = from+' '+tabla2+'.'+value[:column_rel]+' = '+tabla1+'.'+key_col
+          count+=1
+        end
+      }
+    end
     return from
   end
   
-  def make_form(tabla1, tabla2, from)
+  def make_form(tabla1, tabla2, from, sintabla1=false)
     return tabla1 if tabla1.eql?(tabla2)
     return '' unless @aplicacion[:tablas][tabla1]
     
@@ -223,18 +234,22 @@ class Aplicacion
     pos_referencias = arr_referencias.key?(tabla2)
     
     if (pos_referidas.eql?(TRUE))
-      from = inner_join(tabla1, tabla2)
+      from = inner_join(tabla1, tabla2, sintabla1)
     elsif (pos_referencias.eql?(TRUE))
-      from = inner_join(tabla2, tabla1)
+      from = inner_join(tabla1, tabla2, sintabla1)
     else
       if(arr_referidas.length > arr_referencias.length)
-        arr_referidas.each{ |tablaAux|
-          from = make_form(tablaAux, tabla2, from)
-        }
+        #arr_referidas.each { |tablaAux|
+        tablaAux = arr_referidas[0]
+          from = '('+inner_join(tabla1, tablaAux, sintabla1)+')'
+          from = '(' + from + make_form(tablaAux, tabla2, from, true) +')'
+        #}
       else
-        arr_referencias.each{ |tablaAux, col |
-          from = make_form(tablaAux, tabla2, from)
-        }
+        #arr_referencias.each{ |tablaAux, col |
+        tablaAux = arr_referencias.keys[0]
+          from = '('+inner_join(tabla1, tablaAux, sintabla1)+')'
+          from = '('+ from + make_form(tablaAux, tabla2, from, true) + ')'
+        #}
       end
     end
     return from
@@ -274,6 +289,10 @@ class Aplicacion
     end
       
     if (from != 'FROM ' &&  @conexion)
+
+      #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
+      #result = @conexion.query('SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql)
+
       #puts 'SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql
       result = @conexion['SELECT '+select+' '+from+' '+group_by+' '+ordenar_sql]
     end
@@ -281,31 +300,35 @@ class Aplicacion
   end
   
   def testingArea( params ) 
-
+    result = {}
+    cantidad = params[:cantidades].split('.')
+    elemento = params[:elementos].split('.')
+    
+    return result
   end
   
   def testingBar( params ) 
-    
+    result = {}
+    return result
   end
   
   def testingColumn( params ) 
-    
+    result = {}
+    return result
   end  
   
   def testingLine( params ) 
-    
+    result = {}
+    return result
   end
   
   def testingCombo( params ) 
-    
+    result = {}
+    return result
   end
 
   def castToBol(ceroUno)
-    if (ceroUno=='0')
-      false
-    else
-      true
-    end
+    ceroUno=='0' ? false : true 
   end
 
   def save_config_table(tablas, nom_tabla, params)

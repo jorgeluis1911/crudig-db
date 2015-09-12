@@ -1,4 +1,160 @@
 class MySQLconex < Aplicacion
+  
+  class MySQLMy 
+    VERSION            = 20912               # Version number of this library
+    MYSQL_UNIX_PORT    = "/tmp/mysql.sock"   # UNIX domain socket filename
+    MYSQL_TCP_PORT     = 3306                # TCP socket port number
+    
+    # Make Mysql object without connecting.
+    # @return [Mysql]
+    def init
+      @fields = nil
+      @protocol = nil
+      @charset = nil
+      @connect_timeout = nil
+      @read_timeout = nil
+      @write_timeout = nil
+      @init_command = nil
+      @sqlstate = "00000"
+      @query_with_result = true
+      @host_info = nil
+      @last_error = nil
+      @result_exist = false
+      @local_infile = nil      
+      
+      my = self.allocate
+      my.instance_eval{initialize}
+      my
+    end
+
+    # Make Mysql object and connect to mysqld.
+    # @param args same as arguments for {#connect}.
+    # @return [Mysql]
+    def new(*args)
+      my = self.init
+      my.connect(*args)
+    end
+
+    # Escape special character in string.
+    # @param [String] str
+    # @return [String]
+    def escape_string(str)
+      str.gsub(/[\0\n\r\\\'\"\x1a]/) do |s|
+        case s
+        when "\0" then "\\0"
+        when "\n" then "\\n"
+        when "\r" then "\\r"
+        when "\x1a" then "\\Z"
+        else "\\#{s}"
+        end
+      end
+    end
+        
+    # Connect to mysqld.
+    # @param [String / nil] host hostname mysqld running
+    # @param [String / nil] user username to connect to mysqld
+    # @param [String / nil] passwd password to connect to mysqld
+    # @param [String / nil] db initial database name
+    # @param [Integer / nil] port port number (used if host is not 'localhost' or nil)
+    # @param [String / nil] socket socket file name (used if host is 'localhost' or nil)
+    # @param [Integer / nil] flag connection flag. Mysql::CLIENT_* ORed
+    # @return self
+    def connect(host=nil, user=nil, passwd=nil, db=nil, port=nil, socket=nil, flag=0)
+      if flag & CLIENT_COMPRESS != 0
+        warn 'unsupported flag: CLIENT_COMPRESS' if $VERBOSE
+        flag &= ~CLIENT_COMPRESS
+      end
+      @protocol = Protocol.new host, port, socket, @connect_timeout, @read_timeout, @write_timeout
+      @protocol.authenticate user, passwd, db, (@local_infile ? CLIENT_LOCAL_FILES : 0) | flag, @charset
+      @charset ||= @protocol.charset
+      @host_info = (host.nil? || host == "localhost") ? 'Localhost via UNIX socket' : "#{host} via TCP/IP"
+      query @init_command if @init_command
+      return self
+    end
+    
+    # Disconnect from mysql.
+    # @return [Mysql] self
+    def close
+      if @protocol
+        @protocol.quit_command
+        @protocol = nil
+      end
+      return self
+    end
+    
+    # Disconnect from mysql without QUIT packet.
+    # @return [Mysql] self
+    def close!
+      if @protocol
+        @protocol.close
+        @protocol = nil
+      end
+      return self
+    end
+    
+    # Kill query.
+    # @param [Integer] pid thread id
+    # @return [Mysql] self
+    def kill(pid)
+      check_connection
+      @protocol.kill_command pid
+      self
+    end
+    
+    # Execute query string.
+    # @param [String] str Query.
+    # @yield [Mysql::Result] evaluated per query.
+    # @return [Mysql::Result] If {#query_with_result} is true and result set exist.
+    # @return [nil] If {#query_with_result} is true and the query does not return result set.
+    # @return [Mysql] If {#query_with_result} is false or block is specified
+    # @example
+    #  my.query("select 1,NULL,'abc'").fetch  # => [1, nil, "abc"]
+    def query(str, &block)
+      check_connection
+      @fields = nil
+      begin
+        nfields = @protocol.query_command str
+        if nfields
+          @fields = @protocol.retr_fields nfields
+          @result_exist = true
+        end
+        if block
+          while true
+            block.call store_result if @fields
+            break unless next_result
+          end
+          return self
+        end
+        if @query_with_result
+          return @fields ? store_result : nil
+        else
+          return self
+        end
+      rescue ServerError => e
+        @last_error = e
+        @sqlstate = e.sqlstate
+        raise
+      end
+    end
+    
+    # Check whether the  connection is available.
+    # @return [Mysql] self
+    def ping
+      check_connection
+      @protocol.ping_command
+      self
+    end
+    
+    # Flush tables or caches.
+    # @param [Integer] op operation. Use Mysql::REFRESH_* value.
+    # @return [Mysql] self
+    def refresh(op)
+      check_connection
+      @protocol.refresh_command op
+      self
+    end    
+  
+  end
 
   def load_bd( driver, dominio, usuario, pass, bd_name, port)
     #@conexion = Mysql.new('127.0.0.1', 'root', '', 'recetas')
@@ -74,9 +230,15 @@ class MySQLconex < Aplicacion
         
         config_tabla= {}
         config_tabla[:inner_join] = true
+
+        #config_tabla[:nombre_grid] = row['table_name']
+        #config_tabla[:ver_en_menu] = true
+        #config_tabla[:nombre_menu] = row['table_name']
+
         config_tabla[:nombre_grid] = row[:table_name]
         config_tabla[:ver_en_menu] = true
         config_tabla[:nombre_menu] = row[:table_name]
+
         config_tabla[:insert_window] = true
         config_tabla[:edit_window] = true
         config_tabla[:detalle_de] = ''

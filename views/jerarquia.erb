@@ -1,24 +1,5 @@
-<%
-paginador = ''
-=begin
-if (filas['filas_total'] && filas['filas_total']['0'])
-  paginas = filas['filas_total']['0']['total'].to_i / tablas[tabla]['config'][:paginador]
-  
-  paginador = '<ul class="pagination pull-right"><li><a href="/<%= idioma %>/'+tabla+'/listar">&laquo;</a></li>' if (paginas > 0)
-  
-  (paginas-1).times do |i|
-    paginador=paginador +'<li><a href="/<%= idioma %>/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * (i+1)).to_s+'">'+(i+2).to_s+'</a></li>'
-  end 
-  
-  if (paginas > 0)
-    paginador=paginador +'<li><a href="/<%= idioma %>/'+tabla+'/listar/'+(tablas[tabla]['config'][:paginador] * paginas).to_s+'">&raquo;</a></li></ul>'
-  end
-end
-=end
-%>
-
       
-<% def drawGrid(filas, tabla, tablas) %>
+<% def drawGrid(filas, tabla, tablas, idioma) %>
       
   <table class="table table-condensed table-bordered">
     <thead>
@@ -55,11 +36,12 @@ end
           <%  # en = :filas{} :hijos{}
           if(en[:fila].size > 0)
             en[:fila].each do |col, valor| %>
-              <td><% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) %>
+              <td>
+                <% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) %>
                     <a href="/<%= idioma %>/<%= tablas[tabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"><%= valor%></a>
-                  <% else %>
+                <% else %>
                     <%= valor%>
-                  <% end %>
+                <% end %>
               </td>
             <% end %>
           <% end %>
@@ -69,19 +51,18 @@ end
           en[:hijos].each{ |table, valor| count += valor.size }
           
           if(count > 0) %>
-          <tr><td colspan="<%= colspan %>">
-            <% en[:hijos].each do |table, valor| 
-              if(valor.size > 0)    %>
-                <div class="grid_table_interno">
-                  <% drawGrid(en[:hijos], table, tablas) %>
-                </div>
+            <tr><td colspan="<%= colspan %>">
+              <% en[:hijos].each do |table, valor| 
+                  if(valor.size > 0)    %>
+                    <div class="grid_table_interno">
+                      <% drawGrid(en[:hijos], table, tablas, idioma) %>
+                    </div>
+                  <% end %>
               <% end %>
-            <% end %>
-          </td></tr>
-        <% end %>
+            </td></tr>
+          <% end %>
         
-        
-      <% end %>         
+      <% end %>
     </tbody>
   </table>
        
@@ -107,7 +88,7 @@ end
   <body>
     
     <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -142,20 +123,16 @@ end
         <% end %>
       </div>
       
-      <div class="container">
-        
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <%= tabla%>
-          </div>
-        
-          <%  if (filas[tabla].length > 0) 
-                drawGrid(filas, tabla, tablas)
-              else  %>
-                 <%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' %>
-          <%  end %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= tabla %>
         </div>
-
+      
+        <%  if (filas[tabla].length > 0) 
+              drawGrid(filas, tabla, tablas, idioma)
+            else  %>
+               <%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' %>
+        <%  end %>
       </div>
 
   </body>

@@ -1,3 +1,13 @@
+<% def btnAyuda() %>
+  <span>
+    <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+        data-toggle="popover" title="Popover title" 
+        data-content="And here's some amazing content. It's very engaging. Right?">
+    ?</button>
+  </span>
+  <% return '' %>
+<% end %>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -8,6 +18,7 @@
     
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    <link href="/css/modif_bootstrap.css" rel="stylesheet" media="screen">
     
     <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
@@ -199,13 +210,13 @@
                 </thead>
                 <tbody>
                   <tr class="info">
-                    <td>Unión<span class="label label-info">?</span></td>
-                    <td>Nombre de Tabla<span class="label label-info">?</span></td>
-                    <td>Ver Tabla en el menú<span class="label label-info">?</span></td>
-                    <td>Insertar por ventana<span class="label label-info">?</span></td>
-                    <td>Editar por ventana<span class="label label-info">?</span></td>
-                    <td>Tablas detalles<span class="label label-info">?</span></td>
-                    <td>Paginador<span class="label label-info">?</span></td>
+                    <td>Unión <%= btnAyuda() %></td>
+                    <td>Nombre de Tabla <%= btnAyuda() %></td>
+                    <td>Ver Tabla en el menú <%= btnAyuda() %></td>
+                    <td>Insertar por ventana <%= btnAyuda() %></td>
+                    <td>Editar por ventana <%= btnAyuda() %></td>
+                    <td>Tablas detalles <%= btnAyuda() %></td>
+                    <td>Paginador <%= btnAyuda() %></td>
                   </tr>
                   <tr>
                     <td>
@@ -248,8 +259,20 @@
                       <% end %>
                     </td>
                     <td>
-                      <input type="text" id="text_paginador" name="paginador" 
-                        value="<%= val['config'][:paginador]%>" class="form-control"/>
+                      <select class="form-control" id="text_paginador" name="paginador">
+                      <!--<input type="text" id="text_paginador" name="paginador" 
+                        value="<%#= val['config'][:paginador]%>" class="form-control"/>
+                      -->
+                        <option value="10"
+                          <%= 'selected' if ('10'.eql?(val['config'][:paginador]))%> >
+                          10</option>
+                        <option value="20"
+                          <%= 'selected' if ('20'.eql?(val['config'][:paginador]))%> >
+                          20</option>
+                        <option value="30"
+                          <%= 'selected' if ('30'.eql?(val['config'][:paginador]))%> >
+                          30</option>
+                      </select>
                     </td>
                   </tr>
                   <%= '<div class="alert alert-danger"> No tiene configuración está tabla </div>' if (val.length < 1) %>
@@ -268,33 +291,53 @@
                   <tr class="info"><td>columnas</td>
                     
                     <td>position
-                      <div><button type="button" class="btn btn-xs btn-info popover-dismiss" 
-                        data-toggle="popover" title="Popover title" 
-                        data-content="And here's some amazing content. It's very engaging. Right?">
-                        ?</button></div>
-                      <span class="label label-info popover-dismiss" data-toggle="popover" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">?</span></td>
-                    <td>default_value<span class="label label-info popover-dismiss" 
-                      data-toggle="popover" title="Dismissible popover" 
-                      data-content="And here's some amazing content. It's very engaging. Right?">?</span>
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
                     </td>
-                    <td>combo_ref<span class="label label-info">?</span></td>
-                    <td>is_nullable<span class="label label-info">?</span></td>
-                    <td>data_type<span class="label label-info">?</span></td>
-                    <td>comments<span class="label label-info">?</span></td>
-                    <td>vista_grid<span class="label label-info">?</span></td>
-                    <td>nombre_col_grid<span class="label label-info">?</span></td>
-                    <td>es_archivo<span class="label label-info">?</span></td>
-                    <td>carpeta_FTP<span class="label label-info">?</span></td>
+                    <td>default_value
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>combo_ref
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>is_nullable
+                      <div>
+                        <button type="button" class="btn-ayuda btn btn-xs btn-info popover-dismiss" 
+                            data-toggle="popover" title="Popover title" 
+                            data-content="And here's some amazing content. It's very engaging. Right?">
+                        ?</button>
+                      </div>
+                    </td>
+                    <td>data_type <%= btnAyuda() %></td>
+                    <td>comments <%= btnAyuda() %></td>
+                    <td>vista_grid <%= btnAyuda() %></td>
+                    <td>nombre_col_grid <%= btnAyuda() %></td>
+                    <td>es_archivo <%= btnAyuda() %></td>
+                    <td>carpeta_FTP <%= btnAyuda() %></td>
                     
                     <% if(request.base_url=="127.0.0.1" || 
                             request.base_url=="http://localhost:9292" || 
                             request.base_url=="localhost:9292") %>
-                        <td>length<span class="label label-info">?</span></td>
-                        <td>column_key<span class="label label-info">?</span></td>
-                        <td>key_name<span class="label label-info">?</span></td>
-                        <td>esquema_rel<span class="label label-info">?</span></td>
-                        <td>tabla_rel<span class="label label-info">?</span></td>
-                        <td>column_rel<span class="label label-info">?</span></td>
+                        <td>length <%= btnAyuda() %></td>
+                        <td>column_key <%= btnAyuda() %></td>
+                        <td>key_name <%= btnAyuda() %></td>
+                        <td>esquema_rel <%= btnAyuda() %></td>
+                        <td>tabla_rel <%= btnAyuda() %></td>
+                        <td>column_rel <%= btnAyuda() %></td>
                     <% end %>
                   </tr>
                   <% val['columnas'].each do |columna, valor| %>

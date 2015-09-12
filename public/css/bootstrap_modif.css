@@ -127,3 +127,9 @@ table > tbody > tr:hover {
     margin-top: 40px;
     border-top: 1px solid #eee;
 }
+
+.btn-ayuda {
+	padding: 0px 2px;
+  	margin: 0px;
+  	font-size: 10px;
+}

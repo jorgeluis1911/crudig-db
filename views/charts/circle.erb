@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>CRUDig</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
+    
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChartCircle);
+      
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChartCircle() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        
+        data.addRows([
+            <%
+              # => imprimimos con Ruby los datos para el grafico
+              if (!resultChart.nil? && resultChart.size>0)
+                resultChart.each do |col| %>
+                  <%='[\''+col[0]+'\','+col[1]+'],' %>                
+                <% end %>
+              <%else%>
+                ['Departamento 1', 300],
+                ['Departamento 2', 100],
+                ['Departamento 3', 250]
+              <%end%>
+        ]);
+  
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       is3D: true};
+  
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div_circle'));
+        chart.draw(data, options);
+      }
+
+    </script>
+  </head>  
+  <body>
+
+    <!--  Menu principal -->
+    <%= erb :'menus/_menuAdmin' , :locals => {:tablas => tablas,
+                                               :enlaces => enlaces,
+                                               :traductor => traductor,
+                                               :idioma => idioma} %>
+        
+     <div class="container">    
+            
+        <% if message != '' %>
+          <%= message%>
+        <!--<div class="alert alert-success">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>-->
+        <% end %>
+          
+        <div class="row">
+          <div class="col-md-8">
+            <div id="chart_div_circle" style="width:600px; height:500px;"></div>
+            
+            <% #tablas.each do |tabla| 
+            %>
+              <%#=tabla
+              %><br />
+            <% #end 
+            %>
+          </div>
+          
+          <div class="col-md-4" style="background-color: #EEEEEE; height: 100%;" >
+            
+            <form role="form" action="/<%= idioma %>/chartCircle/testingChart" method="get">
+              
+              <div class="form-group">
+                <label for="">Nombre del gráfico</label>
+                <input type="text" id="nameChart" name="nameChart" 
+                  class="form-control" placeholder="" required="required"
+                  <%= 'value="'+params[:nameChart]+'">' if (params[:nameChart]) %>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Mostrar en menú</label>
+                <select class="form-control"  id="menu" name="menu" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:menu]) %>
+                      ><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+                            
+              <div class="form-group">
+                <label for="">Elementos a representar</label>
+                <select class="form-control" id="elementos" name="elementos" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:elementos]) %>
+                      ><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="">Cantidades a comparar</label>
+                <select class="form-control" id="cantidades" name="cantidades" required>
+                  <% tablas.each do |tabla, arrValue| %>
+                    <% arrValue['columnas'].each do |columna, values| %>
+                      <option value="<%=tabla+'.'+columna %>"
+                        <%='selected' if (tabla+'.'+columna == params[:cantidades]) %>
+                      ><%=tabla+'.'+columna %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+
+              <button type="submit" id="testing" name="testing" class="btn btn-info">Probar datos</button>
+              <button type="submit" id="save" name="save" class="btn btn-primary">Guardar gráfico</button>
+              
+            </form>
+            
+          </div>
+        </div>
+             
+    </div>
+        
+      
+  </body>
+</html>        

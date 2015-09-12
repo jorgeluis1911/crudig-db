@@ -3,7 +3,7 @@ require 'sinatra'
 require 'mysql'
 require 'pg'
 require 'json'
-require 'sqlite3'
+#require 'sqlite3'
 require 'net/ftp'
 require 'prawn'
 require 'prawn/table'
@@ -92,61 +92,137 @@ class App < Sinatra::Application
     redirect "/#{lang}/caracteristicas"
   end  
   
+  
+  
   # =>    rutas para los graficos
+  
+  get '/chartArea' do |lang|
+    redirect "/es/chartArea"
+  end  
   get '/:lang/chartArea' do |lang|
     redirect "/es/chartArea" unless (validLanguage(lang))
+    message = ''    
+    viewChart( 'charts/area', message, params, {})
+  end
+  get '/chartArea/testingChart' do |lang|
+    redirect "/es/chartArea/testingChart"
+  end    
+  get '/:lang/chartArea/testingChart' do |lang|
+    redirect "/es/chartArea/testingChart" unless (validLanguage(lang))
     message = ''
-    
-    viewChart( 'charts/area', message, {}, {})
+    results = @@app.testingArea( params ) if params[:testing]
+    viewChart( 'charts/area', message, params, results)
   end
     
+    
+  get '/chartBar' do |lang|
+    redirect "/es/chartBar"
+  end    
   get '/:lang/chartBar' do |lang|
     redirect "/es/chartBar" unless (validLanguage(lang))
-    message = ''
-    
-    viewChart( 'charts/barras', message, {}, {})
+    message = ''    
+    viewChart( 'charts/barras', message, params, {})
   end
+  get '/chartBar/testingChart' do |lang|
+    redirect "/es/chartBar/testingChart"
+  end  
+  get '/:lang/chartBar/testingChart' do |lang|
+    redirect "/es/chartBar/testingChart" unless (validLanguage(lang))
+    message = ''
+    results = @@app.testingBar( params ) if params[:testing]
+    viewChart( 'charts/barras', message, params, results)
+  end  
   
+
+  get '/chartCircle' do |lang|
+    redirect "/es/chartCircle"
+  end
   get '/:lang/chartCircle' do |lang|
     redirect "/es/chartCircle" unless (validLanguage(lang))
-    viewChart( 'charts/circle', '', {}, {})
+    message = ''
+    viewChart( 'charts/circle', message, params, {})
   end
-
+  get '/chartCircle/testingChart' do |lang|
+    redirect "/es/chartCircle/testingChart"
+  end
   get '/:lang/chartCircle/testingChart' do |lang|
-    redirect "/es/chartCircle/testingChart" unless (validLanguage(lang))
-    
+    redirect "/es/chartCircle/testingChart" unless (validLanguage(lang))  
     message = ''
     results = @@app.testingCircle( params ) if params[:testing]
-    viewChart( 'charts/circle', message, {}, results)
+    viewChart( 'charts/circle', message, params, results)
   end
   
+
+  get '/chartColumn' do |lang|
+    redirect "/es/chartColumn"
+  end
   get '/:lang/chartColumn' do |lang|
     redirect "/es/chartColumn" unless (validLanguage(lang))
-    message = ''
-    
-    viewChart( 'charts/column', message, {}, {})    
+    message = ''    
+    viewChart( 'charts/column', message, params, {})    
   end
+  get '/chartColumn/testingChart' do |lang|
+    redirect "/es/chartColumn/testingChart"
+  end
+  get '/:lang/chartColumn/testingChart' do |lang|
+    redirect "/es/chartColumn/testingChart" unless (validLanguage(lang))  
+    message = ''
+    results = @@app.testingColumn( params ) if params[:testing]
+    viewChart( 'charts/column', message, params, results)
+  end  
 
+
+  get '/chartCombo' do |lang|
+    redirect "/es/chartCombo"
+  end
   get '/:lang/chartCombo' do |lang|
     redirect "/es/chartCombo" unless (validLanguage(lang))
     message = ''
-    
-    viewChart( 'charts/combo', message, {}, {})    
+    viewChart( 'charts/combo', message, params, {})    
   end
+  get '/chartCombo/testingChart' do |lang|
+    redirect "/es/chartCombo/testingChart"
+  end
+  get '/:lang/chartCombo/testingChart' do |lang|
+    redirect "/es/chartCombo/testingChart" unless (validLanguage(lang))  
+    message = ''
+    results = @@app.testingCombo( params ) if params[:testing]
+    viewChart( 'charts/combo', message, params, results)
+  end  
+    
 
+  get '/chartLine' do |lang|
+    redirect "/es/chartLine"
+  end
   get '/:lang/chartLine' do |lang|
     redirect "/es/chartLine" unless (validLanguage(lang))
     message = ''
-    
-    viewChart( 'charts/line', message, {}, {})
+    viewChart( 'charts/line', message, params, {})
   end
+  get '/chartLine/testingChart' do |lang|
+    redirect "/es/chartLine/testingChart"
+  end
+  get '/:lang/chartLine/testingChart' do |lang|
+    redirect "/es/chartLine/testingChart" unless (validLanguage(lang))  
+    message = ''
+    results = @@app.testingLine( params ) if params[:testing]
+    viewChart( 'charts/line', message, params, results)
+  end    
 
+
+  get '/mycharts' do |lang|
+    redirect "/es/mycharts"
+  end
   get '/:lang/mycharts' do |lang|
     redirect "/es/mycharts" unless (validLanguage(lang))
     message = ''
-    
-    viewChart( 'charts/misgraficos', message, {}, {}) 
+    viewChart( 'charts/misgraficos', message, params, {})
   end
+  get '/:lang/mychart/:idChart' do |lang, idChart|
+    redirect "/es/mychart/#{idChart}" unless (validLanguage(lang))
+    message = ''
+    viewChart( 'charts/misgraficos', message, params, {}) 
+  end  
           
   # =>    final de rutas para los graficos
   
@@ -365,7 +441,6 @@ class App < Sinatra::Application
       else
         message = msgError 'Se debe seleccionar un fichero Sqlite'
       end
-      
     when 'Mysql', 'MariaDB'  then 
       @@app = MySQLconex.new @@config
       message= @@app.load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
@@ -373,8 +448,8 @@ class App < Sinatra::Application
       @@app = PSqlconex.new @@config
       message= @@app.load_bd( params[:driver], params[:dominio], params[:usuario], params[:pass], params[:bd], params[:port])
     when 'SQLServer' 
-    when 'Oracle'  
-    else  message = '<div class="alert alert-danger"><p>Tiene que especificar todos los parametros de conexión</p></div>'
+    when 'Oracle'
+    else  message = msgError 'Tiene que especificar todos los parametros de conexión'
     end
     
     view_config(message, @@config[:config])
