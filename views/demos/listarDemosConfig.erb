@@ -9,15 +9,16 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
     
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
   </head>  
   <body>
     
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
+    
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container_menu">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -36,6 +37,18 @@
           <ul class="nav navbar-nav navbar-right">
 
             <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <% if (idioma != 'ES' ) %>   <li><a href="/<%= idioma %>/ES/">ES</a></li> <% end %>
+                <% if (idioma != 'EN' ) %>   <li><a href="/<%= idioma %>/EN/">EN</a></li> <% end %>
+                <% if (idioma != 'FR' ) %>   <li><a href="/<%= idioma %>/FR/">FR</a></li> <% end %>
+                <% if (idioma != 'DE' ) %>   <li><a href="/<%= idioma %>/DE/">DE</a></li> <% end %>
+                <% if (idioma != 'IT' ) %>   <li><a href="/<%= idioma %>/IT/">IT</a></li> <% end %>
+                <% if (idioma != 'PR' ) %>   <li><a href="/<%= idioma %>/PR/">PR</a></li> <% end %>
+              </ul>
+            </li>
+            
+            <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/<%= idioma %>/ayuda">Ayuda</a></li>
@@ -45,6 +58,15 @@
                 <li><a href="/<%= idioma %>/demos">Demos</a></li>
               </ul>
             </li>
+
+            <li class="navbar-right dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/<%= idioma %>/configuraciones">Configuraciones</a></li>
+                <li class="divider"></li>
+                <li><a href="/<%= idioma %>/config">Nueva configuración</a></li>
+              </ul>
+            </li>            
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
@@ -220,6 +242,99 @@
           
         </div>
       </div>
+      
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label><b>Roles</b></label>
+        </div>
+        
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr class="info">
+              <th>
+                <a href="/<%= idioma %>/configuraciones/<%= usersTabla%>/listar"><span class="glyphicon glyphicon-refresh"></span></a>
+                <a href="" class="btn btn-default btn-xs btn_a" 
+                    data-toggle="modal" data-target="#agregarRole" onclick="agregar()">
+                      <span class="glyphicon glyphicon-plus"></span>
+                </a>
+              </th>
+              <% crudigTablas[usersTabla]['columnas'].each do |col, value| %>
+                <th><%= col%></th>
+                <% if (value[:column_rel]) %>
+                  <th><%= value[:tabla_rel]+'_'+value[:column_rel]%></th>
+                <% end %>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>                    
+            <%#= filas[:filas_detalle] 
+            %>
+            <%  filas_detalle = {}
+                if (filas[:filas_detalle][usersTabla])
+                #if (filas[usersTabla])
+                  filas_detalle = filas[:filas_detalle][usersTabla][usersTabla]
+                end 
+            %>
+            <% filas_detalle.each do |key, en| %>
+              <tr id="<%= usersTabla+key%>">
+                <td>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="" data-toggle="modal" data-target="#editarfila" >
+                          Editar en ventana</a>
+                      </li>
+                      <%  ids = ''
+                        en.each do |col, valor| 
+                          if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_key]=='PRI')
+                            if(ids.eql? '')
+                              ids = ids+col.to_s+'='+valor.to_s
+                            else
+                              ids = ids+'&'+col.to_s+'='+valor.to_s
+                            end
+                          end
+                        end
+                      %>
+                      <li><a href="/<%= idioma %>/jerarquiaUp/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia arriba</a></li>
+                      <li><a href="/<%= idioma %>/jerarquiaDown/<%= (usersTabla+'?'+ids) %>" target="_blank">
+                        Jerarquía hacia abajo</a></li>
+                    </ul>
+                  </div>
+                  
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="before_update('<%= usersTabla+key%>'); return false;">
+                    <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
+                  <a href="/<%= idioma %>/configuraciones/<%= usersTabla %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                    onclick="cancel_update('<%= usersTabla+key %>'); return false;">
+                    <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
+                  <!--<form action="/<%= tabla%>/<%= key%>" method="post">
+                    <input type="hidden" name="_method" value="delete" />
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                  </form>-->
+                </td>
+                <% en.each do |col, valor| %>
+                  <% if (crudigTablas[usersTabla]['columnas'][col] && crudigTablas[usersTabla]['columnas'][col][:column_rel]) %>
+                    <td>
+                      <a href="/<%= idioma %>/configuraciones/<%= crudigTablas[usersTabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"
+                        id="enlace_<%= col%>" combo="<%= col%>"><%= valor%></a></td>
+                  <% else %>
+                    <td fila="<%= col%>"><%= valor%></td>
+                  <% end %>
+                <% end %>
+              </tr>
+            <% end %>   
+          </tbody>
+        </table>
+        <% if(defined?(filas_roles)) %>
+          <%= '<div class="alert alert-danger"> No tiene datos esta tabla </div>' if (filas_roles.length < 1) %>
+        <% else %>
+          <%= '<div class="alert alert-danger"> Seleccione una configuración </div>' %>
+        <% end %>
+      </div>      
       
     </div> 
 

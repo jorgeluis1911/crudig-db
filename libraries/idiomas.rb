@@ -11,11 +11,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['es'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config', 
                            :configuraciones => 'Configuraciones',
                            :nueva_config => 'Nueva Configuración',
                      
-                     :info => 'Info',             :ayuda => 'Ayuda',    :caracteristicas => 'Características',
+                     :info => 'Info',             :ayuda => 'Ayuda',    :caract => 'Características',
                      :versiones => 'Versiones',   :demos => 'Demos',
                      
                      :graficos => 'Gráficos',             :chart_area => 'Áreas',
@@ -80,11 +80,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['en'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config',
                            :configuraciones => 'Configurations',
                            :nueva_config => 'New Configuration',
                      
-                     :info => 'Info',             :ayuda => 'Help',    :caracteristicas => 'Characteristics',
+                     :info => 'Info',             :ayuda => 'Help',    :caract => 'Characteristics',
                      :versiones => 'Versions',   :demos => 'Demos',
                      
                      :graficos => 'Graphics',             :chart_area => 'Areas',
@@ -151,11 +151,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['fr'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config',
                            :configuraciones => 'Configurations',
                            :nueva_config => 'Nouvelle Configuration',
                      
-                     :info => 'Info',             :ayuda => 'Aide',    :caracteristicas => 'Caractéristiques',
+                     :info => 'Info',             :ayuda => 'Aide',    :caract => 'Caractéristiques',
                      :versiones => 'Versions',   :demos => 'Demos',
                      
                      :graficos => 'Graphics',             :chart_area => 'Zones',
@@ -222,11 +222,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['de'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config',
                            :configuraciones => 'Konfigurationen',
                            :nueva_config => 'Neue Konfiguration',
                      
-                     :info => 'Info',             :ayuda => 'Aid',    :caracteristicas => 'Features',
+                     :info => 'Info',             :ayuda => 'Aid',    :caract => 'Features',
                      :versiones => 'Versionen',   :demos => 'Demos',
                      
                      :graficos => 'Graphics',             :chart_area => 'Bereichen',
@@ -294,11 +294,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['it'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config',
                            :configuraciones => 'Configurazioni',
                            :nueva_config => 'Nuova Configurazione',
                      
-                     :info => 'Info',             :ayuda => 'Aiuti',    :caracteristicas => 'Caratteristiche',
+                     :info => 'Info',             :ayuda => 'Aiuti',    :caract => 'Caratteristiche',
                      :versiones => 'Versioni',   :demos => 'Demos',
                      
                      :graficos => 'Grafica',             :chart_area => 'Aree',
@@ -366,11 +366,11 @@ class App < Sinatra::Application
                              :btn_editar => '',         :btn_conectar => ''   }
 
   @@idiomas['pr'][:menu] = { :crudig => 'CRUDig v0.1',
-                           :config => 'Config',
+                           :mejoras=> 'Mejoras',   :config => 'Config',
                            :configuraciones => 'Configuração',
                            :nueva_config => 'Nova Configuração',
                      
-                     :info => 'Info',             :ayuda => 'Ajuda',    :caracteristicas => 'Caracteristicas',
+                     :info => 'Info',             :ayuda => 'Ajuda',    :caract => 'Caracteristicas',
                      :versiones => 'Versões',   :demos => 'Demos',
                      
                      :graficos => 'Graficos',             :chart_area => 'Áreas',

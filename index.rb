@@ -84,10 +84,7 @@ class App < Sinatra::Application
     redirect "/es/caracteristicas" unless (validLanguage(lang))
     
     message = ''
-    erb :features, :locals => {:config => @@config[:config],
-                             :tablas => @@config[:tablas],
-                             :enlaces => @@config[:enlaces],
-                             :message => message,}    
+    view_features(message)
   end
   
   get '/:lang/caracteristicas/' do |lang|
@@ -209,6 +206,16 @@ class App < Sinatra::Application
     redirect "#{lang}/mejoras"
   end  
   
+  get '/:lang/empezar' do |lang|
+    redirect "/es/empezar" unless (validLanguage(lang))
+    message = ''
+    view_empezar(message)
+  end
+  get '/:lang/empezar/' do |lang|
+    redirect "/es/empezar" unless (validLanguage(lang))
+    redirect "#{lang}/empezar"
+  end
+    
   get '/:lang/ayuda' do |lang|
     redirect "/es/ayuda" unless (validLanguage(lang))
     message = ''
@@ -224,21 +231,21 @@ class App < Sinatra::Application
     message = ''
     url = request.base_url
     
-    #if(@@appCRUDig=='')
-    if(url=='127.0.0.1' || url=='http://localhost:9292' || url=='localhost:9292')
-      @@appDemos = MySQLconex.new @@demosConfig
-      message= @@appDemos.load_bd( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
-                                          @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
-                                          @@demosConfig[:config][:bd], @@demosConfig[:config][:port])
-      # => @@demosConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
-    else
-      @@appDemos = PSqlconex.new @@demosConfig
-      message= @@appDemos.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
-                                      'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
-    end  
-    @@demosConfig[:enlaces] = []
-    #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
-    #end
+    if(@@appDemos=='')
+      if(url=='127.0.0.1' || url=='http://localhost:9292' || url=='localhost:9292')
+        @@appDemos = MySQLconex.new @@demosConfig
+        message= @@appDemos.load_bd( @@demosConfig[:config][:driver], @@demosConfig[:config][:host], 
+                                            @@demosConfig[:config][:user], @@demosConfig[:config][:pass], 
+                                            @@demosConfig[:config][:bd], @@demosConfig[:config][:port])
+        # => @@demosConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"}, 
+      else
+        @@appDemos = PSqlconex.new @@demosConfig
+        message= @@appDemos.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
+                                        'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
+      end  
+      @@demosConfig[:enlaces] = []
+      #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
+    end
     #if(@@appDemos!='')
       filas = @@appDemos.select_mysql(' * ', 'demos_config', params, 0)
     #end    
@@ -278,21 +285,22 @@ class App < Sinatra::Application
     
     url = request.base_url
 
-    #if(@@appCRUDig=='')
-    if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
-      @@appCRUDig = MySQLconex.new @@crudigConfig
-      message= @@appCRUDig.load_bd( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
-                                          @@crudigConfig[:config][:user], @@crudigConfig[:config][:pass], 
-                                          @@crudigConfig[:config][:bd], @@crudigConfig[:config][:port])
-      # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"},
-    else
-      @@appCRUDig = PSqlconex.new @@demosConfig
-      message= @@appCRUDig.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
-                                      'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
+    if(@@appCRUDig=='')
+      if(url=="127.0.0.1" || url=="http://localhost:9292" || url=="localhost:9292")
+        @@appCRUDig = MySQLconex.new @@crudigConfig
+        message= @@appCRUDig.load_bd( @@crudigConfig[:config][:driver], @@crudigConfig[:config][:host], 
+                                            @@crudigConfig[:config][:user], @@crudigConfig[:config][:pass], 
+                                            @@crudigConfig[:config][:bd], @@crudigConfig[:config][:port])
+        # => @@crudigConfig = {:config => {:bd=>"crudig",:host=>"127.0.0.1",:user=>"root",:pass=>"",:driver=>"MySQL",:port=>"3306"},
+      else
+        @@appCRUDig = PSqlconex.new @@demosConfig
+        message= @@appCRUDig.load_bd( 'Postgress', 'ec2-54-225-243-113.compute-1.amazonaws.com', 
+                                        'xzchupaeemrrya', 'xWCbCz3hLiVVMXhDPA92P8GV1c', 'd7f28efnvgfki', '5432')
+      end
     end   
-    @@crudigConfig[:enlaces] = []
-    #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
-    #end
+      @@crudigConfig[:enlaces] = []
+      #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
+      #end
     #if(@@appCRUDig!='')
       #filas = @@appCRUDig.simple_select(' * ', 'configuraciones', '', '', '')
       filas = @@appCRUDig.select_mysql(' * ', 'configuraciones', params, 0)

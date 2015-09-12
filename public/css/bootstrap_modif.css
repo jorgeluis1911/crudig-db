@@ -115,5 +115,15 @@ table > tbody > tr:hover {
 	list-style: none;	
 }
 .menu_ayuda li{
-	margin: 4px;
+	margin: 2px;
+}
+.menu_ayuda li a{
+	font-size: 13px;
+}
+
+.footer {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
 }

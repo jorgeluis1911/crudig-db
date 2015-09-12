@@ -9,108 +9,89 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
   </head>  
   <body>
-    
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container_menu">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">CRUDig</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <% enlaces.each do |link| %>
-               <li><a href="/<%= idioma %>/<%= link%>/listar"><%= link%></a></li>
-            <% end %>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            
-            <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= idioma%><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <% if (idioma != 'ES' ) %>   <li><a href="/ES/">ES</a></li> <% end %>
-                <% if (idioma != 'EN' ) %>   <li><a href="/EN/">EN</a></li> <% end %>
-                <% if (idioma != 'FR' ) %>   <li><a href="/FR/">FR</a></li> <% end %>
-                <% if (idioma != 'DE' ) %>   <li><a href="/DE/">DE</a></li> <% end %>
-                <% if (idioma != 'IT' ) %>   <li><a href="/IT/">IT</a></li> <% end %>
-                <% if (idioma != 'PR' ) %>   <li><a href="/PR/">PR</a></li> <% end %>
-              </ul>
-            </li>
-            
-            <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:info] %><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/ayuda"><%= traductor[:menu][:ayuda] %></a></li>
-                <li><a href="/<%= idioma %>/caracteristicas"><%= traductor[:menu][:caracteristicas] %></a></li>
-                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:versiones] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/demos"><%= traductor[:menu][:demos] %></a></li>
-              </ul>
-            </li>
 
-            <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:config] %><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/mejoras">Mejoras</a></li>
-                <li><a href="/<%= idioma %>/configuraciones"><%= traductor[:menu][:configuraciones] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:nueva_config] %></a></li>
-              </ul>
-            </li>
-            
-            <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:graficos] %><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/chartArea"><%= traductor[:menu][:chart_area] %></a></li>
-                <li><a href="/<%= idioma %>/chartCircle"><%= traductor[:menu][:chart_circulo] %></a></li>                
-                <li><a href="/<%= idioma %>/chartBar"><%= traductor[:menu][:chart_barras] %></a></li>
-                <li><a href="/<%= idioma %>/chartColumn"><%= traductor[:menu][:chart_columnas] %></a></li>
-                <li><a href="/<%= idioma %>/chartCombo"><%= traductor[:menu][:chart_combo] %></a></li>
-                <li><a href="/<%= idioma %>/chartLine"><%= traductor[:menu][:lineas] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/mycharts"><%= traductor[:menu][:mis_graficos] %></a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>    
-    
+    <!--  Menu principal -->
+    <%= erb :'menus/_menuAdmin' , :locals => {:tablas => tablas,
+                                               :enlaces => enlaces,
+                                               :traductor => traductor,
+                                               :idioma => idioma} %>
         
     <div class="container">
       <div class="row">
         <div class="col-md-10">
           
           <div>
-            <h2 id="empezando_href" class="page-header"><%= traductor[:ayuda_secciones][:empezando_h2] %></h2>
-            <p class="lead"><%= traductor[:ayuda_textos][:empezando_text] %></p>
+            <h2 id="config_href" class="page-header"><%= traductor[:ayuda_secciones][:config_h2] %></h2>
+            <p class="lead"><%= traductor[:ayuda_textos][:config_text] %></p>
             
             <h4 id="conectar_bd_href"><%= traductor[:ayuda_secciones][:conectar_BD_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:conectar_BD_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:conectar_BD_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/conexion.jpg" alt="conexiones" width="100%"/>
+            </div>
 
             <h4 id="conectar_ftp_href"><%= traductor[:ayuda_secciones][:conectar_FTP_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:conectar_FTP_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:conectar_FTP_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/conexion_ftp.jpg" alt="conexiones" width="100%"/>
+            </div>
                         
             <h4 id="conf_tablas_href"><%= traductor[:ayuda_secciones][:config_tablas_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:config_tablas_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:config_tablas_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_tabla.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="conf_columnas_href"><%= traductor[:ayuda_secciones][:config_cols_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:config_cols_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:config_cols_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_columnas.jpg" alt="conexiones" width="100%"/>
+            </div>
+            
+            <h4 id="configuraciones_href"><%= traductor[:ayuda_secciones][:configuraciones_h4] %>Configuraciones</h4>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:configuraciones_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_columnas.jpg" alt="conexiones" width="100%"/>
+            </div>
+            
+            <h4 id="usuarios_href"><%= traductor[:ayuda_secciones][:usuarios_h4] %>Usuarios</h4>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:usuarios_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_columnas.jpg" alt="conexiones" width="100%"/>
+            </div>
+            
+            <h4 id="roles_href"><%= traductor[:ayuda_secciones][:usuarios_h4] %>Usuarios</h4>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:usuarios_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_columnas.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="demos_href"><%= traductor[:ayuda_secciones][:demos_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:demos_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:demos_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/config_demos.jpg" alt="conexiones" width="100%"/>
+            </div>
           </div>
           
           <div>
@@ -118,8 +99,12 @@
             <p class="lead"><%= traductor[:ayuda_textos][:formularios_text] %></p>
             
             <h4 id="insercion_href"><%= traductor[:ayuda_secciones][:insercion_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:insercion_text] %></p>
-            <img src="/img/insercion.jpg" alt="conexiones" width="50%"/>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:insercion_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/insercion.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="edicion_href"><%= traductor[:ayuda_secciones][:edicion_h4] %></h4>
             <p><%= traductor[:ayuda_textos][:edicion_text] %></p>
@@ -139,50 +124,77 @@
             <p class="lead"><%= traductor[:ayuda_textos][:graficos_text] %></p>
             
             <h4 id="area_href"><%= traductor[:ayuda_secciones][:areas_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:areas_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:areas_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_area.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="ciraculos_href"><%= traductor[:ayuda_secciones][:circulos_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:circulos_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:circulos_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_circle.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="barras_href"><%= traductor[:ayuda_secciones][:barras_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:barras_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:barras_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_barras.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="columnas_href"><%= traductor[:ayuda_secciones][:columnas_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:columnas_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:columnas_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_cols.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="combo_href"><%= traductor[:ayuda_secciones][:combos_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:combos_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:combos_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_combo.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="lineas_href"><%= traductor[:ayuda_secciones][:lineas_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:lineas_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:lineas_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/chart_linea.jpg" alt="conexiones" width="100%"/>
+            </div>
             
             <h4 id="misgraficos_href"><%= traductor[:ayuda_secciones][:mis_graficos_h4] %></h4>
-            <p><%= traductor[:ayuda_textos][:mis_graficos_text] %></p>
-          </div>
-          
-          <div>
-            <h2 id="config_href" class="page-header"><%= traductor[:ayuda_secciones][:config_h2] %></h2>
-            <p class="lead"><%= traductor[:ayuda_textos][:config_text] %></p>
+            <div class="col-md-7">
+              <p><%= traductor[:ayuda_textos][:mis_graficos_text] %></p>
+            </div>
+            <div class="col-md-5">
+              <img class="thumbnail" src="/img/ayuda/my_charts.jpg" alt="conexiones" width="100%"/>
+            </div>
             
-            <h4 id="configuraciones_href"><%= traductor[:ayuda_secciones][:configuraciones_h4] %>Configuraciones</h4>
-            <p><%= traductor[:ayuda_textos][:configuraciones_text] %></p>
-            
-            <h4 id="usuarios_href"><%= traductor[:ayuda_secciones][:usuarios_h4] %>Usuarios</h4>
-            <p><%= traductor[:ayuda_textos][:usuarios_text] %></p>
           </div>
           
         </div>
         
         <div class="col-md-2 menu_ayuda">
           <ul style="position: fixed; top: 60px;">
-
+            
             <li class="">
-              <a href="#empezando_href"><%= traductor[:ayuda_menu][:empezando] %></a>
+              <a href="#config_href"><%= traductor[:ayuda_menu][:config] %></a>
               <ul>
                 <li class=""><a href="#conectar_bd_href"><%= traductor[:ayuda_menu][:conectar_BD] %></a></li>
                 <li class=""><a href="#conectar_ftp_href"><%= traductor[:ayuda_menu][:conectar_FTP] %></a></li>
                 <li class=""><a href="#conf_tablas_href"><%= traductor[:ayuda_menu][:config_tablas] %></a></li>
                 <li class=""><a href="#conf_columnas_href"><%= traductor[:ayuda_menu][:config_cols] %></a></li>
+                <li class=""><a href="#configuraciones_href"><%= traductor[:ayuda_menu][:configuraciones] %></a></li>
+                <li class=""><a href="#usuarios_href"><%= traductor[:ayuda_menu][:usuarios] %></a></li>
                 <li class=""><a href="#demos_href"><%= traductor[:ayuda_menu][:demos] %></a></li>
               </ul>
             </li>
@@ -207,13 +219,6 @@
                 <li><a href="#combo_href"><%= traductor[:ayuda_menu][:combos] %></a></li>
                 <li><a href="#lineas_href"><%= traductor[:ayuda_menu][:lineas] %></a></li>
                 <li><a href="#misgraficos_href"><%= traductor[:ayuda_menu][:mis_graficos] %></a></li>
-              </ul>
-            </li>
-            <li class="">
-              <a href="#config_href"><%= traductor[:ayuda_menu][:config] %></a>
-              <ul>
-                <li><a href="#configuraciones_href"><%= traductor[:ayuda_menu][:configuraciones] %></a></li>
-                <li><a href="#usuarios_href"><%= traductor[:ayuda_menu][:usuarios] %></a></li>
               </ul>
             </li>
 

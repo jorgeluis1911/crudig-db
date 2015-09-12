@@ -333,22 +333,41 @@ class App < Sinatra::Application
     erb :features, :locals => {:traductor => @@idiomas[@@config[:config][:idioma]],
                                 :idioma => @@config[:config][:idioma]}
   end
+  
+  def view_features( message )
+    erb :features, :locals => {:config => @@config[:config],
+                               :tablas => @@config[:tablas],
+                               :enlaces => @@config[:enlaces],
+                               :traductor => @@idiomas[@@config[:config][:idioma]],
+                               :idioma => @@config[:config][:idioma],
+                               :message => message,}
+  end
+  
+  def view_empezar( message )
+    erb :empezar, :locals => {:config => @@config[:config],
+                               :tablas => @@config[:tablas],
+                               :enlaces => @@config[:enlaces],
+                               :message => message,
+                               :traductor => @@idiomas[@@config[:config][:idioma]],
+                               :idioma => @@config[:config][:idioma]}
+  end
 
   def view_ayuda(message)
     erb :"help/ayuda", :locals => {:config => @@config[:config],
-                       :enlaces => @@config[:enlaces],
-                       :message => message,
-                       :traductor => @@idiomas[@@config[:config][:idioma]],
-                       :idioma => @@config[:config][:idioma]}
+                                   :tablas => @@config[:tablas],
+                                   :enlaces => @@config[:enlaces],
+                                   :message => message,
+                                   :traductor => @@idiomas[@@config[:config][:idioma]],
+                                   :idioma => @@config[:config][:idioma]}
   end
   
   def view_mejoras(message)
     erb :mejoras, :locals => {:config => @@config[:config],
-                       :enlaces => @@config[:enlaces],
-                       :message => message,
-                       :traductor => @@idiomas[@@config[:config][:idioma]],
-                       :idioma => @@config[:config][:idioma],
-                       :mejoras => @@config[:mejoras]}
+                               :enlaces => @@config[:enlaces],
+                               :message => message,
+                               :traductor => @@idiomas[@@config[:config][:idioma]],
+                               :idioma => @@config[:config][:idioma],
+                               :mejoras => @@config[:mejoras]}
   end  
 
   def view_configuraciones_demos(message, filas={})
@@ -366,9 +385,10 @@ class App < Sinatra::Application
       
   def view_configuraciones(message, filas={})
     erb :listarConfig, :locals => {:config => @@config[:config],
-                                   #:tablas => @@config[:tablas],
+                                   :tablas => @@config[:tablas],
                                    :configTabla => 'configuraciones',
                                    :usersTabla => 'users_config',
+                                   :rolesTabla => 'roles',
                                    :enlaces => @@config[:enlaces],
                                    :filas => filas,
                                    :crudigTablas => @@crudigConfig[:tablas],
@@ -416,6 +436,8 @@ class App < Sinatra::Application
                   :graficos => @@config[:graficos]}
     return global_var.to_json
   end
+  
+  
   
   def viewChart( urlchart , message='', params={} , resultChart={})
     erb :"#{urlchart}", :locals => { :message => message, :enlaces => @@config[:enlaces],

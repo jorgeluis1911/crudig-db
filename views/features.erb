@@ -9,8 +9,8 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/bootstrap_modif.css" rel="stylesheet" media="screen">
     
-    <script type="text/javascript" async="" src="/js/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" async="" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     
   </head>  
   <body>
@@ -28,29 +28,15 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
+            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Contacto</a></li>
+            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Nosotros</a></li>
             <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
             <li class="navbar-right"><a href="/<%= idioma %>/config">Config</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/config">Versiones</a></li>
-            
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gráficos<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/chartArea">Area</a></li>
-                <li><a href="/<%= idioma %>/chartCircle">Círculo</a></li>                
-                <li><a href="/<%= idioma %>/chartBar">Barras</a></li>
-                <li><a href="/<%= idioma %>/chartColumn">Columnas</a></li>
-                <li><a href="/<%= idioma %>/chartCombo">Combo</a></li>
-                <li><a href="/<%= idioma %>/chartLine">Líneas</a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/mycharts">Mis gráficos</a></li>
-              </ul>
-            </li>
+            <li class="navbar-right"><a href="/<%= idioma %>/empezar">Empezar</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
-    </div>    
-    
-
+    </div>
 
     <div class="container" style="padding-left: 40px; padding-right: 40px;">
       
@@ -73,7 +59,7 @@
           </p>
         </div>
         <div class="col-md-6">
-          <img src="/img/conexiones.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/conexiones.jpg" alt="conexiones" width="100%"/>
         </div>
       </div>
       
@@ -81,7 +67,7 @@
       
       <div class="row">
         <div class="col-md-6">
-          <img src="/img/configuracion.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/configuracion.jpg" alt="conexiones" width="100%"/>
         </div>
         <div class="col-md-6">
           <h3>Amplia configuración</h3>
@@ -102,7 +88,7 @@
           </p>
         </div>
         <div class="col-md-6">
-          <img src="/img/grid_detalle.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/grid_detalle.jpg" alt="conexiones" width="100%"/>
         </div>
       </div>
       
@@ -110,7 +96,7 @@
       
       <div class="row">
         <div class="col-md-6">
-          <img src="/img/insercion.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/insercion.jpg" alt="conexiones" width="100%"/>
         </div>
         <div class="col-md-6">
           <h3>Fácil inserción de datos</h3>
@@ -132,7 +118,7 @@
           </p>
         </div>
         <div class="col-md-6">
-          <img src="/img/graficos.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/graficos.jpg" alt="conexiones" width="100%"/>
         </div>
       </div>            
       
@@ -140,7 +126,7 @@
       
       <div class="row">
         <div class="col-md-6">
-          <img src="/img/jerarquia.jpg" alt="jerarquia" width="100%"/>
+          <img class="thumbnail" src="/img/jerarquia.jpg" alt="jerarquia" width="100%"/>
         </div>
         <div class="col-md-6">
           <h3>Relación jerárquica entre tus datos</h3>
@@ -164,7 +150,7 @@
           </p>
         </div>
         <div class="col-md-6">
-          <img src="/img/refrescar.jpg" alt="refrescar" width="100%"/>
+          <img class="thumbnail" src="/img/refrescar.jpg" alt="refrescar" width="100%"/>
         </div>
       </div>                  
       
@@ -174,7 +160,7 @@
       
       <div class="row">
         <div class="col-md-6">
-          <img src="/img/conexiones.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/conexiones.jpg" alt="conexiones" width="100%"/>
         </div>
         <div class="col-md-6">
           <h3>Repositorio de archivos !proximamente¡</h3>
@@ -196,13 +182,14 @@
           </p>
         </div>
         <div class="col-md-6">
-          <img src="/img/graficos.jpg" alt="conexiones" width="100%"/>
+          <img class="thumbnail" src="/img/graficos.jpg" alt="conexiones" width="100%"/>
         </div>
       </div>         
-            
-      <hr />
       
       <!--
+        
+      <hr />
+      
       <div class="row">
           
           <h3>Planes de Usuarios</h3>
@@ -277,11 +264,13 @@
           </div>
       </div>
       -->
-      
-      <hr />
-                  
+
+      <div class="footer">
+        <p>CRUDig 2015</p>
+      </div>
+                      
     </div>     
-    
-        
+
+              
   </body>
 </html>        
