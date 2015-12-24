@@ -21,6 +21,10 @@ class App < Sinatra::Application
     #set :views, :erb => '../views'
     #set :sessions, true
     #set :entornos, []
+    
+    set :static_cache_control, [:public, :max_age => 60]
+    #cache_control :public, :max_age => 60
+    set :erb, :trim_mode => '->'
   end
   
   @@app = ''
@@ -66,6 +70,12 @@ class App < Sinatra::Application
   
   @@timer = 0;
 
+  
+  before do
+    #last_modified settings.start_time
+    #etag settings.start_time.to_s
+    cache_control :public, :must_revalidate, :max_age => 3600
+  end
 
   get '/' do
     redirect "/es"

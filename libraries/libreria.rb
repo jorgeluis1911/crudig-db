@@ -329,48 +329,48 @@ class App < Sinatra::Application
 
   
   def home_page( message )
-    erb :features, :locals => {:traductor => @@idiomas[@@config[:config][:idioma]],
-                                :idioma => @@config[:config][:idioma]}
+    cleanHtml(erb :features, :locals => {:traductor => @@idiomas[@@config[:config][:idioma]],
+                                :idioma => @@config[:config][:idioma]})
   end
   
   def view_features( message )
-    erb :features, :locals => {:config => @@config[:config],
+    cleanHtml(erb :features, :locals => {:config => @@config[:config],
                                :tablas => @@config[:tablas],
                                :enlaces => @@config[:enlaces],
                                :traductor => @@idiomas[@@config[:config][:idioma]],
                                :idioma => @@config[:config][:idioma],
-                               :message => message,}
+                               :message => message,})
   end
   
   def view_empezar( message )
-    erb :empezar, :locals => {:config => @@config[:config],
+    cleanHtml(erb :empezar, :locals => {:config => @@config[:config],
                                :tablas => @@config[:tablas],
                                :enlaces => @@config[:enlaces],
                                :message => message,
                                :traductor => @@idiomas[@@config[:config][:idioma]],
-                               :idioma => @@config[:config][:idioma]}
+                               :idioma => @@config[:config][:idioma]})
   end
 
   def view_ayuda(message)
-    erb :"help/ayuda", :locals => {:config => @@config[:config],
+    cleanHtml(erb :"help/ayuda", :locals => {:config => @@config[:config],
                                    :tablas => @@config[:tablas],
                                    :enlaces => @@config[:enlaces],
                                    :message => message,
                                    :traductor => @@idiomas[@@config[:config][:idioma]],
-                                   :idioma => @@config[:config][:idioma]}
+                                   :idioma => @@config[:config][:idioma]})
   end
   
   def view_mejoras(message)
-    erb :mejoras, :locals => {:config => @@config[:config],
+    cleanHtml(erb :mejoras, :locals => {:config => @@config[:config],
                                :enlaces => @@config[:enlaces],
                                :message => message,
                                :traductor => @@idiomas[@@config[:config][:idioma]],
                                :idioma => @@config[:config][:idioma],
-                               :mejoras => @@config[:mejoras]}
+                               :mejoras => @@config[:mejoras]})
   end  
 
   def view_configuraciones_demos(message, filas={})
-    erb :"demos/listarDemosConfig", :locals => {:config => @@config[:config],
+    cleanHtml(erb :"demos/listarDemosConfig", :locals => {:config => @@config[:config],
                                    #:tablas => @@config[:tablas],
                                    :configTabla => 'demos_config',
                                    :usersTabla => 'demos_users_config',
@@ -379,11 +379,11 @@ class App < Sinatra::Application
                                    :crudigTablas => @@demosConfig[:tablas],
                                    :traductor => @@idiomas[@@config[:config][:idioma]],
                                    :idioma => @@demosConfig[:config][:idioma],
-                                   :message => message}
+                                   :message => message})
   end
       
   def view_configuraciones(message, filas={})
-    erb :listarConfig, :locals => {:config => @@config[:config],
+    cleanHtml(erb :listarConfig, :locals => {:config => @@config[:config],
                                    :tablas => @@config[:tablas],
                                    :configTabla => 'configuraciones',
                                    :usersTabla => 'users_config',
@@ -393,38 +393,38 @@ class App < Sinatra::Application
                                    :crudigTablas => @@crudigConfig[:tablas],
                                    :traductor => @@idiomas[@@config[:config][:idioma]],
                                    :idioma => @@config[:config][:idioma],
-                                   :message => message}
+                                   :message => message})
   end
 
   def view_config_demos(message, conexionBDId)
-    erb :"demos/demosConfig", :locals => {:config => @@config[:config],
+    cleanHtml(erb :"demos/demosConfig", :locals => {:config => @@config[:config],
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
                              :conexionBD => conexionBDId,
                              :traductor => @@idiomas[@@config[:config][:idioma]],
                              :idioma => @@config[:config][:idioma],
-                             :message => message}
+                             :message => message})
   end
         
-  def view_config(message, conexionBDId)
-    erb :config, :locals => {:config => @@config[:config],
+  def view_config(message, conexionBDId)    
+    cleanHtml(erb :config, :locals => {:config => @@config[:config],
                              :tablas => @@config[:tablas],
                              :enlaces => @@config[:enlaces],
                              :conexionBD => conexionBDId,
                              :traductor => @@idiomas[@@config[:config][:idioma]],
                              :idioma => @@config[:config][:idioma],
-                             :message => message}
+                             :message => message})
   end
 
   def listar( tabla='', filas={}, message='',order={}, params={} )
-    erb :listar, :locals => {:tabla => tabla, :filas => filas, :message => message,
+    cleanHtml(erb :listar, :locals => {:tabla => tabla, :filas => filas, :message => message,
                               :order => order, :enlaces => @@config[:enlaces],
                               :params => params, :tablas => @@config[:tablas],
                               :idioma => @@config[:config][:idioma],
                               :traductor => @@idiomas[@@config[:config][:idioma]],
                               :timers => @@config[:timers],
                               :listados => @@config[:listados],
-                              :busquedas => @@config[:busquedas]}
+                              :busquedas => @@config[:busquedas]})
   end
   
   def listar_json( tabla='', filas={}, message='',order={}, params={} )
@@ -439,20 +439,27 @@ class App < Sinatra::Application
   
   
   def viewChart( urlchart , message='', params={} , resultChart={})
-    erb :"#{urlchart}", :locals => { :message => message, :enlaces => @@config[:enlaces],
+    cleanHtml(erb :"#{urlchart}", :locals => { :message => message, :enlaces => @@config[:enlaces],
                                     :params => params, :tablas => @@config[:tablas],
                                     :traductor => @@idiomas[@@config[:config][:idioma]],
                                     :idioma => @@config[:config][:idioma],
-                                    :resultChart => resultChart }
+                                    :resultChart => resultChart })
   end
   
   def verJerarquia( tabla='', filas={}, message='',order={}, params={} )
-
-    erb :jerarquia, :locals => {:tabla => tabla, :filas => filas, :message => message,
+    cleanHtml(erb :jerarquia, :locals => {:tabla => tabla, :filas => filas, :message => message,
                                 :order => order, :enlaces => @@config[:enlaces],
                                 :params => params, :tablas => @@config[:tablas],
                                 :traductor => @@idiomas[@@config[:config][:idioma]],
-                                :idioma => @@config[:config][:idioma] }
-  end    
+                                :idioma => @@config[:config][:idioma] })
+  end
+  
+  def cleanHtml( html='' )
+    html.gsub(/\n+/, '').gsub(/\t+/, '').gsub(Regexp.new(">\\s+<"), '><')
+    .gsub(Regexp.new("<!---->|<!--[^\\[].*?-->"), '')
+    # => [\s\t\r\n\f]
+    
+    # => https://github.com/paolochiodi/htmlcompressor/blob/master/lib/htmlcompressor/compressor.rb
+  end
     
 end
