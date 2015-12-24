@@ -8,10 +8,12 @@ require 'net/ftp'
 require 'prawn'
 require 'prawn/table'
 require 'sequel'
+require "rack/cache"
 
 #$db = SQLite3::Database.new( "entornos.db" )
 
 # => http://app-rack2.herokuapp.com
+# => http://app-crudig.herokuapp.com
 
 class App < Sinatra::Application
 
@@ -22,7 +24,7 @@ class App < Sinatra::Application
     #set :sessions, true
     #set :entornos, []
     
-    set :static_cache_control, [:public, :max_age => 60]
+    set :static_cache_control, [:public, :max_age => 360]
     set :erb, :trim_mode => '->'
   end
   
@@ -73,7 +75,8 @@ class App < Sinatra::Application
   before do
     #last_modified settings.start_time
     #etag settings.start_time.to_s
-    cache_control :public, :max_age => 3600
+    cache_control :public, :must_revalidate, :max_age => 60
+    #expires 500, :public, :must_revalidate 
   end
 
   get '/' do
