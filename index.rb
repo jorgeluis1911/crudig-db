@@ -24,7 +24,7 @@ class App < Sinatra::Application
     #set :sessions, true
     #set :entornos, []
     
-    set :static_cache_control, [:public, :max_age => 360]
+    set :static_cache_control, [:public, {:max_age => 360}]
     set :erb, :trim_mode => '->'
   end
   
@@ -77,6 +77,7 @@ class App < Sinatra::Application
     #etag settings.start_time.to_s
     cache_control :public, :must_revalidate, :max_age => 60
     #expires 500, :public, :must_revalidate 
+	response.headers['Access-Control-Allow-Origin'] = 'https://infoprueba.one'
   end
 
   get '/' do
@@ -335,7 +336,7 @@ class App < Sinatra::Application
       #else  message = '<div class="alert alert-danger"><p>No se puede conectar a CRUDig ahora</p></div>'     
     end
     #if(@@appDemos!='')
-      filas = @@appDemos.select_mysql(' * ', 'demos_config', params, 0)
+      filas = @@appDemos.select_mysql(' * ', 'demos_config', params, 0, 1)
     #end    
     view_configuraciones_demos(message, filas)
   end
@@ -391,7 +392,7 @@ class App < Sinatra::Application
       #end
     #if(@@appCRUDig!='')
       #filas = @@appCRUDig.simple_select(' * ', 'configuraciones', '', '', '')
-      filas = @@appCRUDig.select_mysql(' * ', 'configuraciones', params, 0)
+      filas = @@appCRUDig.select_mysql(' * ', 'configuraciones', params, 0, 1)
     #end
     
     view_configuraciones(message, filas)
@@ -553,6 +554,7 @@ class App < Sinatra::Application
         when 'delete'                 then delete_id(@@app, controler, params)
         when 'delete_json'            then delete_id_json(@@app, controler, params)        
         when 'listar'                 then listar_tabla(@@app, controler, params, 0)
+        when 'listar_json'            then listar_tabla_json(@@app, controler, params, 0)
         when 'generatepdf'            then generarPDF(@@app, controler, params)
         when 'save_generatepdf_json'  then save_generatepdf_json(@@app, controler, params)
         when 'default_search_json'    then default_search_json(@@app, controler, params)
