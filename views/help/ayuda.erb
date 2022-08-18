@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <!--  Header  -->
     <%= erb :'headers/_head' %>
   </head>
   
   <body>
-
     <!--  Menu principal -->
     <%= erb :'menus/_menuAdmin' , :locals => {:tablas => tablas,
                                                :enlaces => enlaces,
@@ -111,7 +109,11 @@
             <h4 id="informes_href"><%= traductor[:ayuda_secciones][:informes_h4] %></h4>
             <p><%= traductor[:ayuda_textos][:informes_text] %></p>
           </div>
-          
+
+
+		<% # COMENTAR ESTE MENU 
+		if false
+		%>
           <div>
             <h2 id="graficos_href" class="page-header"><%= traductor[:ayuda_secciones][:graficos_h2] %></h2>
             <p class="lead"><%= traductor[:ayuda_textos][:graficos_text] %></p>
@@ -173,6 +175,7 @@
             </div>
             
           </div>
+		<% end %>
           
         </div>
         
@@ -202,18 +205,23 @@
                 <li class=""><a href="#informes_href"><%= traductor[:ayuda_menu][:informes] %></a></li>
               </ul>
             </li>
-            <li class="">
-              <a href="#graficos_href"><%= traductor[:ayuda_menu][:graficos] %></a>
-              <ul>
-                <li><a href="#area_href"><%= traductor[:ayuda_menu][:areas] %></a></li>
-                <li><a href="#circulo_href"><%= traductor[:ayuda_menu][:circulos] %></a></li>
-                <li><a href="#barras_href"><%= traductor[:ayuda_menu][:barras] %></a></li>
-                <li><a href="#columnas_href"><%= traductor[:ayuda_menu][:columnas] %></a></li>
-                <li><a href="#combo_href"><%= traductor[:ayuda_menu][:combos] %></a></li>
-                <li><a href="#lineas_href"><%= traductor[:ayuda_menu][:lineas] %></a></li>
-                <li><a href="#misgraficos_href"><%= traductor[:ayuda_menu][:mis_graficos] %></a></li>
-              </ul>
-            </li>
+			
+			<% # COMENTAR ESTE MENU 
+			if false
+			%>
+				<li class="">
+				  <a href="#graficos_href"><%= traductor[:ayuda_menu][:graficos] %></a>
+				  <ul>
+					<li><a href="#area_href"><%= traductor[:ayuda_menu][:areas] %></a></li>
+					<li><a href="#circulo_href"><%= traductor[:ayuda_menu][:circulos] %></a></li>
+					<li><a href="#barras_href"><%= traductor[:ayuda_menu][:barras] %></a></li>
+					<li><a href="#columnas_href"><%= traductor[:ayuda_menu][:columnas] %></a></li>
+					<li><a href="#combo_href"><%= traductor[:ayuda_menu][:combos] %></a></li>
+					<li><a href="#lineas_href"><%= traductor[:ayuda_menu][:lineas] %></a></li>
+					<li><a href="#misgraficos_href"><%= traductor[:ayuda_menu][:mis_graficos] %></a></li>
+				  </ul>
+				</li>
+			<% end %>
 
           </ul>
         </div>

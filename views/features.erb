@@ -19,11 +19,14 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Contacto</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Nosotros</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/config">Config</a></li>
-            <li class="navbar-right"><a href="/<%= idioma %>/empezar">Empezar</a></li>
+			<li class="navbar-right"><a href="/<%= idioma %>/config">Empezar</a></li>
+				
+			<% # COMENTAR ESTE MENU 
+			if false
+			%>
+				<li class="navbar-right"><a href="/<%= idioma %>/caracteristicas">Características</a></li>
+				<li class="navbar-right"><a href="/<%= idioma %>/empezar">Empezar</a></li>
+			<% end %>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -99,7 +102,11 @@
       </div>      
       
       <br /><br />
-      
+    
+	<% # COMENTAR ESTE MENU 
+	if false
+	%>
+	
       <div class="row">
         <div class="col-md-6">
           <h3>Gráficos a la carta</h3>
@@ -114,22 +121,8 @@
       </div>            
       
       <br /><br />
-      
-      <div class="row">
-        <div class="col-md-6">
-          <img class="thumbnail" src="/img/jerarquia.jpg" alt="jerarquia" width="100%"/>
-        </div>
-        <div class="col-md-6">
-          <h3>Relación jerárquica entre tus datos</h3>
-          
-          <p>Clic derecho en la fila de datos que quieras y seleccionar ver jerarquía, 
-            todos los datos relacionados con está fila aparecerán, y también los datos 
-            relacionados con estos, hasta una profundidad determinada.
-          </p>
-        </div>
-      </div>      
-      
-      <br /><br />
+	  
+	<% end %>
       
       <div class="row">
         <div class="col-md-6">
@@ -146,9 +139,30 @@
       </div>                  
       
       <br /><br />
+	  
+	  
+      <div class="row">
+        <div class="col-md-6">
+          <img class="thumbnail" src="/img/jerarquia.jpg" alt="jerarquia" width="100%"/>
+        </div>
+        <div class="col-md-6">
+          <h3>Relación jerárquica entre tus datos</h3>
+          
+          <p>Clic derecho en la fila de datos que quieras y seleccionar ver jerarquía, 
+            todos los datos relacionados con está fila aparecerán, y también los datos 
+            relacionados con estos, hasta una profundidad determinada.
+          </p>
+        </div>
+      </div>      
       
-      <hr >
+      <br /><br />
       
+	<% # COMENTAR ESTE MENU 
+	if false
+	%>
+	   
+	  <hr >
+	
       <div class="row">
         <div class="col-md-6">
           <img class="thumbnail" src="/img/conexiones.jpg" alt="conexiones" width="100%"/>
@@ -176,8 +190,11 @@
           <img class="thumbnail" src="/img/graficos.jpg" alt="conexiones" width="100%"/>
         </div>
       </div>         
-      
-      <!--
+    <% end %>
+
+    <% # COMENTAR ESTE MENU 
+	if false
+	%>
         
       <hr />
       
@@ -254,7 +271,7 @@
               </div>
           </div>
       </div>
-      -->
+    <% end %>
 
       <div class="footer">
         <p>CRUDig 2015</p>

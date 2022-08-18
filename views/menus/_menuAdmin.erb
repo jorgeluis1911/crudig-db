@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">CRUDig 2022</a>
+          <a class="navbar-brand" href="/">CRUDig</a>
         </div>
         <div class="collapse navbar-collapse">
           
@@ -22,6 +22,9 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             
+			<% # COMENTAR ESTE MENU 
+			if false
+			%>
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <%= idioma.upcase %><b class="caret"></b></a>
@@ -35,56 +38,70 @@
                 <% if (idioma != 'PR' ) %>   <li><a href="/pr/">PR</a></li> <% end %>
               </ul>
             </li>
+			<% end %>
             
             <li class="navbar-right dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:info] %><b class="caret"></b></a>
+                <%= traductor[:menu][:opciones] %><b class="caret"></b></a>
                 
               <ul class="dropdown-menu">
+				<li><a href="/<%= idioma %>/config">
+					<%= traductor[:menu][:nueva_config] %></a></li>
                 <li><a href="/<%= idioma %>/ayuda"><%= traductor[:menu][:ayuda] %></a></li>
                 <li><a href="/<%= idioma %>/caracteristicas"><%= traductor[:menu][:caract] %></a></li>
-                <li><a href="/<%= idioma %>/config"><%= traductor[:menu][:versiones] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/demos"><%= traductor[:menu][:demos] %></a></li>
-              </ul>
-            </li>
-                        
-            <li class="navbar-right dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:config] %><b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/mejoras">
-                  <%= traductor[:menu][:mejoras] %></a></li>
-                <li><a href="/<%= idioma %>/configuraciones">
-                  <%= traductor[:menu][:configuraciones] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/config">
-                  <%= traductor[:menu][:nueva_config] %></a></li>
+                
+				<% # COMENTAR ESTE MENU 
+				if false
+				%>
+					<li><a href="/<%= idioma %>/config"><%= traductor[:menu][:versiones] %></a></li>
+					<li class="divider"></li>
+					<li><a href="/<%= idioma %>/demos"><%= traductor[:menu][:demos] %></a></li>
+				<% end %>
               </ul>
             </li>
             
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= traductor[:menu][:graficos] %><b class="caret"></b></a>
-                
-              <ul class="dropdown-menu">
-                <li><a href="/<%= idioma %>/chartArea">
-                  <%= traductor[:menu][:chart_area] %></a></li>
-                <li><a href="/<%= idioma %>/chartCircle">
-                  <%= traductor[:menu][:chart_circulo] %></a></li>                
-                <li><a href="/<%= idioma %>/chartBar">
-                  <%= traductor[:menu][:chart_barras] %></a></li>
-                <li><a href="/<%= idioma %>/chartColumn">
-                  <%= traductor[:menu][:chart_columnas] %></a></li>
-                <li><a href="/<%= idioma %>/chartCombo">
-                  <%= traductor[:menu][:chart_combo] %></a></li>
-                <li><a href="/<%= idioma %>/chartLine">
-                  <%= traductor[:menu][:chart_lineas] %></a></li>
-                <li class="divider"></li>
-                <li><a href="/<%= idioma %>/mycharts">
-                  <%= traductor[:menu][:mis_graficos] %></a></li>
-              </ul>
-            </li>
+			<% # COMENTAR ESTE MENU 
+			if false
+			%>
+				<li class="navbar-right dropdown">
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					<%= traductor[:menu][:config] %><b class="caret"></b></a>
+				  <ul class="dropdown-menu">
+					<li><a href="/<%= idioma %>/mejoras">
+					  <%= traductor[:menu][:mejoras] %></a></li>				
+					<li><a href="/<%= idioma %>/configuraciones">
+					  <%= traductor[:menu][:configuraciones] %></a></li>
+					<li class="divider"></li>
+				  </ul>
+				</li>
+			<% end %>
+				
+			<% # COMENTAR ESTE MENU 
+			if (false)
+			%>
+				<li class="dropdown">
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					<%= traductor[:menu][:graficos] %><b class="caret"></b></a>
+					
+				  <ul class="dropdown-menu">
+					<li><a href="/<%= idioma %>/chartArea">
+					  <%= traductor[:menu][:chart_area] %></a></li>
+					<li><a href="/<%= idioma %>/chartCircle">
+					  <%= traductor[:menu][:chart_circulo] %></a></li>                
+					<li><a href="/<%= idioma %>/chartBar">
+					  <%= traductor[:menu][:chart_barras] %></a></li>
+					<li><a href="/<%= idioma %>/chartColumn">
+					  <%= traductor[:menu][:chart_columnas] %></a></li>
+					<li><a href="/<%= idioma %>/chartCombo">
+					  <%= traductor[:menu][:chart_combo] %></a></li>
+					<li><a href="/<%= idioma %>/chartLine">
+					  <%= traductor[:menu][:chart_lineas] %></a></li>
+					<li class="divider"></li>
+					<li><a href="/<%= idioma %>/mycharts">
+					  <%= traductor[:menu][:mis_graficos] %></a></li>
+				  </ul>
+				</li>
+			<% end %>
           </ul>
           
         </div>

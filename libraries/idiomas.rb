@@ -1,7 +1,9 @@
 class App < Sinatra::Application
   
   @@idiomas = Hash.new
-  @@idiomas = {'es'=>{},  'en'=>{},  'fr'=>{},  'de'=>{},  'it'=>{},  'pr'=>{}}
+  @@idiomas = {'es'=>{}}
+  
+  # ,  'en'=>{},  'fr'=>{},  'de'=>{},  'it'=>{},  'pr'=>{}}
   
   # => en = INGLES /  es = ESPAÑOL / fr = FRANCES / de = ALEMAN  / it =ITALIANO / pr =PORTUGUES
   
@@ -16,7 +18,7 @@ class App < Sinatra::Application
                            :nueva_config => 'Nueva Configuración',
                      
                      :info => 'Info',             :ayuda => 'Ayuda',    :caract => 'Características',
-                     :versiones => 'Versiones',   :demos => 'Demos',
+                     :versiones => 'Versiones',   :demos => 'Demos',	:opciones => 'Opciones',
                      
                      :graficos => 'Gráficos',             :chart_area => 'Áreas',
                      :chart_circulo => 'Círculos',        :chart_barras => 'Barras',
@@ -24,7 +26,7 @@ class App < Sinatra::Application
                      :chart_lineas => 'Líneas',           :mis_graficos => 'Mis Gráficos',
                    }
   
-  @@idiomas['es'][:mensajes] = { :config => '', :config => ''}
+  @@idiomas['es'][:mensajes] = { :config => '' }
   
   @@idiomas['es'][:ayuda_menu] = { :empezando => 'Empezando', 
                                    :conectar_BD => 'Conectar BD', :conectar_FTP => 'Conectar FTP',
@@ -74,6 +76,8 @@ class App < Sinatra::Application
                      
                      :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
+
+=begin
 # => INGLES  
 
   @@idiomas['en'][:config] = { :btn_guardar => '',        :btn_cancelar => '',
@@ -85,7 +89,7 @@ class App < Sinatra::Application
                            :nueva_config => 'New Configuration',
                      
                      :info => 'Info',             :ayuda => 'Help',    :caract => 'Characteristics',
-                     :versiones => 'Versions',   :demos => 'Demos',
+                     :versiones => 'Versions',   :demos => 'Demos',		:opciones => 'Opciones',
                      
                      :graficos => 'Graphics',             :chart_area => 'Areas',
                      :chart_circulo => 'Circles',        :chart_barras => 'Barras',
@@ -156,7 +160,7 @@ class App < Sinatra::Application
                            :nueva_config => 'Nouvelle Configuration',
                      
                      :info => 'Info',             :ayuda => 'Aide',    :caract => 'Caractéristiques',
-                     :versiones => 'Versions',   :demos => 'Demos',
+                     :versiones => 'Versions',   :demos => 'Demos',		:opciones => 'Opciones',
                      
                      :graficos => 'Graphics',             :chart_area => 'Zones',
                      :chart_circulo => 'Cercles',        :chart_barras => 'Barras',
@@ -227,7 +231,7 @@ class App < Sinatra::Application
                            :nueva_config => 'Neue Konfiguration',
                      
                      :info => 'Info',             :ayuda => 'Aid',    :caract => 'Features',
-                     :versiones => 'Versionen',   :demos => 'Demos',
+                     :versiones => 'Versionen',   :demos => 'Demos',	:opciones => 'Opciones',
                      
                      :graficos => 'Graphics',             :chart_area => 'Bereichen',
                      :chart_circulo => 'Circles',        :chart_barras => 'Barras',
@@ -299,7 +303,7 @@ class App < Sinatra::Application
                            :nueva_config => 'Nuova Configurazione',
                      
                      :info => 'Info',             :ayuda => 'Aiuti',    :caract => 'Caratteristiche',
-                     :versiones => 'Versioni',   :demos => 'Demos',
+                     :versiones => 'Versioni',   :demos => 'Demos',		:opciones => 'Opciones',
                      
                      :graficos => 'Grafica',             :chart_area => 'Aree',
                      :chart_circulo => 'Circles',        :chart_barras => 'Barras',
@@ -371,7 +375,7 @@ class App < Sinatra::Application
                            :nueva_config => 'Nova Configuração',
                      
                      :info => 'Info',             :ayuda => 'Ajuda',    :caract => 'Caracteristicas',
-                     :versiones => 'Versões',   :demos => 'Demos',
+                     :versiones => 'Versões',   :demos => 'Demos',		:opciones => 'Opciones',
                      
                      :graficos => 'Graficos',             :chart_area => 'Áreas',
                      :chart_circulo => 'Circulos',        :chart_barras => 'Barras',
@@ -429,5 +433,6 @@ class App < Sinatra::Application
                      
                      :config_text => 'Config', :configuraciones_text => 'Configuraciones', :usuarios_text => 'Usuarios'} 
 
+=end
   
 end
