@@ -77,7 +77,7 @@ class App < Sinatra::Application
     #etag settings.start_time.to_s
     cache_control :public, :must_revalidate, :max_age => 60
     #expires 500, :public, :must_revalidate 
-	#response.headers['Access-Control-Allow-Origin'] = 'https://infoprueba.one'
+	response.headers['Access-Control-Allow-Origin'] = 'https://infoprueba.one'
   end
 
   get '/' do
