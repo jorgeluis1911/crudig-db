@@ -1,0 +1,48 @@
+<!-- Modal Editar-->
+      
+<div class="modal fade" id="editarfila_<%= tabla%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width: 600px;">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		  <h4 class="modal-title" id="myModalLabel">Editando registro de <%= tabla%></h4>
+		</div>
+		<div class="modal-body">
+		  <form method="get" action="/<%= idioma %>/<%= tabla%>/update_id_json" id="editarform" name="editarform" 
+			  class="form-horizontal" role="form">
+				<% tablas[tabla]['columnas'].each do |col, value| %>
+				<div class="form-group">
+				  <label for="<%= col%>" class="col-sm-2 control-label"><%= col%></label>
+				  <div class="col-sm-10">
+				  <% if (value[:column_rel]) %>
+					  <select class="form-control" id="<%= col%>" name="<%= col%>" required>
+						<% filas[value[:tabla_rel]].each do |id, fila| %>
+						  <option value="<%= fila[:"#{value[:column_rel]}"]%>" 
+							<%= 'selected' if (params[col].eql?(fila[:"#{value[:column_rel]}"])) %> >
+							<% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+							   valor = fila[:"#{value[:column_rel]}"]
+							   valor = fila[:"#{combo_string}"] if (combo_string)  %> 
+							<%= valor %></option>
+						<% end %>
+					  </select>
+				  <% elsif(value[:es_archivo].eql?('1')) %>
+					  <input class="form-control" type="file" id="<%= col%>" name="<%= col%>" />                          
+				  <% else %>
+					<input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+						maxlength="<%= value[:length] if value[:length]%>" class="form-control"
+						<%= 'required' if value[:column_key]=='PRI' %>
+						<%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
+				  <% end %>
+				  </div>
+				</div>
+				<% end %>
+			<br />
+
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			<input type="submit" name="editarbtn" class="btn btn-info" value="Guardar Cambios">
+		  </form>
+		</div>
+	  </div>
+	</div>
+</div>
+  

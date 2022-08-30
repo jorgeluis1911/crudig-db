@@ -1,0 +1,72 @@
+ 
+<% # def drawGrid(filas, tabla, tablas, idioma) %>
+      
+<table class="table table-condensed table-bordered">
+	<thead>
+	  <tr class="info">
+		<th>
+		  <a href="" class="btn btn-default btn-xs btn_a" data-toggle="modal" 
+			data-target="#agregarfila" onclick="agregar()">
+			  <span class="glyphicon glyphicon-plus"></span>
+		  </a>
+		  <%= tabla%>
+		</th>
+		<% tablas[tabla]['columnas'].each do |col, value| %>
+			<th><%= col%></th>
+		<% end %>
+	  </tr>
+	</thead>
+	<tbody>
+	  <% colspan = tablas[tabla]['columnas'].size + 1 %>
+	  
+	  <% filas[tabla].each do |key, en| %>
+		<tr id="<%= key%>">
+		  <td>
+			<a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+			  onclick="return false;">
+			  <span class="glyphicon glyphicon-chevron-down"></span></a>            
+			<a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+			  onclick="before_update('<%= key%>'); return false;">
+			  <span class="glyphicon glyphicon-pencil"></span></a>
+			<a href="/<%= idioma %>/<%= tabla%>/<%= key%>" class="btn btn-default btn-xs btn_a"
+			  onclick="cancel_update('<%= key%>'); return false;">
+			  <span class="glyphicon glyphicon-trash"></a>
+		  </td>
+		  
+		  <%  # en = :filas{} :hijos{}
+		  if(en[:fila].size > 0)
+			en[:fila].each do |col, valor| %>
+			  <td>
+				<% if (tablas[tabla]['columnas'][col] && tablas[tabla]['columnas'][col][:column_rel]) %>
+					<a href="/<%= idioma %>/<%= tablas[tabla]['columnas'][col][:tabla_rel]%>/listar?<%= col+'='+valor%>"><%= valor%></a>
+				<% else %>
+					<%= valor%>
+				<% end %>
+			  </td>
+			<% end %>
+		  <% end %>
+		</tr>
+		
+		<% count = 0
+		  en[:hijos].each{ |table, valor| count += valor.size }
+		  
+		  if(count > 0) %>
+			<tr><td colspan="<%= colspan %>">
+			  <% en[:hijos].each do |table, valor| 
+				  if(valor.size > 0)    %>
+					<div class="grid_table_interno">
+						
+					  <% # drawGrid(en[:hijos], table, tablas, idioma) %>
+					  
+					  <%= erb :'common/_jerarquia_draw_grid' , 
+								:locals => {	:filas => filas,	:tabla => tabla,
+												:tablas => tablas,	:idioma => idioma	} %>
+					</div>
+				  <% end %>
+			  <% end %>
+			</td></tr>
+		  <% end %>
+		
+	  <% end %>
+	</tbody>
+</table>

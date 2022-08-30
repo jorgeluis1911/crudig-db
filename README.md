@@ -9,4 +9,4 @@ Obtenga las tablas y los datos relacionados para cambiarlos facilmente.
 
 Descargar los archivos y ejecutar el archivo config__.ru desde el directorio.
 
-$ rackup config__.ru
+$ rackup config__.ru -s Puma

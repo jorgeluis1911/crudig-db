@@ -15,7 +15,7 @@ class App < Sinatra::Application
     
     listar(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    filas = app.select_mysql(' * ', controler, params, start_limit)
+    filas = app.select_mysql(' * ', controler, params, start_limit, 1)
     
     listar(controler, filas, message, order, params)
   end
@@ -30,7 +30,7 @@ class App < Sinatra::Application
     
     return listar_json(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    filas = app.select_mysql(' * ', controler, params, start_limit)
+    filas = app.select_mysql(' * ', controler, params, start_limit, 1)
     
     return listar_json(controler, filas, message, order, params)
   end
@@ -44,7 +44,7 @@ class App < Sinatra::Application
     else  message= 'No se pudo insertar el elemento.'
     end
     
-    filas = app.select_mysql(' * ', controler, '', '')
+    filas = app.select_mysql(' * ', controler, '', '', 1)
     listar(controler, filas, message, order)        
   end
   
@@ -71,7 +71,7 @@ class App < Sinatra::Application
     else  message= 'No se pudo eliminar el elemento.'
     end
     
-    filas = app.select_mysql(' * ', controler, '', '')    
+    filas = app.select_mysql(' * ', controler, '', '', 1)
     listar(controler, filas, message, order)      
   end
 
@@ -98,7 +98,7 @@ class App < Sinatra::Application
     else  message= 'No se pudo insertar el elemento.'
     end
     
-    filas = app.select_mysql(' * ', controler, '', '')        
+    filas = app.select_mysql(' * ', controler, '', '', 1)
     listar(controler, filas, message, order)    
   end
   
@@ -128,7 +128,7 @@ class App < Sinatra::Application
     
     #return listar_json(controler, {}, 'No existe el objeto '+controler, order, params) if !existe?(controler)
 
-    return app.select_mysql(' * ', controler, params, start_limit)
+    return app.select_mysql(' * ', controler, params, start_limit, 1)
   end
     
   def select_demos_config_id(idConfig)
@@ -307,11 +307,14 @@ class App < Sinatra::Application
   end  
   
   def existe?(controler)
+=begin
     if @@config[:tablas].has_key?(controler)
       TRUE
     else
       FALSE
     end
+=end
+    return @@config[:tablas].has_key?(controler)
   end
 
 

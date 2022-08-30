@@ -1,0 +1,184 @@
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <%= paginador %>
+                <label><b><%= tabla_detalle %></b></label>
+              </div>
+              
+              <table class="table table-condensed table-bordered">
+                <thead>
+                  <tr class="info">
+                    <th>
+                      <a href="/<%= idioma %>/<%= tabla_detalle%>/listar">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                      </a>
+                      
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                          <span class="glyphicon glyphicon-print"></span><span class="caret" style="margin-left: 5px"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a target="_blank" href="/<%= idioma %>/<%= tabla_detalle %>/generatepdf">Imprimir</a></li>
+                          <li><a href="" data-toggle="modal" data-target="#addlistado_<%= tabla_detalle%>">Guardar nuevo</a></li>
+                          
+                          <li class="divider"></li>
+                          <li role="presentation" class="dropdown-header">Mis informes :</li>
+                          <% if (listados[tabla_detalle] && listados[tabla_detalle].length < 1) %>
+                            <% listados[tabla_detalle].each do |fila, values| %>
+                              <li><a href="<%= values[:url] %>"><%= values[:nombre] %></a></li>
+                            <% end %>
+                          <% else %>
+                            <li role="presentation" class="dropdown-header"> - Ninguno - </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    </th>
+                    <% tablas[tabla_detalle]['columnas'].each do |col, value| %>
+                      <th>
+                        <a href="/<%= idioma %>/<%= tabla%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= col%>&g_g=<%= tabla_detalle%>">
+                            <% if value[:texto_grid] && value[:texto_grid] != '' %>
+                              <%= value[:texto_grid]  %>
+                            <%  else  %>
+                              <%= col  %>
+                            <%  end   %>
+                        <% if (order[:grid2_order] == 'desc') %>
+                          <span class="glyphicon glyphicon-chevron-up"></span></a>
+                        <% else %>
+                          <span class="glyphicon glyphicon-chevron-down"></span></a>
+                        <% end %>
+                      </th>
+<!--                  <% if (value[:column_rel]) %>
+                        <th><a href="/<%= idioma %>/<%= tabla_detalle%>/listar?g_o=<%= order[:grid2_order]%>&g_f=<%= value[:tabla_rel]+'_'+value[:column_rel]%>&g_g=<%= tabla_detalle%>">
+                              <%= value[:tabla_rel]+'_'+value[:column_rel]%>
+                          <% if (order[:grid2_order] == 'desc') %><span class="glyphicon glyphicon-chevron-up"></span></a>
+                          <% else %>                <span class="glyphicon glyphicon-chevron-down"></span></a>
+                          <% end %>
+                        </th>
+                      <% end %>     -->
+                    <% end %>
+                  </tr>
+
+                  <form action="/<%= idioma %>/<%= tabla_detalle%>/listar" method="get" name="buscar" id="form_buscar2_<%= tabla_detalle%>">
+                    <tr>
+                      <td>                          
+                        <a href="" class="btn btn-default btn-xs btn_a" 
+                          data-toggle="modal" data-target="#agregarfila_<%= tabla_detalle%>" onclick="agregar()">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                        <a href="/<%= idioma %>/<%= tabla_detalle%>" class="btn btn-default btn-xs btn_a" 
+                          onclick="buscar_tabs('form_buscar2_<%= tabla_detalle%>'); return false;">
+                          <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                      <!--<td><input type="submit" value="Add"/>
+                           <input type="submit" value="Search"/> -->
+                      </td>
+                      <% tablas[tabla_detalle]['columnas'].each{ |col, value| %>
+                          <td>
+                            <%  #  filas[:filas_detalle][tabla_detalle]
+                            %>
+                          <% if (value[:column_rel] )
+                                filas_sub_grid = filas[:filas_detalle][tabla_detalle]
+                                if (filas_sub_grid[value[:tabla_rel]]) %>
+                                <select class="form-control" id="<%= col%>" name="<%= col%>" >
+                                  <option value="">-Todos-</option>                                 
+                                  <% filas_sub_grid[value[:tabla_rel]].each do |id, fila| %>
+                                    <option value="<%= fila[:"#{value[:column_rel]}"]%>" 
+                                      <%= 'selected' if (params[col].eql?(fila[:"#{value[:column_rel]}"])) %> >
+                                      <% combo_string = tablas[value[:tabla_rel]]['config'][:combo_string_fk].first
+                                         valor = fila[:"#{value[:column_rel]}"]
+                                         valor = fila[:"#{combo_string}"] if (combo_string)  %> 
+                                      <%= valor %></option>
+                                  <% end %>
+                                </select>
+                                <% else %>
+                                  <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                                      class="form-control" <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
+                                <% end %>
+                                </td>
+<!--                            <td>
+                                  <input type="search" class="form-control" id="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
+                                    name="<%= value[:tabla_rel]+'_'+value[:column_rel]%>" 
+                                    value="<%= params[value[:tabla_rel]+'_'+value[:column_rel]] %>" />    -->
+                          <% else %>
+                            <input type="search" id="<%= col%>" name="<%= col%>" value="<%= params[col]%>" 
+                                class="form-control"  <%= 'onkeypress="return solo_num(event)"' if (value[:is_number]==1) %> />
+                          <% end %>
+                          </td>
+                      <%  } %>
+                    </tr>
+                  </form>
+                </thead>
+                <tbody id="divinf_<%= tabla_detalle%>">
+                  <%#= filas[:filas_detalle]
+                  %>
+                  <%  filas_detalle = {}
+                      if (filas[:filas_detalle][tabla_detalle])
+                      #if (filas[tabla_detalle])
+                        filas_detalle = filas[:filas_detalle][tabla_detalle][tabla_detalle]
+                      end 
+                  %>
+                  <% filas_detalle.each do |key, en| %>
+                    <tr id="<%= tabla_detalle+key%>">
+                      <form action="/<%= idioma %>/<%= tabla_detalle%>/update_json" method="get" name="form_editar" id="form_editar_<%= tabla_detalle+key%>">
+                        <td width="95px">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs btn_a dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a href="" data-toggle="modal" data-target="#editarfila_<%= tabla_detalle%>" >
+                                  Editar en ventana</a>
+                              </li>
+                              <%  ids = ''
+                                en.each do |col, valor| 
+                                  col = col.to_s
+                                  if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_key]=='PRI')
+                                    if(ids.eql? '')
+                                      ids = ids+col.to_s+'='+valor.to_s
+                                    else
+                                      ids = ids+'&'+col.to_s+'='+valor.to_s
+                                    end
+                                  end
+                                end
+                              %>
+                              <li><a href="/<%= idioma %>/jerarquiaUp/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                                Jerarquía hacia arriba</a></li>
+                              <li><a href="/<%= idioma %>/jerarquiaDown/<%= (tabla_detalle+'?'+ids) %>" target="_blank">
+                                Jerarquía hacia abajo</a></li>
+                            </ul>
+                          </div>
+                          
+                          <a href="/<%= idioma %>/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                            onclick="before_update('<%= tabla_detalle+key%>'); return false;">
+                            <span class="glyphicon glyphicon-pencil" title="Editar"></span></a>
+                          <a href="/<%= idioma %>/<%= tabla_detalle %>/<%= key %>" class="btn btn-default btn-xs btn_a"
+                            onclick="cancel_update('<%= tabla_detalle+key %>'); return false;">
+                            <span class="glyphicon glyphicon-trash" title="Eliminar"></a>
+                          <!--<form action="/<%= idioma %>/<%= tabla%>/<%= key%>" method="post">
+                            <input type="hidden" name="_method" value="delete" />
+                            <input type="submit" value="Delete" class="btn btn-default"/>
+                          </form>-->
+                        </td>
+                        <% alias_campos = 1 %>
+                        <% en.each do |col, valor| %>
+                          <%  col = col.to_s
+                              if (tablas[tabla_detalle]['columnas'][col] && tablas[tabla_detalle]['columnas'][col][:column_rel]) 
+                                tabla_ref = tablas[tabla_detalle]['columnas'][col][:tabla_rel]
+                                combo_string = tablas[ tabla_ref ]['config'][:combo_string_fk].first
+                                valor = en[ :"#{tabla_ref+'_'+combo_string+'_'+alias_campos.to_s}" ] if (combo_string)
+                          %>
+                            <td>
+                              <a href="/<%= idioma %>/<%= tablas[tabla_detalle]['columnas'][col][:tabla_rel]%>/listar?<%= combo_string+'='+valor.to_s%>"
+                                id="enlace_<%= col%>" combo="<%= col%>"><%= valor.to_s %></a>
+                            </td>
+                            <% alias_campos = alias_campos + 1 %>
+                          <% elsif (tablas[tabla_detalle]['columnas'][col]) %>
+                            <td fila="<%= col%>"><%= valor%></td>
+                          <% end %>
+                        <% end %>
+                      </form>
+                    </tr>
+                  <% end %>   
+                </tbody>
+              </table>
+              <%= '<div class="alert alert-danger"> No tiene datos está tabla </div>' if (filas_detalle.length < 1) %>
+            </div>

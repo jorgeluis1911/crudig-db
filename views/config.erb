@@ -119,6 +119,10 @@
             </div>
           </form> 
         </div>  
+		
+		<% # COMENTAR ESTE MENU 
+		if false
+		%>
         <div class="col-md-6">
           <form method="post" action="/config/conectarFTP">
             <div class="panel panel-default">
@@ -168,8 +172,104 @@
             </div>
           </form> 
         </div>
+		<% end %>
+		
       </div>
-        
+
+      <% if (tablas.length < 1) %>
+        <%= '<div class="alert alert-info">No tiene conectada ninguna base de datos.</div>'%>
+      <% else %>
+        <form method="post" action="/<%= idioma %>/config/edit/">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <input type="button" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-primary" value="Editar" />
+                <input type="submit" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-success" value="Guardar" />
+                <input type="button" name="conectar" id="conectar" style="float: right;" 
+                    class="btn btn-sm btn-danger" value="Cancelar" />
+                
+                  <a class="headtabla" data-toggle="collapse" data-parent="#accordion" 
+                      href="#formGeneral">General</a>
+              </div>
+              <div class="panel-collapse collapse in" id="formGeneral">
+                <table class="table table-condensed table-bordered">
+                  <thead>
+                    <tr class="info"></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="info">
+                      <td>Tabla</td>
+                      <td>Unión </td>
+                      <td>Nombre de Tabla </td>
+                      <td>Ver Tabla en el menú </td>
+                      <td>Insertar por ventana </td>
+                      <td>Editar por ventana </td>
+                      <td>Tablas detalles </td>
+                      <td>Paginador </td>
+                    </tr>
+                    <% tablas.each do |tabla, val| %>
+                      <tr>
+                        <td>
+                          <%= tabla %>
+                        </td>
+                        <td>
+                          <select class="form-control" id="inner_join" name="inner_join">
+                            <option value="1" <%= 'selected' if (val['config'][:inner_join]==true) %>>Si</option>
+                            <option value="0" <%= 'selected' if (val['config'][:inner_join]==false) %>>No</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input type="text" id="nombre_tabla" name="nombre_tabla" 
+                            value="<%= val['config'][:nombre_grid]%>" class="form-control"/>
+                        </td>
+                        <td>
+                          <select class="form-control" id="ver_tabla_en_menu" name="ver_tabla_en_menu">
+                            <option value="1" <%= 'selected' if (val['config'][:ver_en_menu]==true) %>>Si</option>
+                            <option value="0" <%= 'selected' if (val['config'][:ver_en_menu]==false) %>>No</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control" id="insertar_por_ventana" name="insertar_por_ventana">
+                            <option value="1" <%= 'selected' if (val['config'][:insert_window]==true) %>>Si</option>
+                            <option value="0" <%= 'selected' if (val['config'][:insert_window]==false) %>>No</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control" id="editar_por_ventana" name="editar_por_ventana">
+                            <option value="1" <%= 'selected' if (val['config'][:edit_window]==true) %>>Si</option>
+                            <option value="0" <%= 'selected' if (val['config'][:edit_window]==false) %>>No</option>
+                          </select>
+                        </td>
+                        <td><%= val['config'][:detalle_de]%>
+                          <% if (val['config'][:referencias].length > 0) %>
+                            <select class="form-control" id="" name="" >
+                            <% val['config'][:referencias].each do | tabla, col | %>
+                                <option value="<%= tabla%>"
+                                  <%= 'selected' if (params['referencia'].eql?(tabla))%> >
+                                  <%= tabla%></option>
+                            <% end %>
+                            </select>
+                          <% end %>
+                        </td>
+                        <td>
+                          <select class="form-control" id="text_paginador" name="paginador">
+                            <option value="10"
+                              <%= 'selected' if ('10'.eql?(val['config'][:paginador]))%> >10</option>
+                            <option value="20"
+                              <%= 'selected' if ('20'.eql?(val['config'][:paginador]))%> >20</option>
+                            <option value="30"
+                              <%= 'selected' if ('30'.eql?(val['config'][:paginador]))%> >30</option>
+                          </select>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        </form>
+      <% end %>
       
       <% tablas.each do |tabla, val| %>
         <form method="post" action="/<%= idioma %>/config/edit/<%= tabla %>">
@@ -187,81 +287,6 @@
               
             </div>
             <div class="panel-collapse collapse in" id="form<%= tabla %>">
-              <table class="table table-condensed table-bordered">
-                <thead>
-                <tr class="info">
-                </tr>
-                </thead>
-                <tbody>
-                  <tr class="info">
-                    <td>Unión <%= btnAyuda() %></td>
-                    <td>Nombre de Tabla <%= btnAyuda() %></td>
-                    <td>Ver Tabla en el menú <%= btnAyuda() %></td>
-                    <td>Insertar por ventana <%= btnAyuda() %></td>
-                    <td>Editar por ventana <%= btnAyuda() %></td>
-                    <td>Tablas detalles <%= btnAyuda() %></td>
-                    <td>Paginador <%= btnAyuda() %></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <select class="form-control" id="inner_join" name="inner_join">
-                        <option value="1" <%= 'selected' if (val['config'][:inner_join]==true) %>>Si</option>
-                        <option value="0" <%= 'selected' if (val['config'][:inner_join]==false) %>>No</option>
-                      </select>
-                    </td>
-                    <td>
-                      <input type="text" id="nombre_tabla" name="nombre_tabla" 
-                        value="<%= val['config'][:nombre_grid]%>" class="form-control"/>
-                    </td>
-                    <td>
-                      <select class="form-control" id="ver_tabla_en_menu" name="ver_tabla_en_menu">
-                        <option value="1" <%= 'selected' if (val['config'][:ver_en_menu]==true) %>>Si</option>
-                        <option value="0" <%= 'selected' if (val['config'][:ver_en_menu]==false) %>>No</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select class="form-control" id="insertar_por_ventana" name="insertar_por_ventana">
-                        <option value="1" <%= 'selected' if (val['config'][:insert_window]==true) %>>Si</option>
-                        <option value="0" <%= 'selected' if (val['config'][:insert_window]==false) %>>No</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select class="form-control" id="editar_por_ventana" name="editar_por_ventana">
-                        <option value="1" <%= 'selected' if (val['config'][:edit_window]==true) %>>Si</option>
-                        <option value="0" <%= 'selected' if (val['config'][:edit_window]==false) %>>No</option>
-                      </select>
-                    </td>
-                    <td><%= val['config'][:detalle_de]%>
-                      <% if (val['config'][:referencias].length > 0) %>
-                        <select class="form-control" id="" name="" >
-                        <% val['config'][:referencias].each do | tabla, col | %>
-                            <option value="<%= tabla%>"
-                              <%= 'selected' if (params['referencia'].eql?(tabla))%> >
-                              <%= tabla%></option>
-                        <% end %>
-                        </select>
-                      <% end %>
-                    </td>
-                    <td>
-                      <select class="form-control" id="text_paginador" name="paginador">
-                      <!--<input type="text" id="text_paginador" name="paginador" 
-                        value="<%#= val['config'][:paginador]%>" class="form-control"/>
-                      -->
-                        <option value="10"
-                          <%= 'selected' if ('10'.eql?(val['config'][:paginador]))%> >
-                          10</option>
-                        <option value="20"
-                          <%= 'selected' if ('20'.eql?(val['config'][:paginador]))%> >
-                          20</option>
-                        <option value="30"
-                          <%= 'selected' if ('30'.eql?(val['config'][:paginador]))%> >
-                          30</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <%= '<div class="alert alert-danger"> No tiene configuración está tabla </div>' if (val.length < 1) %>
-                </tbody>
-              </table>
               <%#= val['config'] 
               %>
               <%= val['config'][:combo_string_fk]
@@ -306,22 +331,22 @@
                         ?</button>
                       </div>
                     </td>
-                    <td>data_type <%= btnAyuda() %></td>
-                    <td>comments <%= btnAyuda() %></td>
-                    <td>vista_grid <%= btnAyuda() %></td>
-                    <td>nombre_col_grid <%= btnAyuda() %></td>
-                    <td>es_archivo <%= btnAyuda() %></td>
-                    <td>carpeta_FTP <%= btnAyuda() %></td>
+                    <td>data_type </td>
+                    <td>comments </td>
+                    <td>vista_grid </td>
+                    <td>nombre_col_grid </td>
+                    <td>es_archivo </td>
+                    <td>carpeta_FTP </td>
                     
                     <% if(request.base_url=="127.0.0.1" || 
                             request.base_url=="http://localhost:9292" || 
                             request.base_url=="localhost:9292") %>
-                        <td>length <%= btnAyuda() %></td>
-                        <td>column_key <%= btnAyuda() %></td>
-                        <td>key_name <%= btnAyuda() %></td>
-                        <td>esquema_rel <%= btnAyuda() %></td>
-                        <td>tabla_rel <%= btnAyuda() %></td>
-                        <td>column_rel <%= btnAyuda() %></td>
+                        <td>length </td>
+                        <td>column_key </td>
+                        <td>key_name </td>
+                        <td>esquema_rel </td>
+                        <td>tabla_rel </td>
+                        <td>column_rel </td>
                     <% end %>
                   </tr>
                   <% val['columnas'].each do |columna, valor| %>
@@ -369,7 +394,7 @@
                         <td id="keyname"><%= valor[:key_name]%></td>
                         <td id="esquema_relacionada"><%= valor[:esquema_rel]%></td>
                         <td id="tabla_relacionada"><%= valor[:tabla_rel]%></td>
-                        <td id="columna_relacionada"><%= valor[:column_rel]%></td>
+                        <td id="columna_relacionada"><%= valor[:column_rel]%></td>  
                       <% end %>
                     </tr>
                   <% end %>
@@ -382,8 +407,7 @@
           </div>
         </form>
       <% end %>
-      
-      <%= '<div class="alert alert-info">No tiene conectada esta base de datos.</div>' if (tablas.length < 1) %>
+
     </div>
         
     <script>

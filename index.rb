@@ -17,6 +17,9 @@ require "rack/cache"
 
 class App < Sinatra::Application
 
+	TRUE = true
+	FALSE = false
+
   configure do
     #set :sessions, true
     #set :foo, 'bar'
