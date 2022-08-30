@@ -165,22 +165,45 @@ class Aplicacion
     
     where = ''
     params.each{ |key, value|
+      # => puede ser que la key sea la PK de una tabla
+      # => buscamos con la key la columna FK que apunta a esta columna
+      key2 = getCol_from_fk(tabla, key)
+      
       if (value != nil && value!='' && 
           @aplicacion[:tablas][tabla]['columnas'][key])
-        where = where+' '+tabla+'.'+key+' like \'%'+value+'%\' and ' 
+        where = where+' '+tabla+'.'+key+' like \'%'+value+'%\' and '
+      elsif (key2 != nil && key2 != '')
+        # => si tenemos una FK entra por aqui
+        # => si la FK se llama igual que la key, entrara por arriba
+        where = where+' '+tabla+'.'+key2+' like \'%'+value+'%\' and '
       end
     }
     where = where[0..-5] if (where != '')
 
     return ' WHERE '+where if (where != '')
     return ''
-  end  
+  end
   
+  # => buscamos la Key entre las FKs que apuntan a la tabla
+  # =>    return la columna de la tabla
+  def getCol_from_fk(tabla, claveFK)
+    @aplicacion[:tablas][tabla]['columnas'].each {|key, value|
+      if (value[:column_rel] && value[:column_rel].eql?(claveFK))
+        return key
+      end
+    }
+    return ''
+  end
+  
+  # Si en :order viene en los parametros lo invertimos
+  # sino devolvemos siempre ASC
   def set_order( params )
     return 'desc' if (params[:order]=='asc')
     return 'asc'
   end  
   
+  # Si en :order viene en los parametros lo invertimos
+  # sino devolvemos siempre ASC
   def set_sub_grid_order( params )
     return 'desc' if (params[:g_o]=='asc')
     return 'asc'
@@ -390,7 +413,7 @@ class Aplicacion
     arr_referencias = @aplicacion[:tablas][tabla]['config'][:referencias]
     
     count = 0;
-    select.each_hash{ |row|
+    select.each{ |row|
       fila = Hash.new{}
       fila[:fila] = row
       fila[:hijos] = Hash.new

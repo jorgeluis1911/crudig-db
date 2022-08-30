@@ -7,6 +7,8 @@ class MySQLconex < Aplicacion
     begin
       Sequel.datetime_class = Date
       #Sequel.convert_two_digit_years = false
+	  
+	  puts 'mysql://'+usuario+':'+pass+'@'+dominio+':'+port+'/'+bd_name
       @conexion = Sequel.connect('mysql://'+usuario+':'+pass+'@'+dominio+':'+port+'/'+bd_name)
       #@conexion = Mysql.new(dominio, usuario, pass, bd_name, port)
       
@@ -53,7 +55,8 @@ class MySQLconex < Aplicacion
     from = 'FROM INFORMATION_SCHEMA.columns as col left join INFORMATION_SCHEMA.key_column_usage as col_u 
                 on col_u.table_name=col.table_name and col_u.column_name=col.column_name'
     order = ' ORDER BY col.table_name, col.ordinal_position '
-    #@conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
+    
+	#@conexion.query('SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order).each_hash{ |row|
     @conexion['SELECT '+select+' '+from+' WHERE col.table_schema =\''+bd_name+'\' '+order].each{ |row|
       #print row[:column_name]
       
@@ -157,11 +160,10 @@ class MySQLconex < Aplicacion
     return '<div class="alert alert-success"><p>Confuración BD cargada con éxito</p></div>'
   end
 
-  def select_mysql(select, tabla, params, start_limit)
+  # => subselect = 1 es para que sigua ejecutando las select de las tablas relacionadas
+  def select_mysql(select, tabla, params, start_limit, subselects)
     refresh
-    
     time1 = Time.now
-    
     filas = Hash.new
     cont = 0
     
@@ -179,13 +181,12 @@ class MySQLconex < Aplicacion
     @aplicacion[:tablas][tabla]['columnas'].each {|key, value|
       
       time3 = Time.now
-
       select = select+"#{tabla}.#{key},"
       if (value[:column_rel])
         from = from+' left join '+value[:tabla_rel]+' as '+value[:tabla_rel]+'_'+alias_SQL.to_s
         from = from+' on '+tabla+'.'+key+'='+value[:tabla_rel]+'_'+alias_SQL.to_s+'.'+value[:column_rel]
         select = select+"#{value[:tabla_rel]}_#{alias_SQL.to_s}.#{value[:column_rel]} "
-        select = select+" as #{value[:tabla_rel]}_#{value[:column_rel]}_#{alias_campos},"
+        select = select+" as #{value[:tabla_rel]}_#{value[:column_rel]}_#{alias_campos}," 
         
         puts select
         puts from
@@ -201,7 +202,7 @@ class MySQLconex < Aplicacion
         end
         
         unless filas[value[:tabla_rel]]
-          filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], value[:tabla_rel],'','','')
+          filas[value[:tabla_rel]] = simple_select( combo_string+value[:column_rel], value[:tabla_rel], '','','')
         end
       end
       
@@ -217,8 +218,8 @@ class MySQLconex < Aplicacion
     sub_params = get_sub_params(params)
     
     @aplicacion[:tablas][tabla]['config'][:referidas].each {|key, value|
-      unless(filas[:filas_detalle][key])
-        filas[:filas_detalle][key] = select_mysql('*', key, sub_params, 0)
+      unless(subselects==1 && filas[:filas_detalle][key])      
+        filas[:filas_detalle][key] = select_mysql('*', key, sub_params, 0, 0)
       end
     }
     
@@ -261,7 +262,5 @@ class MySQLconex < Aplicacion
 # => errores SQL
 
 # - Duplicate entry '1' for key 'PRIMARY'
-
-
 
 end
